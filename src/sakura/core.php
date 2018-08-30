@@ -1,6 +1,6 @@
 
 <?php
-namespace Tr0j4nvirus;
+namespace sakura;
 
 use pocketmine\Player;
 
@@ -24,7 +24,7 @@ use pocketmine\network\mcpe\protocol\SetTitlePacket;
 use pocketmine\level\level;
 use pocketmine\level\particle\{HugeExplodeParticle, HappyVillagerParticle, AngryVillagerParticle};
 
-class lu extends PluginBase implements Listener {
+class core extends PluginBase implements Listener {
 
 	public $db;
 
