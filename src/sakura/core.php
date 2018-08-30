@@ -30,13 +30,17 @@ class core extends PluginBase implements Listener {
 		
 		$this->settings = new Config($this->getDataFolder() . "settings.yml", CONFIG::YAML);
 		
-		$this->db = new \SQLite3($this->getDataFolder() . "01100100-01100001-01110100-01100001.db"); //creating main database
-		$this->db->exec("CREATE TABLE IF NOT EXISTS system (name TEXT PRIMARY KEY COLLATE NOCASE, level INT);");
-		$this->db->exec("CREATE TABLE IF NOT EXISTS xp (name TEXT PRIMARY KEY COLLATE NOCASE, exp INT);");
+		$this->db = new \SQLite3($this->getDataFolder() . "sakuradata.db"); //creating main database
+		
+		$this->db->exec("CREATE TABLE IF NOT EXISTS gem (name TEXT PRIMARY KEY COLLATE NOCASE, gems INT);");
+		$this->db->exec("CREATE TABLE IF NOT EXISTS exp (name TEXT PRIMARY KEY COLLATE NOCASE, exp INT);");
+		$this->db->exec("CREATE TABLE IF NOT EXISTS lvl (name TEXT PRIMARY KEY COLLATE NOCASE, level INT);");
+		
 		$this->db->exec("CREATE TABLE IF NOT EXISTS guild (guild TEXT PRIMARY KEY COLLATE NOCASE, founder INT);");
 		$this->db->exec("CREATE TABLE IF NOT EXISTS member (name TEXT PRIMARY KEY COLLATE NOCASE, guild INT);");
-		$this->db->exec("CREATE TABLE IF NOT EXISTS g (name TEXT PRIMARY KEY COLLATE NOCASE, gems INT);");
-		//$this->db->exec("CREATE TABLE IF NOT EXISTS r (name TEXT PRIMARY KEY COLLATE NOCASE, rank TEXT);");
+		
+		$this->db->exec("CREATE TABLE IF NOT EXISTS jobs (name TEXT PRIMARY KEY COLLATE NOCASE, job TEXT);");
+		
 		//$this->db->exec("CREATE TABLE IF NOT EXISTS t (name TEXT PRIMARY KEY COLLATE NOCASE, type TEXT);");
 		//$this->getServer()->getPluginManager()->registerEvents(new ev($this), $this);
 		
@@ -82,7 +86,7 @@ class core extends PluginBase implements Listener {
 				}
 				switch ( strtolower($args[1]) )
 				{
-					case "exp": case "exp": case "e":
+					case "exp": case "xp": case "e":
 						$this->addVal($target, "exp", $args[2]);
 					break;
 					case "gems": case "gem": case "g":
@@ -107,7 +111,7 @@ class core extends PluginBase implements Listener {
 			$this->register( $event->getPlayer() );
 		}
 	}
-
+	/*
 	public function register(Player $player)
 	{
 		//$player = $event->getPlayer();
@@ -143,7 +147,7 @@ class core extends PluginBase implements Listener {
 			$stmt->bindValue(":name", $name);
 			$stmt->bindValue(":rank", 'HEROIC');
 			$result = $stmt->execute();
-			/*/ Heroic - Disciple - Rampage - Ascended - Godlike /*/ 
+			//Heroic - Disciple - Rampage - Ascended - Godlike 
 
 			$stmt = $this->db->prepare("INSERT OR REPLACE INTO t (name, type) VALUES (:name, :type);");
 			$stmt->bindValue(":name", $name);
@@ -155,7 +159,7 @@ class core extends PluginBase implements Listener {
 			}
 		}
 	}
-	
+	*/	
 	public function rac($t, $cmd)
 	{
 		$cmd = str_replace("{player}", strtolower($t), $cmd);
