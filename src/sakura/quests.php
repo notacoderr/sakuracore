@@ -7,7 +7,7 @@ use sakura\core;
 use pocketmine\Player;
 use pocketmine\Server;
 
-class handler
+class quests
 {
 
   public $main;
