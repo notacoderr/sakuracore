@@ -39,7 +39,11 @@ class core extends PluginBase implements Listener {
 		//$this->db->exec("CREATE TABLE IF NOT EXISTS r (name TEXT PRIMARY KEY COLLATE NOCASE, rank TEXT);");
 		//$this->db->exec("CREATE TABLE IF NOT EXISTS t (name TEXT PRIMARY KEY COLLATE NOCASE, type TEXT);");
 		//$this->getServer()->getPluginManager()->registerEvents(new ev($this), $this);
-		$this->handler = new hander($this); //Value Handler
+		
+		$this->data = new Datas($this); //Data Value Handler
+		$this->jobs = new Jobs($this); //Job Handler
+		$this->quest = new Quests($this); //Quests Handler
+		
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 		
 	}
@@ -167,12 +171,12 @@ class core extends PluginBase implements Listener {
 	
 	public function getVal(Player $player, $val) : void
 	{
-		$this->handler->getVal($player->getName(), $val);
+		$this->data->getVal($player, $val);
     	}
 	
 	public function addVal(Player $player,string $val, int $add) : void
 	{
-		$this->handler->addVal($player->getName(), $val, $add);
+		$this->data->addVal($player, $val, $add);
 	}
 
 	function testLevel(Player $player, $xp) : bool
