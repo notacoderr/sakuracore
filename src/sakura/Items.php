@@ -72,9 +72,9 @@ class Items
 	    
           $item->setCustomName($src->getNested($data .".name"));
           $item->setLore([
-		  TF::BOLD. TF::GOLD. $class, //Class
-		  TF::BOLD. TF::RED. $level, //Level
-		  TF::BOLD. TF::WHITE. $rarity //Rarity
+		  TF::BOLD. "Class: ". TF::GOLD. $class, //Class
+		  TF::BOLD. "Level: ". TF::RED. $level, //Level
+		  TF::BOLD. "Rarity: ". TF::WHITE. $rarity //Rarity
 	  ]);
           
           return $item;
