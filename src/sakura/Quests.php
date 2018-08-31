@@ -23,21 +23,24 @@ class Quests
 	/* @Player $player Quests */
 	public function hasQuest(Player $player) : bool
 	{
-		$result = $this->main->db->query("SELECT * FROM pquests WHERE name='$player->getName()';");
+		$name = $player->getName();
+		$result = $this->main->db->query("SELECT * FROM pquests WHERE name= '$name';");
 		$array = $result->fetchArray(SQLITE3_ASSOC);
 		return empty($array) == false;
 	}
 	
 	public function getPlayerQuest(Player $player) : string
 	{
-		$result = $this->main->db->query("SELECT * FROM pquests WHERE name = '$player->getName()';");
+		$name = $player->getName();
+		$result = $this->main->db->query("SELECT * FROM pquests WHERE name = '$name';");
 		$resultArr = $result->fetchArray(SQLITE3_ASSOC);
 		return $resultArr["quest"];
 	}
 	
 	public function removePlayerQuest(Player $player) : void
 	{
-		$this->main->db->query("DELETE FROM pquests WHERE name = '$player->getName()';");
+		$name = $player->getName();
+		$this->main->db->query("DELETE FROM pquests WHERE name = '$name';");
 	}
  
  	public function givePlayerQuest(Player $player, string $quest) : void
@@ -118,7 +121,8 @@ class Quests
 	
 	public function addCompleted(Player $player, string $q) : void
 	{
-		$result = $this->main->db->query("SELECT * FROM pcompleted WHERE name = '$player->getName()';");
+		$name = $player->getName();
+		$result = $this->main->db->query("SELECT * FROM pcompleted WHERE name = '$name';");
 		$resultArr = $result->fetchArray(SQLITE3_ASSOC);
 		
 		$completed = explode(".", $resultArr["quests"]);
@@ -128,8 +132,8 @@ class Quests
 		$newcompleted = implode(".", $completed);
 		
 		$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO pcompleted (name, quests) VALUES (:name, :quests);");
-		$stmt->bindValue(":name", $player->getName());
-		$stmt->bindValue(":quests", $newcompleted);
+		$stmt->bindValue(":name", $name );
+		$stmt->bindValue(":quests", $newcompleted );
 		
 		$result = $stmt->execute();
 	}
