@@ -33,20 +33,29 @@ class Items
       
 	  $itemClass = (string) TF::clean($itemLore[0]); //Lore 0 (array)
           $itemLevel = (int) TF::clean($itemLore[1]); //Lore 1
-          if(strtolower($itemClass) !== strtolower($playerClass))
-          {
-              $player->sendMessage("§c§lThis isn't weapon is not for your Class type");
-              return false;
-          } 
-      
-          elseif($playerLevel < $itemLevel)
-          {
-              $player->sendMessage("§c§lYour Level is too low");
-              return false;
-            
-          } else {
-              return true;
-          }
+	  if($itemClass == "General")
+	  {
+		  if($playerLevel < $itemLevel)
+		  {
+		      $player->sendMessage("§c§lYour Level is too low");
+		      return false;
+		  } else {
+		  	return true;
+		  }
+	  } else {
+		  if($playerLevel < $itemLevel)
+		  {
+		      	$player->sendMessage("§c§lYour Level is too low");
+		      	return false;
+		  }
+		  elseif(strpos($itemClass, $playerClass) !== false)
+		  {
+		      	return true;
+		  } else {
+			$player->sendMessage("§c§lThis isn't weapon is not for your Class type");
+		      	return false;
+		  }
+	  }
           //return (strtolower($itemClass) == strtolower($playerClass)) ? true : false;
     }
   
@@ -62,7 +71,11 @@ class Items
           $rarity = $src->getNested($data .".rare");
 	    
           $item->setCustomName($src->getNested($data .".name"));
-          $item->setLore([$class, $level, $rarity]);
+          $item->setLore([
+		  TF::BOLD. TF::GOLD. $class, //Class
+		  TF::BOLD. TF::RED. $level, //Level
+		  TF::BOLD. TF::WHITE. $rarity //Rarity
+	  ]);
           
           return $item;
     }
