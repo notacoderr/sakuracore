@@ -102,7 +102,14 @@ class core extends PluginBase implements Listener {
 
 			case "test":
 				$sender->sendMessage($this->getTop(5));
-				return true;
+			break;
+			
+			case "quest":
+				if($args[0] == "apply")
+				{
+					return true;
+				}
+				$this->quests->isCompleted( $this->getServer()->getPlayer($args[0]) );
 			break;
 				
 			case "+":
