@@ -24,23 +24,23 @@ class Datas
   
   	public function getVal(Player $player, string $val)
 	{
-      		$n = $player->getName();
+      		$name = $player->getName();
 		switch ($val) 
 		{
 			case 'level':
-			  $result = $this->main->db->query("SELECT * FROM lvl WHERE name = '$n';");
+			  $result = $this->main->db->query("SELECT * FROM lvl WHERE name = '$name';");
 			  $resultArr = $result->fetchArray(SQLITE3_ASSOC);
 			  return $resultArr[ "level" ];
 			break;
 
 			case 'exp':
-			  $result = $this->main->db->query("SELECT * FROM exp WHERE name = '$n';");
+			  $result = $this->main->db->query("SELECT * FROM exp WHERE name = '$name';");
 			  $resultArr = $result->fetchArray(SQLITE3_ASSOC);
 			  return $resultArr[ "exp" ];
 			break;
 
 			case 'gems':
-			  $result = $this->main->db->query("SELECT * FROM gem WHERE name = '$n';");
+			  $result = $this->main->db->query("SELECT * FROM gem WHERE name = '$name';");
 			  $resultArr = $result->fetchArray(SQLITE3_ASSOC);
 			  return $resultArr[ "gems" ];
 			break;
@@ -49,7 +49,7 @@ class Datas
   
  	public function addVal(Player $player, string $val, int $add)
 	{
-    		$n = $player->getName();
+    		$name = $player->getName();
 		switch ($val)
 		{
 		      case 'level':
