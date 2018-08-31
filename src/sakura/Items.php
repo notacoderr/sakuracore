@@ -8,9 +8,11 @@ use pocketmine\item\Item;
 
 class Items
 {
-  public main;
   
-  public __construc()
-  {
-  }
+  	public $main;
+ 
+    public function __construct(core $core)
+    {
+        $this->main = $core;
+    }
 }
