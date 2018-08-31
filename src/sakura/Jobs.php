@@ -7,7 +7,7 @@ use sakura\core;
 use pocketmine\Player;
 use pocketmine\Server;
 
-class Jobs
+class Classes
 {
 
 	public $main;
@@ -17,18 +17,18 @@ class Jobs
         	$this->main = $core;
 	}
 
-	public function getJob(Player $player) : string
+	public function getClass(Player $player) : string
 	{
-		$result = $this->main->db->query("SELECT * FROM jobs WHERE name = '$player->getName()';");
+		$result = $this->main->db->query("SELECT * FROM classes WHERE name = '$player->getName()';");
 		$resultArr = $result->fetchArray(SQLITE3_ASSOC);
-		return $resultArr[ "job" ];
+		return $resultArr["class"];
 	}
  
- 	public function setJob(Player $player, string $newjob) : void
+ 	public function setJob(Player $player, string $class) : void
 	{
-		$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO jobs (name, job) VALUES (:name, :job);");
+		$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO classes (name, class) VALUES (:name, :class);");
 		$stmt->bindValue(":name", $player->getName());
-		$stmt->bindValue(":job", $newjob);
+		$stmt->bindValue(":class", $class);
 		$result = $stmt->execute();
     	}
 	
