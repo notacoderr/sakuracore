@@ -2,16 +2,18 @@
 267:
   101:
     name: "Custom Adventurer Sword"
+    class: "Warrior"
     level: 1
     rare: "common"
-    ench:
+    enchantment:
       - TestEnch:1
       - TestEnch2:1
   102:
     name: "Pulverizer"
+    class: "Warrior"
     level: 3
     rare: "advance"
-    ench:
+    enchantment:
       - TestEnch:1
       - TestEnch2:3
       
@@ -19,9 +21,10 @@
 276:
   101:
     name: "Alpha Breaker"
+    class: "Brute"
     level: 1
     rare: "epic"
-    ench:
+    enchantment:
       - TestEnch:1
       - TestEnch2:1
       
