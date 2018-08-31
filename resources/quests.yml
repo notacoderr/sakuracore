@@ -1,0 +1,12 @@
+collectLogs1:
+  level: 1
+  title: "Collecting Logs I"
+  desc: "Gather any type of Log (5) - 30 Exp"
+  item:
+    - 5
+    - 6
+  amount: 5
+  cmd:
+    - 'sys "{player}" exp 30'
+    - 'msg "{player}" §7>§f you have completed §aCollecting Logs I'
+  
