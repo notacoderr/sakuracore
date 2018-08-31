@@ -151,7 +151,7 @@ class core extends PluginBase implements Listener {
 				
 				if($this->items->isCompatible($target, $product))
 				{
-					$target->getInventory->addItem($product);
+					$target->getInventory()->addItem($product);
 				}
 				
 			break;
