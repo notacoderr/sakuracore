@@ -189,7 +189,7 @@ class core extends PluginBase implements Listener {
 		$stmt->bindValue(":level", 1);
 		$result = $stmt->execute();
 		
-		$stmt = $this->db->prepare("INSERT OR REPLACE INTO classes (name, level) VALUES (:name, :class);");
+		$stmt = $this->db->prepare("INSERT OR REPLACE INTO classes (name, class) VALUES (:name, :class);");
 		$stmt->bindValue(":name", $player->getName() );
 		$stmt->bindValue(":class", "Warrior");
 		$result = $stmt->execute();
