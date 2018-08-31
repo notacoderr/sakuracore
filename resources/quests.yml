@@ -12,7 +12,7 @@ collectLogs1:
 bunnyHunt1:
   level: 2
   title: "Bunny Hunter I"
-  desc: "Collect 3 Rabbit foot - 23 exp - 50 gold"
+  desc: "Collect 3 Rabbit Hide - 23 exp - 50 gold"
   item: 415
   amount: 3
   cmd:
