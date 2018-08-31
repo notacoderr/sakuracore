@@ -146,12 +146,11 @@ class core extends PluginBase implements Listener {
 					return true;
 				}
 				
-				$product = Item::get($args[1], $args[2], 1);
+				$this->items->pasteData( Item::get($args[1], $args[2], 1) );
+				
 				if($this->items->isCompatible($target, $product))
 				{
-					$this->items->pasteData($product);
 					$target->getInventory->addItem($product);
-					//$player->getInventory()->addItem(Item::get(ITEM::BREAD));
 				}
 				
 			break;
