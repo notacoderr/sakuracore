@@ -18,6 +18,9 @@ use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
 
 use pocketmine\level\level;
+
+use pocketmine\item\Item;
+use pocketmine\inventory\Inventory;
 //use pocketmine\scheduler\Task;
 
 class core extends PluginBase implements Listener {
@@ -120,10 +123,14 @@ class core extends PluginBase implements Listener {
 				**/
 				if (count($args) <> 3)
 				{
-					$sender->sendMessage("Invalid usage, /system <playername> <+exp/+gems> <amount>");
+					$sender->sendMessage("Invalid usage, /+ <playername> <item id> <item meta>");
 					return true;
 				}
-
+				if( array_key_exist( $args[1], $this->itemData->getAll() ))
+				{
+					$sender->sendMessage("that is not supported");
+					return true;
+				}
 				$target = $this->getServer()->getPlayer($args[0]);
 					
 				if(!$target instanceof Player)
@@ -143,6 +150,7 @@ class core extends PluginBase implements Listener {
 				{
 					$this->items->pasteData($product);
 					$target->getInventory->addItem($product);
+					//$player->getInventory()->addItem(Item::get(ITEM::BREAD));
 				}
 				
 			break;
@@ -160,7 +168,7 @@ class core extends PluginBase implements Listener {
 	
 	private function hasSpace(Player $player) : bool
 	{
-		return $player->getPlayerInventory()->canAddItem(Item::STICK, 0, 1) ? true : false;
+		return $player->getInventory()->canAddItem(Item::STICK, 0, 1) ? true : false;
 	}
 	
 	public function register(Player $player)
