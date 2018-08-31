@@ -171,52 +171,22 @@ class core extends PluginBase implements Listener {
 		return $player->getInventory()->canAddItem(Item::STICK, 0, 1) ? true : false;
 	}
 	
-	public function register(Player $player)
+	public function register(Player $player) : void
 	{
-		/*/$player = $event->getPlayer();
-		$name = $player->getName();
-		if ($this->isRecorded($name) == false){
-
-			$stmt = $this->db->prepare("INSERT OR REPLACE INTO system (name, level) VALUES (:name, :level);");
-			$stmt->bindValue(":name", $name);
-			$stmt->bindValue(":level", '1');
-			$result = $stmt->execute();
-
-			$stmt = $this->db->prepare("INSERT OR REPLACE INTO xp (name, exp) VALUES (:name, :exp);");
-			$stmt->bindValue(":name", $name);
-			$stmt->bindValue(":exp", '0');
-			$result = $stmt->execute();
-
-			$stmt = $this->db->prepare("INSERT OR REPLACE INTO rp (name, respect) VALUES (:name, :respect);");
-			$stmt->bindValue(":name", $name);
-			$stmt->bindValue(":respect", '0');
-			$result = $stmt->execute();
-
-			$stmt = $this->db->prepare("INSERT OR REPLACE INTO d (name, div) VALUES (:name, :div);");
-			$stmt->bindValue(":name", $name);
-			$stmt->bindValue(":div", '3');
-			$result = $stmt->execute();
-
-			$stmt = $this->db->prepare("INSERT OR REPLACE INTO g (name, gems) VALUES (:name, :gems);");
-			$stmt->bindValue(":name", $name);
-			$stmt->bindValue(":gems", '35'); //free gems
-			$result = $stmt->execute();
-
-			$stmt = $this->db->prepare("INSERT OR REPLACE INTO r (name, rank) VALUES (:name, :rank);");
-			$stmt->bindValue(":name", $name);
-			$stmt->bindValue(":rank", 'HEROIC');
-			$result = $stmt->execute();
-			//Heroic - Disciple - Rampage - Ascended - Godlike 
-
-			$stmt = $this->db->prepare("INSERT OR REPLACE INTO t (name, type) VALUES (:name, :type);");
-			$stmt->bindValue(":name", $name);
-			$stmt->bindValue(":type", 'standard');
-			$result = $stmt->execute();
-			//$player->sendMessage("Â§lYour new Data has been generated... run /profile <yourname>");  
-			if ($this->settings->get("run-command-on-first-join") == true){
-				return $this->rac($name, $this->settings->get("command-on-first-join"));
-			}
-		}*/
+		$stmt = $this->db->prepare("INSERT OR REPLACE INTO exp (name, exp) VALUES (:name, :exp);");
+		$stmt->bindValue(":name", $player->getName() );
+		$stmt->bindValue(":exp", 0);
+		$result = $stmt->execute();
+		
+		$stmt = $this->db->prepare("INSERT OR REPLACE INTO gem (name, gems) VALUES (:name, :gems);");
+		$stmt->bindValue(":name", $player->getName() );
+		$stmt->bindValue(":gems", 0);
+		$result = $stmt->execute();
+		
+		$stmt = $this->db->prepare("INSERT OR REPLACE INTO lvl (name, level) VALUES (:name, :level);");
+		$stmt->bindValue(":name", $player->getName() );
+		$stmt->bindValue(":level", 1);
+		$result = $stmt->execute();
 	}
 		
 	public function rac(Player $player, string $string)
@@ -270,7 +240,7 @@ class core extends PluginBase implements Listener {
 			$this->data->addVal($player, "level", $plevel + $i);
 			$player->addTitle("Â§lÂ§fLevel UP Â§7[Â§6 $f Â§7]", "Â§fNext Level on Â§7[Â§f $extra Â§7/Â§d $Ngoal Â§7");
 
-			$stmt = $this->db->prepare("INSERT OR REPLACE INTO xp (name, exp) VALUES (:name, :exp);");
+			$stmt = $this->db->prepare("INSERT OR REPLACE INTO exp (name, exp) VALUES (:name, :exp);");
 			$stmt->bindValue(":name", $player->getName() );
 			$stmt->bindValue(":exp", $extra);
 			$result = $stmt->execute();
