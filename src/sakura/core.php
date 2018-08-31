@@ -146,7 +146,8 @@ class core extends PluginBase implements Listener {
 					return true;
 				}
 				
-				$this->items->pasteData( Item::get($args[1], $args[2], 1) );
+				$product = Item::get($args[1], $args[2], 1);
+				$this->items->pasteData($product);
 				
 				if($this->items->isCompatible($target, $product))
 				{
