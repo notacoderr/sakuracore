@@ -12,13 +12,8 @@ use pocketmine\utils\TextFormat as TF;
 class Items
 {
   
-  	public $main;
-  
-    /*const Warrior   = 1;
-    const Brawler   = 2;
-    const Archer    = 3;
-    const Assassin  = 4;*/
- 
+    public $main;
+	
     public function __construct(core $core)
     {
         $this->main = $core;
@@ -81,9 +76,9 @@ class Items
 			"- ". TF::WHITE. $info //#4
 		]);
 	    
-	  	if(!is_null($src->getNested($data .".enchantments")))
+	  	if(!is_null($src->getNested($data .".enchantment")))
 	  	{
-			foreach($src->getNested($data .".enchantments") as $enc)
+			foreach($src->getNested($data .".enchantment") as $enc)
 			{
 				$fx = explode(":" , $enc);
 				$enchants = $fx[0];
