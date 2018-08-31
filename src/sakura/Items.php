@@ -31,7 +31,7 @@ class Items
       
           $itemLore = $item->getlore();
       
-			    $itemClass = (string) TF::clean($itemLore[0]); //Lore 0 (array)
+	  $itemClass = (string) TF::clean($itemLore[0]); //Lore 0 (array)
           $itemLevel = (int) TF::clean($itemLore[1]); //Lore 1
           if(strtolower($itemClass) !== strtolower($playerClass))
           {
@@ -52,14 +52,16 @@ class Items
   
     public function pasteData(Item $item) : Item
     {
-          $id = $item->getDamage();
-          $src = $this->main->items;
-          $item->setCustomName($src->getNested($id .".name"));
-          
-          $class = $src->getNested($id .".lore.class");
-          $level = $src->getNested($id .".lore.level");
-          $rarity = $src->getNested($id .".lore.rare");
-          
+	  $arr = array($item->getId(), $item->getDamage());
+	  $data = implode(".", $arr);
+	    
+          $src = $this->main->itemData;
+	    
+          $class = $src->getNested($data .".class");
+          $level = $src->getNested($data .".level");
+          $rarity = $src->getNested($data .".rare");
+	    
+          $item->setCustomName($src->getNested($data .".name"));
           $item->setLore([$class, $level, $rarity]);
           
           return $item;
