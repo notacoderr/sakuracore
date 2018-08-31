@@ -37,11 +37,8 @@ class Quests
 	public function getQuest(string $quest, string $val)
 	{
 		$data = $this->main->quests;
-		if(!(in_array($quest, $data))
+		if(in_array($quest, $data))
 		{
-			$this->main->getLogger("Quest Error: can't find value : " . $quest);
-			return true;
-		} else {
 			switch($val)
 			{
 				case "name":
@@ -56,6 +53,9 @@ class Quests
 					return $this->main->quests->getNested("$quest.cmd");
 				break;
 			}
+		} else {
+			$this->main->getLogger("Quest Error: can't find value : " . $quest);
+			return true;
 		}
 	}
 }
