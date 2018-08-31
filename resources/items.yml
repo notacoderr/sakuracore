@@ -1,0 +1,27 @@
+#Iron Sword
+267:
+  101:
+    name: "Custom Adventurer Sword"
+    level: 1
+    rare: "common"
+    ench:
+      - TestEnch:1
+      - TestEnch2:1
+  102:
+    name: "Pulverizer"
+    level: 3
+    rare: "advance"
+    ench:
+      - TestEnch:1
+      - TestEnch2:3
+      
+#Diamond Sword   
+276:
+  101:
+    name: "Alpha Breaker"
+    level: 1
+    rare: "epic"
+    ench:
+      - TestEnch:1
+      - TestEnch2:1
+      
