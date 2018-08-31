@@ -56,7 +56,8 @@ class core extends PluginBase implements Listener {
 		$this->quests = new Quests($this); //Quests Handler
 		$this->items = new Items($this); //Item Handler
 		
-		$this->getServer()->getPluginManager()->registerEvents($this, $this);
+		$this->pce = Server::getInstance()->getPluginManager()->getPlugin("PiggyCustomEnchants");
+		Server::getInstance()->getPluginManager()->registerEvents($this, $this);
 		
 	}
 	
