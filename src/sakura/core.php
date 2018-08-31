@@ -162,10 +162,10 @@ class core extends PluginBase implements Listener {
 	{
 		return $player->getPlayerInventory()->canAddItem(Item::STICK, 0, 1) ? true : false;
 	}
-	/*
+	
 	public function register(Player $player)
 	{
-		//$player = $event->getPlayer();
+		/*/$player = $event->getPlayer();
 		$name = $player->getName();
 		if ($this->isRecorded($name) == false){
 
@@ -208,9 +208,9 @@ class core extends PluginBase implements Listener {
 			if ($this->settings->get("run-command-on-first-join") == true){
 				return $this->rac($name, $this->settings->get("command-on-first-join"));
 			}
-		}
+		}*/
 	}
-	*/	
+		
 	public function rac(Player $player, string $string)
 	{
 		$name = $player->getName();
