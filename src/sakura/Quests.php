@@ -40,7 +40,7 @@ class Quests
 		$this->main->db->query("DELETE FROM pquests WHERE name = '$player->getName()';");
 	}
  
- 	public function setPlayerQuest(Player $player, string $quest) : void
+ 	public function givePlayerQuest(Player $player, string $quest) : void
 	{
 		$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO pquests (name, quest) VALUES (:name, :quest);");
 		$stmt->bindValue(":name", $player->getName());
@@ -48,11 +48,11 @@ class Quests
 		$result = $stmt->execute();
     	}
 	
-	/* Quests data handling */
+	/* Quests handling */
 	public function getQuest(string $quest, string $val)
 	{
-		$data = $this->main->quests;
-		if(in_array($quest, $data))
+		$data = $this->main->quests->getAll();
+		if(array_key_exist($quest, $data))
 		{
 			switch($val)
 			{
@@ -114,5 +114,23 @@ class Quests
 				
 			}
 		}
+	}
+	
+	public function addCompleted(Player $player, string $q) : void
+	{
+		$result = $this->main->db->query("SELECT * FROM pcompleted WHERE name = '$player->getName()';");
+		$resultArr = $result->fetchArray(SQLITE3_ASSOC);
+		
+		$completed = explode(".", $resultArr["quests"]);
+		
+		array_push($completed, $q);
+		
+		$newcompleted = implode(".", $completed);
+		
+		$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO pcompleted (name, quests) VALUES (:name, :quests);");
+		$stmt->bindValue(":name", $player->getName());
+		$stmt->bindValue(":quests", $newcompleted);
+		
+		$result = $stmt->execute();
 	}
 }
