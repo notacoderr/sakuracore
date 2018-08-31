@@ -26,69 +26,71 @@ class Items
   
     public function isCompatible(Player $player, Item $item) : bool
     {
-          $playerClass = $this->main->classes->getClass($player);
-          $playerLevel = $this->main->data->getVal($player, "level");
+         $playerClass = $this->main->classes->getClass($player);
+         $playerLevel = $this->main->data->getVal($player, "level");
       
-          $itemLore = $item->getlore();
-      
-	  $itemClass = (string) TF::clean($itemLore[0]); //Lore 0 (array)
-          $itemLevel = (int) TF::clean($itemLore[1]); //Lore 1
-	  if($itemClass == "General")
-	  {
-		  if($playerLevel < $itemLevel)
-		  {
-		      $player->sendMessage("§c§lYour Level is too low");
-		      return false;
-		  } else {
-		  	return true;
-		  }
-	  } else {
-		  if($playerLevel < $itemLevel)
-		  {
-		      	$player->sendMessage("§c§lYour Level is too low");
-		      	return false;
-		  }
-		  elseif(strpos($itemClass, $playerClass) !== false)
-		  {
-		      	return true;
-		  } else {
-			$player->sendMessage("§c§lThis isn't weapon is not for your Class type");
-		      	return false;
-		  }
-	  }
+         $itemLore = $item->getlore();
+      	 $itemLevel = (int) TF::clean($itemLore[0]); //Lore 0
+	 $itemClass = (string) TF::clean($itemLore[1]); //Lore 1 (array)
+	 $itemSerial = (string) TF::clean($itemLore[1]); //Lore 3 (array)
+	    
+	if(array_key_exists( $itemSerial, $this->main->itemData->getAll() ))
+	{	
+		if($playerLevel < $itemLevel)
+		{
+			$player->sendMessage("§c§lYour Level is too low");
+			return false;
+		}
+		
+		if($itemClass == "General")
+		{
+			  return true;
+		} else {
+			  if(strpos($itemClass, $playerClass) !== false)
+			  {
+				return true;
+			  } else {
+				$player->sendMessage("§c§lThis weapon is not for your Class type");
+				return false;
+			  }
+		 }
+	}
+	    
+	  
           //return (strtolower($itemClass) == strtolower($playerClass)) ? true : false;
     }
   
-    public function pasteData(Item $item) : Item
-    {
-	  $arr = array($item->getId(), $item->getDamage());
-	  $data = implode(".", $arr);
+    public function createItem(string $data) : Item
+    {  
+          	$src = $this->main->itemData;
 	    
-          $src = $this->main->itemData;
+		$item = Item::get($src->getNested($data .".item"), 0 ,1); 
 	    
-          $class = $src->getNested($data .".class");
-          $level = $src->getNested($data .".level");
-          $rarity = $src->getNested($data .".rare");
+		$class = $src->getNested($data .".class");
+		$level = $src->getNested($data .".level");
+		$rarity = $src->getNested($data .".rare");
+
+		$item->setCustomName($src->getNested($data .".name"));
 	    
-          $item->setCustomName($src->getNested($data .".name"));
-          $item->setLore([
-		  TF::BOLD. "Class: ". TF::GOLD. $class, //Class
-		  TF::BOLD. "Level: ". TF::RED. $level, //Level
-		  TF::BOLD. "Rarity: ". TF::WHITE. $rarity //Rarity
-	  ]);
+	  	$item->setLore([
+			TF::BOLD. "Level: ". TF::RED. $level, //Level #0
+			TF::BOLD. "Class: ". TF::GOLD. $class, //Class #1
+			TF::BOLD. "Rarity: ". TF::WHITE. $rarity, //Rarity #2
+			TF::BOLD. "Serial: ". TF::WHITE. $data //Level #3
+		]);
 	    
-	  if(!is_null($src->getNested($data .".enchantments")))
-	  {
-		  foreach($src->getNested($data .".enchantments") as $enc)
-		  {
-			  $fx = explode(":" , $enc);
-			  $enchants = $fx[0];
-			  $levels = $fx[1];
-			  $this->main->pce->addEnchantment($item, $enchants, $levels, true);
-		  }
-	  }
-          
-          return $item;
+	  	if(!is_null($src->getNested($data .".enchantments")))
+	  	{
+			foreach($src->getNested($data .".enchantments") as $enc)
+			{
+				$fx = explode(":" , $enc);
+				$enchants = $fx[0];
+				$levels = $fx[1];
+				$this->main->pce->addEnchantment($item, $enchants, $levels, true);
+		  	}
+	  	}
+	    
+          	return $item;
     }
   
 }
