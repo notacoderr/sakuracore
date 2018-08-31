@@ -76,6 +76,17 @@ class Items
 		  TF::BOLD. "Level: ". TF::RED. $level, //Level
 		  TF::BOLD. "Rarity: ". TF::WHITE. $rarity //Rarity
 	  ]);
+	    
+	  if(!is_null($src->getNested($data .".enchantments")))
+	  {
+		  foreach($src->getNested($data .".enchantments") as $enc)
+		  {
+			  $fx = explode(":" , $enc);
+			  $enchants = $fx[0];
+			  $levels = $fx[1];
+			  $this->main->pce->addEnchantment($item, $enchants, $levels, true);
+		  }
+	  }
           
           return $item;
     }
