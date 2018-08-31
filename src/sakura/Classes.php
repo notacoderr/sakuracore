@@ -19,15 +19,17 @@ class Classes
 
 	public function getClass(Player $player) : string
 	{
-		$result = $this->main->db->query("SELECT * FROM classes WHERE name = '$player->getName()';");
+		$name = $player->getName();
+		$result = $this->main->db->query("SELECT * FROM classes WHERE name = '$name';");
 		$resultArr = $result->fetchArray(SQLITE3_ASSOC);
 		return $resultArr["class"];
 	}
  
  	public function setClass(Player $player, string $class) : void
 	{
+		$name = $player->getName();
 		$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO classes (name, class) VALUES (:name, :class);");
-		$stmt->bindValue(":name", $player->getName());
+		$stmt->bindValue(":name", $name);
 		$stmt->bindValue(":class", $class);
 		$result = $stmt->execute();
     	}
