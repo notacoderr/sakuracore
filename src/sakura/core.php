@@ -39,7 +39,8 @@ class core extends PluginBase implements Listener {
 		$this->db->exec("CREATE TABLE IF NOT EXISTS guild (guild TEXT PRIMARY KEY COLLATE NOCASE, founder INT);");
 		$this->db->exec("CREATE TABLE IF NOT EXISTS member (name TEXT PRIMARY KEY COLLATE NOCASE, guild INT);");
 		
-		$this->db->exec("CREATE TABLE IF NOT EXISTS jobs (name TEXT PRIMARY KEY COLLATE NOCASE, job TEXT);");
+		$this->db->exec("CREATE TABLE IF NOT EXISTS pquests (name TEXT PRIMARY KEY COLLATE NOCASE, quest TEXT);");
+		$this->db->exec("CREATE TABLE IF NOT EXISTS pcompleted (name TEXT PRIMARY KEY COLLATE NOCASE, quests TEXT);");
 		
 		//$this->db->exec("CREATE TABLE IF NOT EXISTS t (name TEXT PRIMARY KEY COLLATE NOCASE, type TEXT);");
 		//$this->getServer()->getPluginManager()->registerEvents(new ev($this), $this);
@@ -160,10 +161,11 @@ class core extends PluginBase implements Listener {
 		}
 	}
 	*/	
-	public function rac($t, $cmd)
+	public function rac(Player $player, string $string)
 	{
-		$cmd = str_replace("{player}", strtolower($t), $cmd);
-		Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), $cmd);
+		$name = $player->getName();
+		$command = str_replace('{player}', '"$name"', $string);
+		Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), $command);
 	}
 	
 	/*
