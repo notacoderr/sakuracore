@@ -102,7 +102,7 @@ class Quests
 				
 				foreach($this->getQuest($quest, "cmd") as $cmd)
 				{
-					$this->main->rac($cmd);
+					$this->main->rac($player, $cmd);
 				}
 				
 				return true;
