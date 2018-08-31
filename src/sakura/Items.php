@@ -69,14 +69,16 @@ class Items
 		$class = $src->getNested($data .".class");
 		$level = $src->getNested($data .".level");
 		$rarity = $src->getNested($data .".rare");
-
+		$info = $src->getNested($data .".info");
+	    
 		$item->setCustomName($src->getNested($data .".name"));
 	    
 	  	$item->setLore([
-			TF::BOLD. "Level: ". TF::RED. $level, //Level #0
-			TF::BOLD. "Class: ". TF::GOLD. $class, //Class #1
-			TF::BOLD. "Rarity: ". TF::WHITE. $rarity, //Rarity #2
-			TF::BOLD. "Serial: ". TF::WHITE. $data //Level #3
+			"Required Lv: ". TF::RED. $level, //Level #0
+			"Class: ". TF::GOLD. $class, //Class #1
+			"Rarity: ". TF::WHITE. $rarity, //Rarity #2
+			"Serial: ". TF::WHITE. $data, //Level #3
+			"- ". TF::WHITE. $info //#4
 		]);
 	    
 	  	if(!is_null($src->getNested($data .".enchantments")))
