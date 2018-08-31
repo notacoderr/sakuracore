@@ -60,7 +60,7 @@ class Datas
 				$result = $stmt->execute();
 		      break;
 		      case 'exp':
-			$f = $this->getVal($name, "exp") + $add;
+			$f = $this->getVal($player, "exp") + $add;
 			  $stmt = $this->main->db->prepare("INSERT OR REPLACE INTO exp (name, exp) VALUES (:name, :exp);");
 			    $stmt->bindValue(":name", $name);
 			      $stmt->bindValue(":exp", $f);
@@ -69,7 +69,7 @@ class Datas
 				    $this->Alert($name, 1, $add);
 		      break;
 		      case 'gems':
-			$f = $this->getVal($name, "gems") + $add;
+			$f = $this->getVal($player, "gems") + $add;
 			  $stmt = $this->main->db->prepare("INSERT OR REPLACE INTO gem (name, gems) VALUES (:name, :gems);");
 			    $stmt->bindValue(":name", $name);
 			      $stmt->bindValue(":gems", $f );
