@@ -275,7 +275,8 @@ class core extends PluginBase implements Listener {
 	
 	public function isRecorded(Player $player) : bool
 	{
-		$result = $this->db->query("SELECT * FROM lvl WHERE name='$player->getName()';");
+		$name = $player->getName();
+		$result = $this->db->query("SELECT * FROM lvl WHERE name = '$name';");
 		$array = $result->fetchArray(SQLITE3_ASSOC);
 		return empty($array) == false;
 	}
