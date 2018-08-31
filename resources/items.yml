@@ -1,30 +1,32 @@
 #Iron Sword
 x01:
   item: 267
-  name: "Custom Adventurer Sword"
-  class: "Warrior"
+  name: "Broadsword"
+  info: "Standard Sword for all, extra damage when sprinting."
+  class: "General"
   level: 1
   rare: "common"
   enchantment:
-    - TestEnch:1
-    - TestEnch2:1
+    - Charge:1
 x02:
   item: 267
   name: "Pulverizer"
+  info: "Increased damage + extra damage on backstab."
   class: "Warrior"
   level: 3
   rare: "advance"
   enchantment:
-    - TestEnch:1
-    - TestEnch2:3
+    - Deathbringer:1
+    - Backstab:3
       
 x03:
   item: 276
   name: "Alpha Breaker"
+  info: "Prototype sword, Increased damage + partial healing."
   class: "Brute"
   level: 1
   rare: "epic"
   enchantment:
-    - TestEnch:1
-    - TestEnch2:1
+    - Deathbringer:2
+    - Vampire:1
 
