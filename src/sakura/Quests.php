@@ -7,6 +7,8 @@ use sakura\core;
 use pocketmine\Player;
 use pocketmine\Server;
 
+use pocketmine\inventory\PlayerInventory;
+
 class Quests
 {
 
@@ -18,6 +20,13 @@ class Quests
 	}
 	
 	/* @Player $player Quests */
+	public function hasQuest(Player $player) : string
+	{
+		$result = $this->main->db->query("SELECT * FROM pquests WHERE name='$player->getName()';");
+		$array = $result->fetchArray(SQLITE3_ASSOC);
+		return empty($array) == false;
+	}
+	
 	public function getPlayerQuest(Player $player) : string
 	{
 		$result = $this->main->db->query("SELECT * FROM pquests WHERE name = '$player->getName()';");
@@ -41,21 +50,48 @@ class Quests
 		{
 			switch($val)
 			{
-				case "name":
-					return $this->main->quests->getNested("$quest.name");
+				case "title":
+					return $this->main->quests->getNested($quest.".title");
 				break;
 					
 				case "level":
-					return $this->main->quests->getNested("$quest.level");
+					return $this->main->quests->getNested($quest.".level");
+				break;
+				
+				case "item":
+					return $this->main->quests->getNested($quest.".item");
+				break;
+					
+				case "amount":
+					return $this->main->quests->getNested($quest.".amount");
 				break;
 					
 				case "cmd":
-					return $this->main->quests->getNested("$quest.cmd");
+					return $this->main->quests->getNested($quest.".cmd");
+				break;
+					
+				case "desc":
+					return $this->main->quests->getNested($quest.".desc");
 				break;
 			}
 		} else {
 			$this->main->getLogger("Quest Error: can't find value : " . $quest);
 			return true;
+		}
+	}
+	
+	public function validateCompletion(Player $player)
+	{
+		if($this->hasQuest($player))
+		{
+			$quest = $this->getPlayerQuest($player);
+			$item = $this->getQuest($quest, "item");
+			$amount = $this->getQuest($quest, "amount");
+			$inventory = $this->getPlayer->getPlayerInventory();
+			if()
+			{
+				//checks if the $item exists on the player's $inventory with the required $amount
+			}
 		}
 	}
 }
