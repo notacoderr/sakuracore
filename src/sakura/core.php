@@ -45,7 +45,7 @@ class core extends PluginBase implements Listener {
 		//$this->getServer()->getPluginManager()->registerEvents(new ev($this), $this);
 		
 		$this->data = new Datas($this); //Data Value Handler
-		$this->jobs = new Jobs($this); //Job Handler
+		$this->classes = new Classes($this); //Class Handler
 		$this->quest = new Quests($this); //Quests Handler
 		
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
