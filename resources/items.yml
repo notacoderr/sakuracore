@@ -1,30 +1,30 @@
 #Iron Sword
-267:
-  101:
-    name: "Custom Adventurer Sword"
-    class: "Warrior"
-    level: 1
-    rare: "common"
-    enchantment:
-      - TestEnch:1
-      - TestEnch2:1
-  102:
-    name: "Pulverizer"
-    class: "Warrior"
-    level: 3
-    rare: "advance"
-    enchantment:
-      - TestEnch:1
-      - TestEnch2:3
+x01:
+  item: 267
+  name: "Custom Adventurer Sword"
+  class: "Warrior"
+  level: 1
+  rare: "common"
+  enchantment:
+    - TestEnch:1
+    - TestEnch2:1
+x02:
+  item: 267
+  name: "Pulverizer"
+  class: "Warrior"
+  level: 3
+  rare: "advance"
+  enchantment:
+    - TestEnch:1
+    - TestEnch2:3
       
-#Diamond Sword   
-276:
-  101:
-    name: "Alpha Breaker"
-    class: "Brute"
-    level: 1
-    rare: "epic"
-    enchantment:
-      - TestEnch:1
-      - TestEnch2:1
-      
+x03:
+  item: 276
+  name: "Alpha Breaker"
+  class: "Brute"
+  level: 1
+  rare: "epic"
+  enchantment:
+    - TestEnch:1
+    - TestEnch2:1
+
