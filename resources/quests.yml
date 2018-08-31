@@ -1,12 +1,32 @@
 collectLogs1:
   level: 1
   title: "Collecting Logs I"
-  desc: "Gather any type of Log (5) - 30 Exp"
-  item:
-    - 5
-    - 6
+  desc: "Gather any type of Log (5) - 30 Exp - 50 golds"
+  item: 5
   amount: 5
   cmd:
     - 'sys "{player}" exp 30'
+    - 'givemoney "{player}" 50'
     - 'msg "{player}" §7>§f you have completed §aCollecting Logs I'
-  
+    
+bunnyHunt1:
+  level: 2
+  title: "Bunny Hunter I"
+  desc: "Collect 3 Rabbit foot - 23 exp - 50 gold"
+  item: 415
+  amount: 3
+  cmd:
+    - 'sys "{player}" exp 23'
+    - 'givemoney "{player}" 50'
+    - 'msg "{player}" §7>§f you have completed §aBunny Hunter I'
+    
+bunnyHunt2:
+  level: 2
+  title: "Bunny Hunter II"
+  desc: "Collect 5 Rabbit Foot - 50 exp - 50 gold"
+  item: 414
+  amount: 5
+  cmd:
+    - 'sys "{player}" exp 50'
+    - 'givemoney "{player}" 50'
+    - 'msg "{player}" §7>§f you have completed §aBunny Hunter II'
