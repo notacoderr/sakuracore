@@ -51,7 +51,7 @@ class Quests
 	/* Quests handling */
 	public function getQuest(string $quest, string $val)
 	{
-		$data = $this->main->quests->getAll();
+		$data = $this->main->quests;
 		if(array_key_exist($quest, $data))
 		{
 			switch($val)
