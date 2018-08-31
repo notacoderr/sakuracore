@@ -127,9 +127,9 @@ class core extends PluginBase implements Listener {
 					$sender->sendMessage("Invalid usage, /+ <playername> <item id> <item meta>");
 					return true;
 				}
-				if( array_key_exists( $args[1], $this->itemData->getAll() ))
+				if( !array_key_exists( $args[1], $this->itemData->getAll() ))
 				{
-					$sender->sendMessage("that is not supported");
+					$sender->sendMessage("ID: " .$args[1]. " is not supported");
 					return true;
 				}
 				$target = $this->getServer()->getPlayer($args[0]);
