@@ -8,6 +8,7 @@ use pocketmine\Player;
 use pocketmine\Server;
 
 use pocketmine\inventory\PlayerInventory;
+use pocketmine\item\Item;
 
 class Quests
 {
@@ -32,6 +33,11 @@ class Quests
 		$result = $this->main->db->query("SELECT * FROM pquests WHERE name = '$player->getName()';");
 		$resultArr = $result->fetchArray(SQLITE3_ASSOC);
 		return $resultArr["quest"];
+	}
+	
+	public function removePlayerQuest(Player $player) : void
+	{
+		$this->main->db->query("DELETE FROM pquests WHERE name = '$player->getName()';");
 	}
  
  	public function setPlayerQuest(Player $player, string $quest) : void
@@ -80,7 +86,7 @@ class Quests
 		}
 	}
 	
-	public function validateCompletion(Player $player)
+	public function isCompleted(Player $player) : bool
 	{
 		if($this->hasQuest($player))
 		{
@@ -88,9 +94,24 @@ class Quests
 			$item = $this->getQuest($quest, "item");
 			$amount = $this->getQuest($quest, "amount");
 			$inventory = $this->getPlayer->getPlayerInventory();
-			if()
+			if($inventory->contains( Item::get($item, 0, $amount) ))
 			{
-				//checks if the $item exists on the player's $inventory with the required $amount
+				$inventory->remove( Item::get($item, 0, $amount) );
+				
+				$this->removePlayerQuest($player);
+				
+				foreach($this->getQuest($quest, "cmd") as $cmd)
+				{
+					$this->main->rac($cmd);
+				}
+				
+				return true;
+				
+			} else {
+				
+				$player->sendMessage("§l§7You don't have the required item(s)");
+				return false;
+				
 			}
 		}
 	}
