@@ -48,6 +48,7 @@ class core extends PluginBase implements Listener {
 		$this->db->exec("CREATE TABLE IF NOT EXISTS pquests (name TEXT PRIMARY KEY COLLATE NOCASE, quest TEXT);");
 		$this->db->exec("CREATE TABLE IF NOT EXISTS pcompleted (name TEXT PRIMARY KEY COLLATE NOCASE, quests TEXT);");
 		
+		$this->db->exec("CREATE TABLE IF NOT EXISTS classes (name TEXT PRIMARY KEY COLLATE NOCASE, class INT);");
 		//$this->db->exec("CREATE TABLE IF NOT EXISTS t (name TEXT PRIMARY KEY COLLATE NOCASE, type TEXT);");
 		
 		$this->data = new Datas($this); //Data Value Handler
@@ -186,6 +187,11 @@ class core extends PluginBase implements Listener {
 		$stmt = $this->db->prepare("INSERT OR REPLACE INTO lvl (name, level) VALUES (:name, :level);");
 		$stmt->bindValue(":name", $player->getName() );
 		$stmt->bindValue(":level", 1);
+		$result = $stmt->execute();
+		
+		$stmt = $this->db->prepare("INSERT OR REPLACE INTO classes (name, level) VALUES (:name, :class);");
+		$stmt->bindValue(":name", $player->getName() );
+		$stmt->bindValue(":class", "Warrior");
 		$result = $stmt->execute();
 	}
 		
