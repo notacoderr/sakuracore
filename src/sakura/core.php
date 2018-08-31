@@ -168,7 +168,7 @@ class core extends PluginBase implements Listener {
 	
 	private function hasSpace(Player $player) : bool
 	{
-		return $player->getInventory()->canAddItem(Item::STICK, 0, 1) ? true : false;
+		return $player->getInventory()->canAddItem(Item::get(Item::STICK, 0, 1)) ? true : false;
 	}
 	
 	public function register(Player $player) : void
