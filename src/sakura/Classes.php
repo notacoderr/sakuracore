@@ -24,7 +24,7 @@ class Classes
 		return $resultArr["class"];
 	}
  
- 	public function setJob(Player $player, string $class) : void
+ 	public function setClass(Player $player, string $class) : void
 	{
 		$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO classes (name, class) VALUES (:name, :class);");
 		$stmt->bindValue(":name", $player->getName());
