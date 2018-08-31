@@ -1,5 +1,7 @@
-# TODO
-[] Quests
-[] Party
-[] Classes
-[] Items
+## TODO
+##[] Quests
+##[] Guild
+##[] Classes
+##[+] Custom Items
+##[+] Gems
+##[+] Exp & Level
