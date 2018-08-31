@@ -120,19 +120,20 @@ class core extends PluginBase implements Listener {
 			case "+":
 				/**
 				*Args 0 = player name
-				*Args 1 = item id
-				*Args 2 = item damage
+				*Args 1 = item serial
+				*Args 2 = item serial
 				**/
-				if (count($args) <> 3)
+				if (count($args) <> 2)
 				{
-					$sender->sendMessage("Invalid usage, /+ <playername> <item id> <item meta>");
+					$sender->sendMessage("Invalid usage, /+ <playername> <serial>");
 					return true;
 				}
 				if( !array_key_exists( $args[1], $this->itemData->getAll() ))
 				{
-					$sender->sendMessage("ID: " .$args[1]. " is not supported");
+					$sender->sendMessage("Serial: " .$args[1]. " does not exist");
 					return true;
 				}
+				
 				$target = $this->getServer()->getPlayer($args[0]);
 					
 				if(!$target instanceof Player)
@@ -147,13 +148,8 @@ class core extends PluginBase implements Listener {
 					return true;
 				}
 				
-				$product = Item::get($args[1], $args[2], 1);
-				$this->items->pasteData($product);
-				
-				if($this->items->isCompatible($target, $product))
-				{
-					$target->getInventory()->addItem($product);
-				}
+				$product = $this->items->createItem( $args[1] );
+				$target->getInventory()->addItem( $product );
 				
 			break;
 		}
