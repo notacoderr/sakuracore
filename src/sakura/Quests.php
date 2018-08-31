@@ -21,7 +21,7 @@ class Quests
 	}
 	
 	/* @Player $player Quests */
-	public function hasQuest(Player $player) : string
+	public function hasQuest(Player $player) : bool
 	{
 		$result = $this->main->db->query("SELECT * FROM pquests WHERE name='$player->getName()';");
 		$array = $result->fetchArray(SQLITE3_ASSOC);
@@ -82,7 +82,7 @@ class Quests
 			}
 		} else {
 			$this->main->getLogger("Quest Error: can't find value : " . $quest);
-			return true;
+			return false;
 		}
 	}
 	
