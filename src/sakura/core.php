@@ -27,11 +27,14 @@ class core extends PluginBase implements Listener {
 	public function onEnable() : void
 	{	
 		$this->saveResource('settings.yml');
+		$this->saveResource('quests.yml');
+		$this->saveResource('items.yml');
 		
 		$this->settings = new Config($this->getDataFolder() . "settings.yml", CONFIG::YAML);
+		$this->questData = new Config($this->getDataFolder() . "quests.yml", CONFIG::YAML);
+		$this->itemData = new Config($this->getDataFolder() . "items.yml", CONFIG::YAML);
 		
 		$this->db = new \SQLite3($this->getDataFolder() . "sakuradata.db"); //creating main database
-		
 		$this->db->exec("CREATE TABLE IF NOT EXISTS gem (name TEXT PRIMARY KEY COLLATE NOCASE, gems INT);");
 		$this->db->exec("CREATE TABLE IF NOT EXISTS exp (name TEXT PRIMARY KEY COLLATE NOCASE, exp INT);");
 		$this->db->exec("CREATE TABLE IF NOT EXISTS lvl (name TEXT PRIMARY KEY COLLATE NOCASE, level INT);");
@@ -43,11 +46,11 @@ class core extends PluginBase implements Listener {
 		$this->db->exec("CREATE TABLE IF NOT EXISTS pcompleted (name TEXT PRIMARY KEY COLLATE NOCASE, quests TEXT);");
 		
 		//$this->db->exec("CREATE TABLE IF NOT EXISTS t (name TEXT PRIMARY KEY COLLATE NOCASE, type TEXT);");
-		//$this->getServer()->getPluginManager()->registerEvents(new ev($this), $this);
 		
 		$this->data = new Datas($this); //Data Value Handler
 		$this->classes = new Classes($this); //Class Handler
-		$this->quest = new Quests($this); //Quests Handler
+		$this->quests = new Quests($this); //Quests Handler
+		$this->items = new Items($this); //Item Handler
 		
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 		
@@ -57,7 +60,7 @@ class core extends PluginBase implements Listener {
 	{	
 		switch (strtolower( $command->getName() ))
 		{
-			case 'sys': case 'system': case '+':
+			case 'sys': case 'system':
 				if ($sender instanceof Player)
 				{
 					$sender->sendMessage("Â§cCan only be used it Â§fÂ§lCONSOLE");
@@ -88,10 +91,10 @@ class core extends PluginBase implements Listener {
 				switch ( strtolower($args[1]) )
 				{
 					case "exp": case "xp": case "e":
-						$this->addVal($target, "exp", $args[2]);
+						$this->data->addVal($target, "exp", $args[2]);
 					break;
 					case "gems": case "gem": case "g":
-						$this->addVal($target, "gems", $args[2]);
+						$this->data->addVal($target, "gems", $args[2]);
 					break;
 				}
 				$sender->sendMessage("added $args[2] of $args[1] to ".$target->getName());
@@ -100,6 +103,41 @@ class core extends PluginBase implements Listener {
 			case "test":
 				$sender->sendMessage($this->getTop(5));
 				return true;
+			break;
+				
+			case "+":
+				/**
+				*Args 0 = player name
+				*Args 1 = item id
+				*Args 2 = item damage
+				**/
+				if (count($args) <> 3)
+				{
+					$sender->sendMessage("Invalid usage, /system <playername> <+exp/+gems> <amount>");
+					return true;
+				}
+
+				$target = $this->getServer()->getPlayer($args[0]);
+					
+				if(!$target instanceof Player)
+				{
+					$sender->sendMessage("Player is not online");
+					return true;
+				}
+
+				if($this->hasSpace($target) == false)
+				{
+					$target->sendMessage("No slot available");
+					return true;
+				}
+				
+				$product = Item::get($args[1], $args[2], 1);
+				if($this->items->isCompatible($target, $product))
+				{
+					$this->items->pasteData($product);
+					$target->getInventory->addItem($product);
+				}
+				
 			break;
 		}
 		return true;
@@ -111,6 +149,11 @@ class core extends PluginBase implements Listener {
 		{
 			$this->register( $event->getPlayer() );
 		}
+	}
+	
+	private function hasSpace(Player $player) : bool
+	{
+		return $player->getPlayerInventory()->canAddItem(Item::STICK, 0, 1) ? true : false;
 	}
 	/*
 	public function register(Player $player)
@@ -187,8 +230,8 @@ class core extends PluginBase implements Listener {
 
 	function testLevel(Player $player, $xp) : bool
 	{
-		$base = $this->settings->get("starting-goal-EXP"); //base EXP			132
-		$plevel = $this->getVal($player, "level");//Player LEVEL							1
+		$base = $this->settings->get("baseExp"); //base EXP			132
+		$plevel = $this->data->getVal($player, "level");//Player LEVEL							1
 		$goal = $base * $plevel; //Base EXP multiply by player's level = goal		132
 		//print($base." - ". $plevel." | ".$xp." - ".$goal);
 		if ($xp >= $goal)															//given exp 397
@@ -209,7 +252,7 @@ class core extends PluginBase implements Listener {
 			while ($extra >= $Ngoal);//												1 >= 265 0
 			$f = $plevel + $i;
 			//print($plevel." -> ". $f." - ".$goal." -> ".$Ngoal." extra: $extra");
-			$this->addVal($player, "level", $plevel + $i);
+			$this->data->addVal($player, "level", $plevel + $i);
 			$player->addTitle("Â§lÂ§fLevel UP Â§7[Â§6 $f Â§7]", "Â§fNext Level on Â§7[Â§f $extra Â§7/Â§d $Ngoal Â§7");
 
 			$stmt = $this->db->prepare("INSERT OR REPLACE INTO xp (name, exp) VALUES (:name, :exp);");
@@ -225,7 +268,7 @@ class core extends PluginBase implements Listener {
 	
 	public function isRecorded(Player $player) : bool
 	{
-		$result = $this->db->query("SELECT * FROM system WHERE name='$player->getName()';");
+		$result = $this->db->query("SELECT * FROM lvl WHERE name='$player->getName()';");
 		$array = $result->fetchArray(SQLITE3_ASSOC);
 		return empty($array) == false;
 	}
@@ -253,16 +296,15 @@ class core extends PluginBase implements Listener {
 	public function getTop($amount) : string
 	{
 		$string = "";
-		$result = $this->db->query("SELECT * FROM system ORDER BY level DESC LIMIT $amount;");
+		$result = $this->db->query("SELECT * FROM lvl ORDER BY level DESC LIMIT $amount;");
 		$i = 0;
 		
         	while ($resultArr = $result->fetchArray(SQLITE3_ASSOC))
 		{
 			$j = $i + 1;
-			$name = strtoupper($resultArr['name']);
-			$exp = $this->getVal($name, "exp");
-			$lvl = $this->getVal($name, "level");
-			$string .= ("Â§l$j â€¢> Â§6$name Â§fLv. $lvl | XP : $exp Â§r\n\n");
+			$name = $resultArr['name'];
+			$lvl = $resultArr['level'];
+			$string .= ("Â§l$j â€¢> Â§6$name Â§fLv. $lvl \n");
 			$i += 1;
 		}
 		
