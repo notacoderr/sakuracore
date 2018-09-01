@@ -153,7 +153,8 @@ class Quests
 			if (isset($data[0]))
 			{
 				$button = $data[0];
-				$quest = $this->main->questData[$button];
+				$list = array_keys( $this->main->questData->getAll() );
+				$quest = $list[ $button ];
 				$player->sendMessage($quest); //for debug
 				$this->pquest[$player] = $quest;
 				$this->sendQuestInfo($player, $quest);
