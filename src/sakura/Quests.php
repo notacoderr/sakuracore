@@ -92,7 +92,7 @@ class Quests
 	
 	public function isCompleted(Player $player) : bool
 	{
-		if($this->hasQuest($player))
+		if( $this->hasQuest($player) )
 		{
 			$quest = $this->getPlayerQuest($player);
 			$item = $this->getQuest($quest, "item");
@@ -117,6 +117,9 @@ class Quests
 				return false;
 				
 			}
+		} else {
+			$player->sendMessage("§l§7You don't have the required item(s)");
+			return false;
 		}
 	}
 	
@@ -156,7 +159,7 @@ class Quests
 		
 		foreach($this->main->questData->getAll() as $quest)
 		{
-			$form->addButton( $this->main->questData($quest.".title") );
+			$form->addButton( $this->main->questData->getNested($quest.".title") );
 		}
 		
         	$form->sendToPlayer($player);
@@ -166,11 +169,7 @@ class Quests
 	{
 		$form = $this->main->formapi->createModalForm(function (Player $player, array $data)
 		{
-			if (isset($data[0]))
-			{
-				$button = $data[0];
-				$player->sendMessage($button);
-			}
+			$player->sendMessage( var_dump($data[0]) );
 		});
 		
 		$data = $this->main->questData;
