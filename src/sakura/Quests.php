@@ -37,6 +37,22 @@ class Quests
 		$resultArr = $result->fetchArray(SQLITE3_ASSOC);
 		return $resultArr["quest"];
 	}
+	
+	public function savePlayerQuest(Player $player, $quest) : bool
+	{
+		if($this->questExist($quest))
+		{
+			if($this->main->data->getVal($player, "level") >= $this->getQuestLevel($quest))
+			{
+				$this->givePlayerQuest($player, $quest);
+				return true;
+			}
+			$player->sendMessage("§l§7You haven't met the level requirement.");
+			return false;
+		}
+		$player->sendMessage("§7§lDatabase issue, the quest may have been deleted on the process.");
+		return false;
+	}
 
 	public function removePlayerQuest(Player $player) : void
 	{
@@ -55,7 +71,7 @@ class Quests
 	/* Quest Data handling */
 	public function questExist(string $quest): bool
 	{
-		return (array_key_exists($quest, $this->main->questData)) ? true : false;
+		return (array_key_exists($quest, $this->main->questData->getAll() )) ? true : false;
 	}
 
 	public function getQuestTitle(string $quest) : string
@@ -169,10 +185,11 @@ class Quests
 		$level = $this->getQuestLevel($quest);
 		$desc = $this->getQuestInfo($quest);
 		
-        	$form->setTitle( strtoupper($data->getNested($quest.".title")) );
+        	$form->setTitle(strtoupper($title));
 		$form->setContent("§fTitle:§a ". $title. "\n§fReq. Level:§a ". $level. "\n§f-§6 ". $desc);
 		$form->setButton1("§lAccept");
 		$form->setButton2("§lBack");
         	$form->sendToPlayer($player);
 	}
+	
 }
