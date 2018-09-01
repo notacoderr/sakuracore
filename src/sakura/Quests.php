@@ -42,7 +42,7 @@ class Quests
 	{
 		if($this->questExist($quest))
 		{
-			if($this->main->data->getVal($player, "level") >= $this->getQuestLevel($quest))
+			if($this->main->data->getVal($player, "level") < $this->getQuestLevel($quest))
 			{
 				$this->givePlayerQuest($player, $quest);
 				return true;
@@ -175,9 +175,11 @@ class Quests
 		{
 			if($data[0])
 			{
-				$player->sendMessage("1");
+				$this->savePlayerQuest($player, $this->pquest[$player]);
+				unset( $this->pquest[$player] );
 			} else {
-				$player->sendMessage("2");
+				$this->sendQuestApplyForm($player);
+				unset( $this->pquest[$player] );
 			}
 		});
 		
