@@ -67,10 +67,10 @@ class core extends PluginBase implements Listener {
 	{	
 		switch (strtolower( $command->getName() ))
 		{
-			case 'sys': case 'system':
+			case 'sys': case 'grant':
 				if ($sender instanceof Player)
 				{
-					$sender->sendMessage("Â§cCan only be used it Â§fÂ§lCONSOLE");
+					$sender->sendMessage("§cCan only be used it §f§lCONSOLE");
 					return true;
 				}
 				if (count($args) > 3 or count($args) < 3)
@@ -106,7 +106,28 @@ class core extends PluginBase implements Listener {
 				}
 				$sender->sendMessage("added $args[2] of $args[1] to ".$target->getName());
 			break;
-
+			
+			case "takegem":
+				if(isset($args[0])){  //realc
+					$target = $this->getServer()->getPlayer($args[0]);
+					if(!$target instanceof Player)
+					{
+						$sender->sendMessage("Player is not online");
+						return true;
+					}
+				}
+				if(!$this->isRecorded($target)){
+					  $sender->sendMessage("No Record found for $target");
+					  return true;
+				}
+				if (!is_numeric($args[1]) )
+				{
+					$sender->sendMessage("must be an integer");
+					return true;
+				}
+				$this->data->takeGem($target, $args[1]);
+			break;
+				
 			case "test":
 				$sender->sendMessage($this->getTop(5));
 			break;
