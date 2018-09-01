@@ -57,6 +57,8 @@ class core extends PluginBase implements Listener {
 		$this->items = new Items($this); //Item Handler
 		
 		$this->pce = Server::getInstance()->getPluginManager()->getPlugin("PiggyCustomEnchants");
+		$this->formapi = Server::getInstance()->getPluginManager()->getPlugin("FormAPI");
+		
 		Server::getInstance()->getPluginManager()->registerEvents($this, $this);
 		
 	}
@@ -110,11 +112,14 @@ class core extends PluginBase implements Listener {
 			break;
 			
 			case "quest":
-				if($args[0] == "apply")
+				/*
+				*args[0] = player name
+				*/
+				if (Server::getInstance()->getPlayer($args[0]) instanceof Player)
 				{
-					return true;
+					$this->quests->isCompleted( Server::getInstance()->getPlayer($args[0]) );
+					break;
 				}
-				$this->quests->isCompleted( $this->getServer()->getPlayer($args[0]) );
 			break;
 				
 			case "+":
@@ -166,7 +171,7 @@ class core extends PluginBase implements Listener {
 	
 	private function hasSpace(Player $player) : bool
 	{
-		return $player->getInventory()->canAddItem(Item::get(Item::STICK, 0, 1)) ? true : false;
+		return $player->getInventory()->canAddItem(Item::get(Item::STICK, 0, 1)) ? true : false; //Test item xD
 	}
 	
 	public function register(Player $player) : void
@@ -188,7 +193,7 @@ class core extends PluginBase implements Listener {
 		
 		$stmt = $this->db->prepare("INSERT OR REPLACE INTO classes (name, class) VALUES (:name, :class);");
 		$stmt->bindValue(":name", $player->getName() );
-		$stmt->bindValue(":class", "Warrior");
+		$stmt->bindValue(":class", "Recruit");
 		$result = $stmt->execute();
 	}
 		
@@ -197,23 +202,6 @@ class core extends PluginBase implements Listener {
 		$name = $player->getName();
 		$command = str_replace('{player}', '"$name"', $string);
 		Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), $command);
-	}
-	
-	/*
-	*
-	@Callable functions
-	* Player | $player
-	*
-	*/
-	
-	public function getVal(Player $player, $val) : void
-	{
-		$this->data->getVal($player, $val);
-    	}
-	
-	public function addVal(Player $player,string $val, int $add) : void
-	{
-		$this->data->addVal($player, $val, $add);
 	}
 
 	function testLevel(Player $player, $xp) : bool
@@ -241,7 +229,7 @@ class core extends PluginBase implements Listener {
 			$f = $plevel + $i;
 			//print($plevel." -> ". $f." - ".$goal." -> ".$Ngoal." extra: $extra");
 			$this->data->addVal($player, "level", $plevel + $i);
-			$player->addTitle("Â§lÂ§fLevel UP Â§7[Â§6 $f Â§7]", "Â§fNext Level on Â§7[Â§f $extra Â§7/Â§d $Ngoal Â§7");
+			$player->addTitle("§l§fLevel UP §7[§6 $f §7]", "§fNext Level on §7[§f $extra §7/§d $Ngoal §7");
 
 			$stmt = $this->db->prepare("INSERT OR REPLACE INTO exp (name, exp) VALUES (:name, :exp);");
 			$stmt->bindValue(":name", $player->getName() );
@@ -262,26 +250,6 @@ class core extends PluginBase implements Listener {
 		return empty($array) == false;
 	}
 
-	function Alert($n, $type, $extra)
-	{
-		$p = $this->getServer()->getPlayer($n);
-		if (!$p instanceof Player){
-			return true;
-		}
-		switch($type)
-		{
-			case "1":
-				return $p->sendMessage("â€¢> Â§lÂ§a+ $extra Exp");
-			break;
-			case "2":
-				return $p->sendMessage("â€¢> Â§lÂ§c $extra Gem");
-			break;
-			case "3":
-				$p->sendMessage("â€¢> Â§lÂ§c -$extra Gems");
-			break;
-		}
-	}
-
 	public function getTop($amount) : string
 	{
 		$string = "";
@@ -293,7 +261,7 @@ class core extends PluginBase implements Listener {
 			$j = $i + 1;
 			$name = $resultArr['name'];
 			$lvl = $resultArr['level'];
-			$string .= ("Â§l$j â€¢> Â§6$name Â§fLv. $lvl \n");
+			$string .= ("§l$j > §6$name §fLv. $lvl \n");
 			$i += 1;
 		}
 		
