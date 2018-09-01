@@ -65,7 +65,9 @@ class Datas
 			$stmt->bindValue(":name", $name);
 			$stmt->bindValue(":exp", $f);
 			$result = $stmt->execute();
-			$this->main->testLevel($name, $f);
+				
+			$this->main->testLevel($player, $f);
+				
 			$player->sendPopup("§l§a +" . $add . " experience");
 		      break;
 				
@@ -75,12 +77,20 @@ class Datas
 			$stmt->bindValue(":name", $name);
 			$stmt->bindValue(":gems", $f );
 			$result = $stmt->execute();
-			if ($add > 0){ 
-				$player->sendMessage("§l§7>§a $add was added to your account.");
-			} else { 
-			    	$player->sendMessage("§l§7>§c $add was deducted from your account.");
-			}
+			$player->sendMessage("§l§7>§a $add Gems was added to your account.");
 		      break;
 		}
+    	}
+	
+	public function takeGem(Player $player, int $gem) : void
+	{
+    		$name = $player->getName();
+		$final = $this->getVal($player, "gems") - $gem;
+		$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO gem (name, gems) VALUES (:name, :gems);");
+		$stmt->bindValue(":name", $name);
+		$stmt->bindValue(":gems", $final);
+		$result = $stmt->execute();
+		
+		$player->sendMessage("§l§7>§c $add Gems was taken from your account.");
     	}
 }
