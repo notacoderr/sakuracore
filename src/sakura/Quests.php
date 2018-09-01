@@ -177,15 +177,15 @@ class Quests
 		{
 			if($data[0])
 			{
-				$this->validatePlayerQuest($player, $this->pquest[$player]);
-				if(array_key_exists($player->getName(), questCache))
+				$this->validatePlayerQuest( $player, $this->questCache[ $player->getName() ]);
+				if(array_key_exists($player->getName(), $this->questCache))
 				{
 				    unset( $this->questCache[$player->getName()] );
 				}
 				return;
 			} else {
 				$this->sendQuestApplyForm($player);
-				if(array_key_exists($player->getName(), questCache))
+				if(array_key_exists($player->getName(), $this->questCache))
 				{
 				    uunset( $this->questCache[$player->getName()] );
 				}
