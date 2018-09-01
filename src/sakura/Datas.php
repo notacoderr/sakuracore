@@ -65,7 +65,7 @@ class Datas
 			$stmt->bindValue(":name", $name);
 			$stmt->bindValue(":exp", $f);
 			$result = $stmt->execute();
-			$this->testLevel($name, $f);
+			$this->main->testLevel($name, $f);
 			$player->sendPopup("§l§a +" . $add . " experience");
 		      break;
 				
