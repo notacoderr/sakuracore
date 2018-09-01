@@ -40,17 +40,22 @@ class Quests
 	
 	public function validatePlayerQuest(Player $player, $quest) : bool
 	{
-		if($this->questExist($quest))
+		if($this->hasQuest($player)) //Checks if the player has a quest
 		{
-			if($this->main->data->getVal($player, "level") >= $this->getQuestLevel($quest))
+			if($this->questExist($quest)) //Checks if the quest is still existence
 			{
-				$this->givePlayerQuest($player, $quest);
-				return true;
+				if($this->main->data->getVal($player, "level") >= $this->getQuestLevel($quest)) //Checks if the player is equal or above the level
+				{
+					$this->givePlayerQuest($player, $quest); //finally giving the quest
+					return true;
+				}
+				$player->sendMessage("§l§7You haven't met the level requirement.");
+				return false;
 			}
-			$player->sendMessage("§l§7You haven't met the level requirement.");
+			$player->sendMessage("§7§lAn error has occured, the quest may have been deleted on the process.");
 			return false;
 		}
-		$player->sendMessage("§7§lAn error has occured, the quest may have been deleted on the process.");
+		$player->sendMessage("§l§7You are already in a quest");
 		return false;
 	}
 
