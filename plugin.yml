@@ -15,4 +15,6 @@ commands:
   +:
     description: FOR CONSOLE USE ONLY!
   test:
-    description: lol
+    description: FOR CONSOLE USE ONLY!
+  quest:
+    description: FOR CONSOLE USE ONLY!
