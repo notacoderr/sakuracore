@@ -91,6 +91,6 @@ class Datas
 		$stmt->bindValue(":gems", $final);
 		$result = $stmt->execute();
 		
-		$player->sendMessage("§l§7>§c $add Gems was taken from your account.");
+		$player->sendMessage("§l§7>§c $gem Gems was taken from your account.");
     	}
 }
