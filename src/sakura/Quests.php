@@ -136,9 +136,10 @@ class Quests
 		{
 			if (isset($data[0]))
 			{
-				$quest = $this->main->questData[ $data[0] ];
-				$player->sendMessage( $quest );
-				//$this->pquest[ $player ] = $quest;
+				$quest = $this->main->questData->getAll()[ $data[0] ];
+				$player->sendMessage($quest); //for debug
+				$this->pquest[$player] = $quest;
+				$this->sendQuestInfo($player, $quest);
 				return true;
 			}
 		});
@@ -164,8 +165,12 @@ class Quests
 			}
 		});
 		
-		$data = $this->main->questData;
+		$title = $this->getQuestTitle($quest);
+		$level = $this->getQuestLevel($quest);
+		$desc = $this->getQuestInfo($quest);
+		
         	$form->setTitle( strtoupper($data->getNested($quest.".title")) );
+		$form->setContent("§fTitle:§a ". $title. "\n§fReq. Level:§a ". $level. "\n§f-§6 ". $desc);
 		$form->setButton1("§lAccept");
 		$form->setButton2("§lBack");
         	$form->sendToPlayer($player);
