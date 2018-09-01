@@ -7,13 +7,14 @@ use sakura\core;
 use pocketmine\Player;
 use pocketmine\Server;
 
-use pocketmine\inventory\PlayerInventory;
+use pocketmine\inventory\Inventory;
 use pocketmine\item\Item;
 
 class Quests
 {
 
   	public $main;
+	private $pquest = [];
 	
 	public function __construct(core $core)
 	{
@@ -54,33 +55,33 @@ class Quests
 	/* Quests handling */
 	public function getQuest(string $quest, string $val)
 	{
-		$data = $this->main->quests;
-		if(array_key_exist($quest, $data))
+		$data = $this->main->questData;
+		if(array_key_exists($quest, $data))
 		{
 			switch($val)
 			{
 				case "title":
-					return $this->main->quests->getNested($quest.".title");
+					return $data->getNested($quest.".title");
 				break;
 					
 				case "level":
-					return $this->main->quests->getNested($quest.".level");
+					return $data->getNested($quest.".level");
 				break;
 				
 				case "item":
-					return $this->main->quests->getNested($quest.".item");
+					return $data->getNested($quest.".item");
 				break;
 					
 				case "amount":
-					return $this->main->quests->getNested($quest.".amount");
+					return $data->getNested($quest.".amount");
 				break;
 					
 				case "cmd":
-					return $this->main->quests->getNested($quest.".cmd");
+					return $data->getNested($quest.".cmd");
 				break;
 					
 				case "desc":
-					return $this->main->quests->getNested($quest.".desc");
+					return $data->getNested($quest.".desc");
 				break;
 			}
 		} else {
@@ -96,7 +97,7 @@ class Quests
 			$quest = $this->getPlayerQuest($player);
 			$item = $this->getQuest($quest, "item");
 			$amount = $this->getQuest($quest, "amount");
-			$inventory = $this->getPlayer->getPlayerInventory();
+			$inventory = $player->getInventory();
 			if($inventory->contains( Item::get($item, 0, $amount) ))
 			{
 				$inventory->remove( Item::get($item, 0, $amount) );
@@ -136,5 +137,46 @@ class Quests
 		$stmt->bindValue(":quests", $newcompleted );
 		
 		$result = $stmt->execute();
+	}
+	
+	public function sendQuestApplyForm(Player $player)
+    	{
+		$form = $this->main->formapi->createSimpleForm(function (Player $player, array $data)
+		{
+			if (isset($data[0]))
+			{
+				$button = $data[0];
+				$quest = $this->main->questData[$button];
+				$player->sendMessage( $quest );
+
+				return true;
+			}
+		});
+        	$form->setTitle('§l§fApply for Quest');
+		
+		foreach($this->main->questData->getAll() as $quest)
+		{
+			$form->addButton( $this->main->questData($quest.".title") );
+		}
+		
+        	$form->sendToPlayer($player);
+    	}
+	
+	function sendQuestInfo(Player $player, string $quest)
+	{
+		$form = $this->main->formapi->createModalForm(function (Player $player, array $data)
+		{
+			if (isset($data[0]))
+			{
+				$button = $data[0];
+				$player->sendMessage($button);
+			}
+		});
+		
+		$data = $this->main->questData;
+        	$form->setTitle( strtoupper($data->getNested($quest.".title")) );
+		$form->setButton1("§lAccept");
+		$form->setButton2("§lBack");
+        	$form->sendToPlayer($player);
 	}
 }
