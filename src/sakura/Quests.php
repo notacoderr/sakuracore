@@ -144,7 +144,7 @@ class Quests
 		});
         	$form->setTitle('§l§fApply for Quest');
 		
-		foreach( array_keys($this->main->questData) as $questid)
+		foreach( array_keys($this->main->questData->getAll()) as $questid)
 		{
 			$form->addButton( $this->main->questData->getNested($questid.".title") );
 		}
