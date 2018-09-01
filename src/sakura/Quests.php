@@ -157,16 +157,17 @@ class Quests
 		});
         	$form->setTitle('§l§fApply for Quest');
 		
-		foreach($this->main->questData as $quest)
+		foreach( $this->main->questData as list($quest) )
 		{
 			$title = $this->main->questData->getNested($quest.".title");
 			$form->addButton( $title );
+			$player->sendMessage($quest);
 		}
 		
         	$form->sendToPlayer($player);
     	}
 	
-	function sendQuestInfo(Player $player, string $quest)
+	public function sendQuestInfo(Player $player, string $quest)
 	{
 		$form = $this->main->formapi->createModalForm(function (Player $player, array $data)
 		{
