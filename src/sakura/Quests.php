@@ -29,7 +29,7 @@ class Quests
 		$array = $result->fetchArray(SQLITE3_ASSOC);
 		return empty($array) == false;
 	}
-	
+
 	public function getPlayerQuest(Player $player) : string
 	{
 		$name = $player->getName();
@@ -37,13 +37,13 @@ class Quests
 		$resultArr = $result->fetchArray(SQLITE3_ASSOC);
 		return $resultArr["quest"];
 	}
-	
+
 	public function removePlayerQuest(Player $player) : void
 	{
 		$name = $player->getName();
 		$this->main->db->query("DELETE FROM pquests WHERE name = '$name';");
 	}
- 
+
  	public function givePlayerQuest(Player $player, string $quest) : void
 	{
 		$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO pquests (name, quest) VALUES (:name, :quest);");
@@ -51,43 +51,38 @@ class Quests
 		$stmt->bindValue(":quest", $quest);
 		$result = $stmt->execute();
     	}
-	
-	/* Quests handling */
-	public function getQuest(string $quest, string $val)
+
+	/* Quest Data handling */
+	public function questExist(string $quest): bool
 	{
-		$data = $this->main->questData;
-		if(array_key_exists($quest, $data))
-		{
-			switch($val)
-			{
-				case "title":
-					return $data->getNested($quest.".title");
-				break;
-					
-				case "level":
-					return $data->getNested($quest.".level");
-				break;
-				
-				case "item":
-					return $data->getNested($quest.".item");
-				break;
-					
-				case "amount":
-					return $data->getNested($quest.".amount");
-				break;
-					
-				case "cmd":
-					return $data->getNested($quest.".cmd");
-				break;
-					
-				case "desc":
-					return $data->getNested($quest.".desc");
-				break;
-			}
-		} else {
-			$this->main->getLogger("Quest Error: can't find value : " . $quest);
-			return false;
-		}
+		return (array_key_exists($quest, $this->main->questData)) ? true : false;
+	}
+
+	public function getQuestTitle(string $quest) : string
+	{
+		return $this->main->questData;->getNested($quest.".title");
+	}
+
+	public function getQuestLevel(string $quest) : string
+	{
+		return $this->main->questData;->getNested($quest.".level");
+	}
+	
+	public function getQuestInfo(string $quest) : string
+	{
+		return $this->main->questData;->getNested($quest.".desc");
+	}
+
+	public function getQuestItem(string $quest) : Item
+	{
+		$item = $this->main->questData;->getNested($quest.".item");
+		$i = explode(":", $item);
+		return Item::get($i[0], $i[1], $i[2]);
+	}
+
+	public function getQuestCmds(string $quest) : array
+	{
+		return $this->main->questData;->getNested($quest.".cmd");
 	}
 	
 	public function isCompleted(Player $player) : bool
@@ -95,27 +90,20 @@ class Quests
 		if( $this->hasQuest($player) )
 		{
 			$quest = $this->getPlayerQuest($player);
-			$item = $this->getQuest($quest, "item");
-			$amount = $this->getQuest($quest, "amount");
+			$item = $this->getQuestItem($quest);
 			$inventory = $player->getInventory();
-			if($inventory->contains( Item::get($item, 0, $amount) ))
+			if($inventory->contains($item))
 			{
-				$inventory->remove( Item::get($item, 0, $amount) );
-				
+				$inventory->remove($item);
 				$this->removePlayerQuest($player);
-				
-				foreach($this->getQuest($quest, "cmd") as $cmd)
+				foreach($this->getQuestCmds($quest) as $cmd)
 				{
 					$this->main->rac($player, $cmd);
 				}
-				
 				return true;
-				
 			} else {
-				
 				$player->sendMessage("§l§7You don't have the required item(s).");
 				return false;
-				
 			}
 		} else {
 			$player->sendMessage("§l§7You are not on a Quest.");
