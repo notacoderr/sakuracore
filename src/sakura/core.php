@@ -114,10 +114,21 @@ class core extends PluginBase implements Listener {
 			case "quest":
 				/*
 				*args[0] = player name
-				*/
-				if (Server::getInstance()->getPlayer($args[0]) instanceof Player)
-				{
-					$this->quests->isCompleted( Server::getInstance()->getPlayer($args[0]) );
+				*/switch($args[0]){
+					case "test":
+					if (Server::getInstance()->getPlayer($args[1]) instanceof Player)
+					{
+						$this->quests->isCompleted( Server::getInstance()->getPlayer($args[1]) );
+						break;
+					}
+					break;
+						
+					case "apply":
+						$this->quests->sendQuestApplyForm($player);
+					break;
+						
+					case "info":
+						$this->quests->sendQuestInfo($player, "collectLogs1");
 					break;
 				}
 			break;
