@@ -124,11 +124,11 @@ class core extends PluginBase implements Listener {
 					break;
 						
 					case "apply":
-						$this->quests->sendQuestApplyForm($player);
+						$this->quests->sendQuestApplyForm(Server::getInstance()->getPlayer($args[1]));
 					break;
 						
 					case "info":
-						$this->quests->sendQuestInfo($player, "collectLogs1");
+						$this->quests->sendQuestInfo(Server::getInstance()->getPlayer($args[1]), "collectLogs1");
 					break;
 				}
 			break;
