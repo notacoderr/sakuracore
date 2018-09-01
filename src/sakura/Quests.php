@@ -113,12 +113,12 @@ class Quests
 				
 			} else {
 				
-				$player->sendMessage("§l§7You don't have the required item(s)");
+				$player->sendMessage("§l§7You don't have the required item(s).");
 				return false;
 				
 			}
 		} else {
-			$player->sendMessage("§l§7You don't have the required item(s)");
+			$player->sendMessage("§l§7You are not on a Quest.");
 			return false;
 		}
 	}
@@ -157,7 +157,7 @@ class Quests
 		});
         	$form->setTitle('§l§fApply for Quest');
 		
-		foreach($this->main->questData->getAll() as $quest)
+		foreach($this->main->questData as $quest)
 		{
 			$form->addButton( $this->main->questData->getNested($quest.".title") );
 		}
@@ -169,7 +169,12 @@ class Quests
 	{
 		$form = $this->main->formapi->createModalForm(function (Player $player, array $data)
 		{
-			$player->sendMessage( var_dump($data[0]) );
+			if($data[0])
+			{
+				$player->sendMessage("1");
+			} else {
+				$player->sendMessage("2");
+			}
 		});
 		
 		$data = $this->main->questData;
