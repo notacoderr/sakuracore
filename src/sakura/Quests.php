@@ -14,7 +14,7 @@ class Quests
 {
 
   	public $main;
-	private $pquest = [];
+	public $questcache = [];
 	
 	public function __construct(core $core)
 	{
@@ -38,7 +38,7 @@ class Quests
 		return $resultArr["quest"];
 	}
 	
-	public function savePlayerQuest(Player $player, $quest) : bool
+	public function validatePlayerQuest(Player $player, $quest) : bool
 	{
 		if($this->questExist($quest))
 		{
@@ -156,7 +156,7 @@ class Quests
 				$list = array_keys( $this->main->questData->getAll() );
 				$quest = $list[ $button ];
 				$player->sendMessage($quest); //for debug
-				$this->pquest[$player] = $quest;
+				$this->questcache[ $player ] = $quest;
 				$this->sendQuestInfo($player, $quest);
 				return true;
 			}
@@ -177,7 +177,7 @@ class Quests
 		{
 			if($data[0])
 			{
-				$this->savePlayerQuest($player, $this->pquest[$player]);
+				$this->validatePlayerQuest($player, $this->pquest[$player]);
 				unset( $this->pquest[$player] );
 			} else {
 				$this->sendQuestApplyForm($player);
