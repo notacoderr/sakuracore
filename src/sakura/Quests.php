@@ -159,7 +159,8 @@ class Quests
 		
 		foreach($this->main->questData as $quest)
 		{
-			$form->addButton( $this->main->questData->getNested($quest.".title") );
+			$title = $this->main->questData->getNested($quest.".title");
+			$form->addButton( $title );
 		}
 		
         	$form->sendToPlayer($player);
