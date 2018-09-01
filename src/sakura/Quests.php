@@ -148,20 +148,17 @@ class Quests
 		{
 			if (isset($data[0]))
 			{
-				$button = $data[0];
-				$quest = $this->main->questData[$button];
+				$quest = $this->main->questData[ $data[0] ];
 				$player->sendMessage( $quest );
-
+				//$this->pquest[ $player ] = $quest;
 				return true;
 			}
 		});
         	$form->setTitle('§l§fApply for Quest');
 		
-		foreach( $this->main->questData as list($quest) )
+		foreach( $this->main->questData as $quest => $x)
 		{
-			$title = $this->main->questData->getNested($quest.".title");
-			$form->addButton( $title );
-			$player->sendMessage($quest);
+			$form->addButton( $this->main->questData->getNested($quest.".title") );
 		}
 		
         	$form->sendToPlayer($player);
