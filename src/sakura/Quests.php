@@ -42,7 +42,7 @@ class Quests
 	{
 		if($this->questExist($quest))
 		{
-			if($this->main->data->getVal($player, "level") < $this->getQuestLevel($quest))
+			if($this->main->data->getVal($player, "level") >= $this->getQuestLevel($quest))
 			{
 				$this->givePlayerQuest($player, $quest);
 				return true;
@@ -50,14 +50,8 @@ class Quests
 			$player->sendMessage("§l§7You haven't met the level requirement.");
 			return false;
 		}
-		$player->sendMessage("§7§lDatabase issue, the quest may have been deleted on the process.");
+		$player->sendMessage("§7§lAn error has occured, the quest may have been deleted on the process.");
 		return false;
-	}
-
-	public function removePlayerQuest(Player $player) : void
-	{
-		$name = $player->getName();
-		$this->main->db->query("DELETE FROM pquests WHERE name = '$name';");
 	}
 
  	public function givePlayerQuest(Player $player, string $quest) : void
@@ -66,7 +60,21 @@ class Quests
 		$stmt->bindValue(":name", $player->getName());
 		$stmt->bindValue(":quest", $quest);
 		$result = $stmt->execute();
+		
+		$book = Item::get(Item::WRITTEN_BOOK, 0, 1);
+		$book->setTitle($this->getQuestTitle($quest));
+		$book->setPageText(0, "§l§7TITLE: §c". $this->getQuestTitle($quest). "§r\n§l§7Level: §c". $this->getQuestLevel($quest). "§r\n§l§6IP: §cPlaySakura.online §r\n§l§6Port: §c25627");
+		$book->setPageText(1, "§l§7[ §0Quest Info §7] §r\n§6". $this->getQuestInfo($quest) );
+		$book->setAuthor("Sakura Council");
+		
+		$player->getInventory()->addItem($book);
     	}
+	
+	public function removePlayerQuest(Player $player) : void
+	{
+		$name = $player->getName();
+		$this->main->db->query("DELETE FROM pquests WHERE name = '$name';");
+	}
 
 	/* Quest Data handling */
 	public function questExist(string $quest): bool
@@ -155,7 +163,7 @@ class Quests
 				$button = $data[0];
 				$list = array_keys( $this->main->questData->getAll() );
 				$quest = $list[ $button ];
-				$player->sendMessage($quest); //for debug
+				//$player->sendMessage($quest); //for debug
 				$this->questCache[ $player->getName() ] = $quest;
 				$this->sendQuestInfo($player, $quest);
 				return true;
@@ -193,12 +201,8 @@ class Quests
 			}
 		});
 		
-		$title = $this->getQuestTitle($quest);
-		$level = $this->getQuestLevel($quest);
-		$desc = $this->getQuestInfo($quest);
-		
-        	$form->setTitle(strtoupper($title));
-		$form->setContent("§fTitle:§a ". $title. "\n§fReq. Level:§a ". $level. "\n§f-§6 ". $desc);
+        	$form->setTitle(strtoupper( $this->getQuestTitle($quest) ));
+		$form->setContent("§fTitle:§a ". $this->getQuestTitle($quest). "\n§fReq. Level:§a ". $this->getQuestLevel($quest). "\n§f-§6 ". $this->getQuestInfo($quest));
 		$form->setButton1("§lAccept");
 		$form->setButton2("§lBack");
         	$form->sendToPlayer($player);
