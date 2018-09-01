@@ -60,29 +60,29 @@ class Quests
 
 	public function getQuestTitle(string $quest) : string
 	{
-		return $this->main->questData;->getNested($quest.".title");
+		return $this->main->questData->getNested($quest.".title");
 	}
 
 	public function getQuestLevel(string $quest) : string
 	{
-		return $this->main->questData;->getNested($quest.".level");
+		return $this->main->questData->getNested($quest.".level");
 	}
 	
 	public function getQuestInfo(string $quest) : string
 	{
-		return $this->main->questData;->getNested($quest.".desc");
+		return $this->main->questData->getNested($quest.".desc");
 	}
 
 	public function getQuestItem(string $quest) : Item
 	{
-		$item = $this->main->questData;->getNested($quest.".item");
+		$item = $this->main->questData->getNested($quest.".item");
 		$i = explode(":", $item);
 		return Item::get($i[0], $i[1], $i[2]);
 	}
 
 	public function getQuestCmds(string $quest) : array
 	{
-		return $this->main->questData;->getNested($quest.".cmd");
+		return $this->main->questData->getNested($quest.".cmd");
 	}
 	
 	public function isCompleted(Player $player) : bool
