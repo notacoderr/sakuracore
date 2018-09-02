@@ -92,7 +92,7 @@ class Items
 					$e = Enchantment::getEnchantmentByName($e);
 					if($e instanceof Enchantment){
 						$ench = new EnchantmentInstance($e, $lvl);
-						$item->addEnchantment($e);
+						$item->addEnchantment($ench);
 					}
 				}
 		  	}
