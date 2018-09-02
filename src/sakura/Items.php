@@ -89,7 +89,7 @@ class Items
 					$this->main->pce->addEnchantment($item, $enchants, $levels, false);
 				} else {
 					$e = Enchantment::getEnchantmentByName($enchants);
-					$item->addEnchantment($e, $levels);
+					$item->addEnchantment($e->getId(), $levels);
 				}
 		  	}
 	  	}
