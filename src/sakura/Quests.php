@@ -49,6 +49,7 @@ class Quests
 					if($this->main->hasSpace($player)) //Now the book is important, just for the info.
 					{
 						$this->givePlayerQuest($player, $quest); //finally giving the quest
+						$player->sendMessage("§l§fA new quest has been added: §a". $this->getQuestTitle($quest));
 						return true;
 					}
 					$player->sendMessage("§l§7Failed to insert Quest Book.");
@@ -73,9 +74,9 @@ class Quests
 		
 		$book = Item::get(Item::WRITTEN_BOOK, 0, 1);
 		$book->setTitle($this->getQuestTitle($quest));
-		$book->setPageText(0, "§l§7TITLE: §c". $this->getQuestTitle($quest). "§r\n§l§7Level: §c". $this->getQuestLevel($quest). "§r\n§l§6--[§7IP§6]--§r\n§l§cPlaySakura.online§r\n§l§6--[Port§6]--§r\n§l§c25627");
+		$book->setPageText(0, "§0Title: §a". $this->getQuestTitle($quest). "\n§0Level: §c". $this->getQuestLevel($quest). "\n\n\n\n§7--[ §0IP §7]--\n§cPlaySakura.online\n§7--[ §0Port §7]--\n§c25627");
 		$book->setPageText(1, "§l§7[ §0Quest Info §7] §r\n§6". $this->getQuestInfo($quest) );
-		$book->setAuthor("Sakura Council");
+		$book->setAuthor("Sakura Online");
 		
 		$player->getInventory()->addItem($book);
     	}
