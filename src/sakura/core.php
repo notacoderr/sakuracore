@@ -67,7 +67,7 @@ class core extends PluginBase implements Listener {
 	{	
 		switch (strtolower( $command->getName() ))
 		{
-			case 'sys': case 'grant':
+			case 'grant':
 				if ($sender instanceof Player)
 				{
 					$sender->sendMessage("§cCan only be used it §f§lCONSOLE");
@@ -136,7 +136,7 @@ class core extends PluginBase implements Listener {
 				/*
 				*args[0] = player name
 				*/switch($args[0]){
-					case "test":
+					case "complete":
 					if (Server::getInstance()->getPlayer($args[1]) instanceof Player)
 					{
 						$this->quests->isCompleted( Server::getInstance()->getPlayer($args[1]) );
@@ -144,13 +144,13 @@ class core extends PluginBase implements Listener {
 					}
 					break;
 						
-					case "apply":
+					case "sendlist":
 						$this->quests->sendQuestApplyForm(Server::getInstance()->getPlayer($args[1]));
 					break;
 						
-					case "info":
+					/*case "info":
 						$this->quests->sendQuestInfo(Server::getInstance()->getPlayer($args[1]), "collectLogs1");
-					break;
+					break;*/
 				}
 			break;
 				
