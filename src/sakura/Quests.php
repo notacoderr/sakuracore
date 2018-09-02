@@ -147,7 +147,7 @@ class Quests
 		}
 	}
 	
-	public function addCompleted(Player $player, string $q) : void
+	/*public function addCompleted(Player $player, string $q) : void
 	{
 		$name = $player->getName();
 		$result = $this->main->db->query("SELECT * FROM pcompleted WHERE name = '$name';");
@@ -164,7 +164,7 @@ class Quests
 		$stmt->bindValue(":quests", $newcompleted );
 		
 		$result = $stmt->execute();
-	}
+	}*/
 	
 	public function sendQuestApplyForm(Player $player)
     	{
