@@ -6,6 +6,7 @@ use sakura\core;
 use pocketmine\Player;
 use pocketmine\item\Item;
 use pocketmine\item\enchantment\Enchantment;
+use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\inventory\Inventory;
 
 use pocketmine\utils\TextFormat as TF;
@@ -89,7 +90,8 @@ class Items
 					$this->main->pce->addEnchantment($item, $enchants, $levels, false);
 				} else {
 					$e = Enchantment::getEnchantmentByName($enchants);
-					$item->addEnchantment($e->getId(), $levels);
+					$e->setLevel($levels);
+					$item->addEnchantment($e);
 				}
 		  	}
 	  	}
