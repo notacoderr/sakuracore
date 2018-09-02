@@ -40,13 +40,13 @@ class Quests
 	
 	public function validatePlayerQuest(Player $player, $quest) : bool
 	{
-		if($this->hasQuest($player)) //Checks if the player has a quest
+		if($this->hasQuest($player) == false) //Checks if the player is NOT on a quest
 		{
-			if($this->questExist($quest)) //Checks if the quest is still existence
+			if($this->questExist($quest)) //Checks if the quest is still existing
 			{
 				if($this->main->data->getVal($player, "level") >= $this->getQuestLevel($quest)) //Checks if the player is equal or above the level
 				{
-					if($this->main->hasSpace($player))
+					if($this->main->hasSpace($player)) //Now the book is important, just for the info.
 					{
 						$this->givePlayerQuest($player, $quest); //finally giving the quest
 						return true;
