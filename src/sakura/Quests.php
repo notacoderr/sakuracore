@@ -74,7 +74,7 @@ class Quests
 		
 		$book = Item::get(Item::WRITTEN_BOOK, 0, 1);
 		$book->setTitle($this->getQuestTitle($quest));
-		$book->setPageText(0, "§0Title: §a". $this->getQuestTitle($quest). "\n§0Level: §c". $this->getQuestLevel($quest). "\n\n\n\n§7--[ §0IP §7]--\n§cPlaySakura.online\n§7--[ §0Port §7]--\n§c25627");
+		$book->setPageText(0, "§0Title: §a". $this->getQuestTitle($quest). "\n§0Level: §c". $this->getQuestLevel($quest). "\n\n\n\n\n\n§7--[ §0IP §7]--\n§cPlaySakura.online\n§7--[ §0Port §7]--\n§c25627");
 		$book->setPageText(1, "§l§7[ §0Quest Info §7] §r\n§6". $this->getQuestInfo($quest) );
 		$book->setAuthor("Sakura Online");
 		
@@ -122,29 +122,40 @@ class Quests
 	
 	public function isCompleted(Player $player) : bool
 	{
-		if( $this->hasQuest($player) )
+		if($player->getGamemode() <> 1)
 		{
-			$quest = $this->getPlayerQuest($player);
-			$item = $this->getQuestItem($quest);
-			$hand = $player->getInventory()->getItemInHand();
-			if($hand->getId() == $item->getId() && $hand->getCount() >= $item->getCount())
+			if( $this->hasQuest($player) )
 			{
-				$hand->setCount($hand->getCount() - $item->getCount());
-				$player->getInventory()->setItemInHand($hand);
-				$this->removePlayerQuest($player);
-				foreach($this->getQuestCmds($quest) as $cmd)
+				$quest = $this->getPlayerQuest($player);
+				$item = $this->getQuestItem($quest);
+				$hand = $player->getInventory()->getItemInHand();
+				if($hand->getId() == $item->getId())
 				{
-					$this->main->rac($player, $cmd);
+					if($hand->getCount() >= $item->getCount())
+					{
+						$hand->setCount($hand->getCount() - $item->getCount());
+						$player->getInventory()->setItemInHand($hand);
+
+						foreach($this->getQuestCmds($quest) as $cmd)
+						{
+							$this->main->rac($player, $cmd);
+						}
+
+						$player->addTitle("§l§aComplete". , "§6". $this->getQuestTitle($quest));
+						$this->removePlayerQuest($player);
+						return true;
+					}
+					$player->sendMessage("§l§7Insufficient amount of the item.");
+					return false;
 				}
-				return true;
-			} else {
-				$player->sendMessage("§l§7You don't have the required (amount) item(s).");
+				$player->sendMessage("§l§7You are not holding the required item(s).");
 				return false;
 			}
-		} else {
 			$player->sendMessage("§l§7You are not on a Quest.");
 			return false;
 		}
+		$player->sendMessage("§l§7Creative mode is not allowed.");
+		return false;
 	}
 	
 	/*public function addCompleted(Player $player, string $q) : void
