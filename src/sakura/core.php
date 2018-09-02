@@ -201,7 +201,7 @@ class core extends PluginBase implements Listener {
 		}
 	}
 	
-	private function hasSpace(Player $player) : bool
+	public function hasSpace(Player $player) : bool
 	{
 		return $player->getInventory()->canAddItem(Item::get(Item::STICK, 0, 1)) ? true : false; //Test item xD
 	}
