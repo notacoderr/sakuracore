@@ -5,6 +5,7 @@ namespace sakura;
 use sakura\core;
 use pocketmine\Player;
 use pocketmine\item\Item;
+use pocketmine\item\enchantment\Enchantment;
 use pocketmine\inventory\Inventory;
 
 use pocketmine\utils\TextFormat as TF;
@@ -83,7 +84,13 @@ class Items
 				$fx = explode(":" , $enc);
 				$enchants = $fx[0];
 				$levels = $fx[1];
-				$this->main->pce->addEnchantment($item, $enchants, $levels, true);
+				if($fx[2] == "custom")
+				{
+					$this->main->pce->addEnchantment($item, $enchants, $levels, true);
+				} else {
+					$e = Enchantment::getEnchantmentByName($enchants);
+					$item->addEnchantment($e, $levels);
+				}
 		  	}
 	  	}
 	    
