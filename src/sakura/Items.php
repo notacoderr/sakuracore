@@ -86,7 +86,7 @@ class Items
 				$levels = $fx[1];
 				if($fx[2] == "custom")
 				{
-					$this->main->pce->addEnchantment($item, $enchants, $levels, true);
+					$this->main->pce->addEnchantment($item, $enchants, $levels, false);
 				} else {
 					$e = Enchantment::getEnchantmentByName($enchants);
 					$item->addEnchantment($e, $levels);
