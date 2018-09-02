@@ -2,7 +2,7 @@ collectLogs1:
   level: 1
   title: "Collecting Wood I"
   desc: "Gather 5 Oak woods: 30 Exp, 50 golds"
-  item: 17:0:5
+  item: "17:0:5"
   cmd:
     - sys "{player}" exp 30
     - givemoney "{player}" 50
@@ -12,7 +12,7 @@ bunnyHunt1:
   level: 2
   title: "Bunny Hunter I"
   desc: "Collect 3 Rabbit Hide: 23 exp, 50 gold"
-  item: 415:0:3
+  item: "415:0:3"
   cmd:
     - sys "{player}" exp 23
     - givemoney "{player}" 50
@@ -22,7 +22,7 @@ bunnyHunt2:
   level: 2
   title: "Bunny Hunter II"
   desc: "Collect 5 Rabbit Foot: 50 exp, 50 gold"
-  item: 414:0:5
+  item: "414:0:5"
   cmd:
     - sys "{player}" exp 50
     - givemoney "{player}" 50
