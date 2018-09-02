@@ -229,10 +229,9 @@ class core extends PluginBase implements Listener {
 		$result = $stmt->execute();
 	}
 		
-	public function rac(Player $player, string $string)
+	public function rac(Player $player, string $string) : void
 	{
-		$name = $player->getName();
-		$command = str_replace('{player}', '"$name"', $string);
+		$command = str_replace("{player}", $player->getName(), $string);
 		Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), $command);
 	}
 
