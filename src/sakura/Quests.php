@@ -141,7 +141,7 @@ class Quests
 							$this->main->rac($player, $cmd);
 						}
 
-						$player->addTitle("§l§aComplete". , "§6". $this->getQuestTitle($quest));
+						$player->addTitle("§l§aComplete" , "§6". $this->getQuestTitle($quest));
 						$this->removePlayerQuest($player);
 						return true;
 					}
