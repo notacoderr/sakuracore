@@ -218,7 +218,7 @@ class Quests
 				$this->sendQuestApplyForm($player);
 				if(array_key_exists($player->getName(), $this->questCache))
 				{
-				    uunset( $this->questCache[$player->getName()] );
+				    unset( $this->questCache[$player->getName()] );
 				}
 				return;
 			}
