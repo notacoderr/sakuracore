@@ -46,8 +46,13 @@ class Quests
 			{
 				if($this->main->data->getVal($player, "level") >= $this->getQuestLevel($quest)) //Checks if the player is equal or above the level
 				{
-					$this->givePlayerQuest($player, $quest); //finally giving the quest
-					return true;
+					if($this->main->hasSpace($player))
+					{
+						$this->givePlayerQuest($player, $quest); //finally giving the quest
+						return true;
+					}
+					$player->sendMessage("§l§7Failed to insert Quest Book.");
+					return false;
 				}
 				$player->sendMessage("§l§7You haven't met the level requirement.");
 				return false;
@@ -68,7 +73,7 @@ class Quests
 		
 		$book = Item::get(Item::WRITTEN_BOOK, 0, 1);
 		$book->setTitle($this->getQuestTitle($quest));
-		$book->setPageText(0, "§l§7TITLE: §c". $this->getQuestTitle($quest). "§r\n§l§7Level: §c". $this->getQuestLevel($quest). "§r\n§l§6IP: §cPlaySakura.online §r\n§l§6Port: §c25627");
+		$book->setPageText(0, "§l§7TITLE: §c". $this->getQuestTitle($quest). "§r\n§l§7Level: §c". $this->getQuestLevel($quest). "§r\n§l§6--[§7IP§6]--§r\n§l§cPlaySakura.online§r\n§l§6--[Port§6]--§r\n§l§c25627");
 		$book->setPageText(1, "§l§7[ §0Quest Info §7] §r\n§6". $this->getQuestInfo($quest) );
 		$book->setAuthor("Sakura Council");
 		
