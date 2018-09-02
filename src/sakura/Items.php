@@ -89,8 +89,11 @@ class Items
 				{
 					$this->main->pce->addEnchantment($item, $e, $lvl, false);
 				} else {
-					$ench = new EnchantmentInstance(Enchantment::getEnchantmentByName($e), $lvl);
-					$item->addEnchantment($e);
+					$e = Enchantment::getEnchantmentByName($e);
+					if($e instanceof Enchantment){
+						$ench = new EnchantmentInstance($e, $lvl);
+						$item->addEnchantment($e);
+					}
 				}
 		  	}
 	  	}
