@@ -126,10 +126,11 @@ class Quests
 		{
 			$quest = $this->getPlayerQuest($player);
 			$item = $this->getQuestItem($quest);
-			$inventory = $player->getInventory();
-			if($inventory->contains($item))
+			$hand = $player->getInventory()->getItemInHand();
+			if($hand->getId() == $item->getId() && $hand->getCount() >= $item->getCount())
 			{
-				$inventory->remove($item);
+				$hand->setCount($hand->getCount() - $item->getCount());
+				$player->getInventory()->setItemInHand($hand);
 				$this->removePlayerQuest($player);
 				foreach($this->getQuestCmds($quest) as $cmd)
 				{
@@ -137,7 +138,7 @@ class Quests
 				}
 				return true;
 			} else {
-				$player->sendMessage("§l§7You don't have the required item(s).");
+				$player->sendMessage("§l§7You don't have the required (amount) item(s).");
 				return false;
 			}
 		} else {
