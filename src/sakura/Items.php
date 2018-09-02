@@ -83,14 +83,13 @@ class Items
 			foreach($src->getNested($data .".enchantment") as $enc)
 			{
 				$fx = explode(":" , $enc);
-				$enchants = $fx[0];
-				$levels = $fx[1];
+				$e = $fx[0];
+				$lvl = $fx[1];
 				if($fx[2] == "custom")
 				{
-					$this->main->pce->addEnchantment($item, $enchants, $levels, false);
+					$this->main->pce->addEnchantment($item, $e, $lvl, false);
 				} else {
-					$e = Enchantment::getEnchantmentByName($enchants);
-					$e->setLevel($levels);
+					$ench = new EnchantmentInstance(Enchantment::getEnchantmentByName($e), $lvl);
 					$item->addEnchantment($e);
 				}
 		  	}
