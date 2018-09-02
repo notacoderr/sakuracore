@@ -1,3 +1,15 @@
+x00:
+  item: 280
+  name: "Meta Breaker"
+  info: "Freakin super op stick."
+  class: "General"
+  level: 1
+  rare: "ultra"
+  enchantment:
+    - Deathbringer:3:custom
+    - Vampire:2:custom
+    - Sharpness:10:nope
+
 #Iron Sword
 x01:
   item: 267
@@ -7,7 +19,8 @@ x01:
   level: 1
   rare: "common"
   enchantment:
-    - Charge:1
+    - Charge:1:custom
+    - Sharpness:1:nope
 x02:
   item: 267
   name: "Pulverizer"
@@ -16,8 +29,9 @@ x02:
   level: 3
   rare: "advance"
   enchantment:
-    - Deathbringer:1
-    - Backstab:3
+    - Deathbringer:1:custom
+    - Backstab:3:custom
+    - Sharpness:2:nope
       
 x03:
   item: 276
@@ -27,6 +41,7 @@ x03:
   level: 1
   rare: "epic"
   enchantment:
-    - Deathbringer:2
-    - Vampire:1
+    - Deathbringer:2:custom
+    - Vampire:1:custom
+    - Sharpness:4:nope
 
