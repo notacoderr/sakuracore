@@ -1,12 +1,23 @@
 collectLogs1:
   level: 1
   title: "Collecting Wood I"
-  desc: "Gather 5 Oak woods: 30 Exp, 50 golds"
+  desc: "Gather 5 Oak woods: 73 Exp, 53 golds"
   item: "17:0:5"
   cmd:
-    - sys "{player}" exp 30
-    - givemoney "{player}" 50
-    
+    - sys "{player}" exp 73
+    - givemoney "{player}" 53
+    - give "{player}" stick 1
+    - give "{player}" 5 2
+
+woodSword:
+  level: 1
+  title: "Sword Crafter"
+  desc: "Craft a wooden sword: 83 exp, 75 gold"
+  item: "268:0:1"
+  cmd:
+    - sys "{player}" exp 83
+    - givemoney "{player}" 75
+
 bunnyHunt1:
   level: 2
   title: "Bunny Hunter I"
@@ -15,7 +26,7 @@ bunnyHunt1:
   cmd:
     - sys "{player}" exp 23
     - givemoney "{player}" 50
-    
+
 bunnyHunt2:
   level: 2
   title: "Bunny Hunter II"
