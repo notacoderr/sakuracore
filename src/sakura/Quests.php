@@ -104,7 +104,7 @@ class Quests
 
 	public function getQuestItem(string $quest) : Item
 	{
-		$item = $this->main->questData->getNested($quest.".item");
+		$item = (string) $this->main->questData->getNested($quest.".item");
 		$i = explode(":", $item);
 		return Item::get($i[0], $i[1], $i[2]);
 	}
