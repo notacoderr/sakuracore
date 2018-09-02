@@ -6,7 +6,6 @@ collectLogs1:
   cmd:
     - sys "{player}" exp 30
     - givemoney "{player}" 50
-    - msg "{player}" §7>§f you have completed §aCollecting Logs I
     
 bunnyHunt1:
   level: 2
@@ -16,7 +15,6 @@ bunnyHunt1:
   cmd:
     - sys "{player}" exp 23
     - givemoney "{player}" 50
-    - msg "{player}" §7>§f you have completed §aBunny Hunter I
     
 bunnyHunt2:
   level: 2
@@ -26,4 +24,3 @@ bunnyHunt2:
   cmd:
     - sys "{player}" exp 50
     - givemoney "{player}" 50
-    - msg "{player}" §7>§f you have completed §aBunny Hunter II
