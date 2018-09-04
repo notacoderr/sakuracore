@@ -16,14 +16,14 @@ class ItemStore
         $this->main = $core;
     }
     
-   	 public function sendQuestApplyForm(Player $player)
+   	 public function openStoreForm(Player $player)
     	{
 		$form = $this->main->formapi->createSimpleForm(function (Player $player, array $data)
 		{
 			if (isset($data[0]))
 			{
 				$button = $data[0];
-				$list = array_keys( $this->main->questData->getAll() );
+				$list = array_keys( $this->main->recipesData->getAll() );
 				$quest = $list[ $button ];
 				//$player->sendMessage($quest); //for debug
 				$this->questCache[ $player->getName() ] = $quest;
@@ -33,9 +33,9 @@ class ItemStore
 		});
         	$form->setTitle('§l§fApply for Quest');
 		
-		foreach( array_keys($this->main->questData->getAll()) as $questid)
+		foreach( array_keys($this->main->recipesData->getAll()) as $key)
 		{
-			$form->addButton( $this->main->questData->getNested($questid.".title") );
+			$form->addButton($key);
 		}
 		
         	$form->sendToPlayer($player);
