@@ -11,7 +11,7 @@ x00:
     - Sharpness:10:nope
 
 #Iron Sword
-x01:
+broadsword:
   item: 267
   name: "Broadsword"
   info: "Standard Sword for all, extra damage when sprinting."
@@ -21,7 +21,8 @@ x01:
   enchantment:
     - Charge:1:custom
     - Sharpness:1:nope
-x02:
+    
+lightningfury:
   item: 267
   name: "Pulverizer"
   info: "Increased damage + extra damage on backstab."
@@ -32,8 +33,9 @@ x02:
     - Deathbringer:1:custom
     - Backstab:3:custom
     - Sharpness:2:nope
-      
-x03:
+
+#Diamond Sword
+alphabreaker:
   item: 276
   name: "Alpha Breaker"
   info: "Prototype sword, Increased damage + partial healing."
