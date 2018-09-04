@@ -32,10 +32,12 @@ class core extends PluginBase implements Listener {
 		$this->saveResource('settings.yml');
 		$this->saveResource('quests.yml');
 		$this->saveResource('items.yml');
+		$this->saveResource('recipe.yml');
 		
 		$this->settings = new Config($this->getDataFolder() . "settings.yml", CONFIG::YAML);
 		$this->questData = new Config($this->getDataFolder() . "quests.yml", CONFIG::YAML);
 		$this->itemData = new Config($this->getDataFolder() . "items.yml", CONFIG::YAML);
+		$this->recipeData = new Config($this->getDataFolder() . "recipe.yml", CONFIG::YAML);
 		
 		$this->db = new \SQLite3($this->getDataFolder() . "sakuradata.db"); //creating main database
 		$this->db->exec("CREATE TABLE IF NOT EXISTS gem (name TEXT PRIMARY KEY COLLATE NOCASE, gems INT);");
