@@ -10,6 +10,7 @@ class ItemStore
 {
   
     public $main;
+    private $cache = [];
 	
     public function __construct(core $core)
     {
@@ -24,14 +25,14 @@ class ItemStore
 			{
 				$button = $data[0];
 				$list = array_keys( $this->main->recipesData->getAll() );
-				$quest = $list[ $button ];
+				$item = $list[ $button ];
 				//$player->sendMessage($quest); //for debug
-				$this->questCache[ $player->getName() ] = $quest;
-				$this->sendQuestInfo($player, $quest);
+				$this->cache[ $player->getName() ] = $item;
+				$this->sendRecipeInfo($player, $item);
 				return true;
 			}
 		});
-        	$form->setTitle('§l§fApply for Quest');
+        	$form->setTitle('§l§fEnchanted weaponry');
 		
 		foreach( array_keys($this->main->recipesData->getAll()) as $key)
 		{
@@ -41,23 +42,23 @@ class ItemStore
         	$form->sendToPlayer($player);
     	}
 	
-	public function sendQuestInfo(Player $player, string $quest)
+	public function sendRecipeInfo(Player $player, string $recipe)
 	{
 		$form = $this->main->formapi->createModalForm(function (Player $player, array $data)
 		{
 			if($data[0])
 			{
-				$this->validatePlayerQuest( $player, $this->questCache[ $player->getName() ]);
-				if(array_key_exists($player->getName(), $this->questCache))
+				$this->main->processRecipes( $player, $this->cache[ $player->getName() ]);
+				if(array_key_exists($player->getName(), $this->cache))
 				{
-				    unset( $this->questCache[$player->getName()] );
+				    unset( $this->cache[$player->getName()] );
 				}
 				return;
 			} else {
-				$this->sendQuestApplyForm($player);
-				if(array_key_exists($player->getName(), $this->questCache))
+				$this->openStoreForm($player);
+				if(array_key_exists($player->getName(), $this->cache))
 				{
-				    unset( $this->questCache[$player->getName()] );
+				    unset( $this->cache[$player->getName()] );
 				}
 				return;
 			}
@@ -68,6 +69,15 @@ class ItemStore
 		$form->setButton1("§lAccept");
 		$form->setButton2("§lBack");
         	$form->sendToPlayer($player);
+	}
+	
+	private function processRecipes(Player $player, string $recipe) : bool
+	{
+		/* To do:
+		- check gem cost,
+		- check gold cost,
+		- check requirements
+		*/
 	}
   
 }
