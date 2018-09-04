@@ -1,0 +1,11 @@
+Alpha Breaker:
+  recipes: + {player} alphabreaker
+    - 276:1
+    - 422:3
+    - 369:1
+ 
+Lightning Fury:
+  command: + {player} lightningfury
+  recipes:
+    - 276:1
+    - 369:8
