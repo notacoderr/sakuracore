@@ -44,6 +44,8 @@ class core extends PluginBase implements Listener {
 		$this->db->exec("CREATE TABLE IF NOT EXISTS exp (name TEXT PRIMARY KEY COLLATE NOCASE, exp INT);");
 		$this->db->exec("CREATE TABLE IF NOT EXISTS lvl (name TEXT PRIMARY KEY COLLATE NOCASE, level INT);");
 		
+		$this->db->exec("CREATE TABLE IF NOT EXISTS elo (name TEXT PRIMARY KEY COLLATE NOCASE, rank TEXT, div INT, point INT);");
+		
 		$this->db->exec("CREATE TABLE IF NOT EXISTS guild (guild TEXT PRIMARY KEY COLLATE NOCASE, founder INT);");
 		$this->db->exec("CREATE TABLE IF NOT EXISTS member (name TEXT PRIMARY KEY COLLATE NOCASE, guild INT);");
 		
@@ -57,8 +59,11 @@ class core extends PluginBase implements Listener {
 		$this->classes = new Classes($this); //Class Handler
 		$this->quests = new Quests($this); //Quests Handler
 		$this->items = new Items($this); //Item Handler
+		$this->elo = new Elo($this); //Elo Handler
 		
-		$this->pce = Server::getInstance()->getPluginManager()->getPlugin("PiggyCustomEnchants");
+		if(Server::getInstance()->getPluginManager()->getPlugin("PiggyCustomEnchants") !== null ){
+			$this->pce = Server::getInstance()->getPluginManager()->getPlugin("PiggyCustomEnchants");
+		}
 		$this->formapi = Server::getInstance()->getPluginManager()->getPlugin("FormAPI");
 		
 		Server::getInstance()->getPluginManager()->registerEvents($this, $this);
@@ -223,6 +228,13 @@ class core extends PluginBase implements Listener {
 		$stmt = $this->db->prepare("INSERT OR REPLACE INTO lvl (name, level) VALUES (:name, :level);");
 		$stmt->bindValue(":name", $player->getName() );
 		$stmt->bindValue(":level", 1);
+		$result = $stmt->execute();
+		
+		$stmt = $this->db->prepare("INSERT OR REPLACE INTO elo (name, rank, div, point) VALUES (:name, :rank, :div, :point);");
+		$stmt->bindValue(":name", $player->getName() );
+		$stmt->bindValue(":rank", "Initiate");
+		$stmt->bindValue(":div", 3);
+		$stmt->bindValue(":point", 0);
 		$result = $stmt->execute();
 		
 		$stmt = $this->db->prepare("INSERT OR REPLACE INTO classes (name, class) VALUES (:name, :class);");
