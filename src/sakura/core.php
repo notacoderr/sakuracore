@@ -112,7 +112,7 @@ class core extends PluginBase implements Listener {
 					break;
 					case "pts":
 						$i = (int) $this->elo->getPoints($target) + $args[2];
-						$this->elo->update($target, $i, true);
+						$this->elo->updatePoints($target, $i, true);
 					break;
 				}
 				$sender->sendMessage("added $args[2] of $args[1] to ".$target->getName());
