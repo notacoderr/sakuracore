@@ -110,10 +110,10 @@ class Elo
       		{
         		switch(strtolower($this->getRank($player)))
        			{
-          			case: "gat": $this->updateRank($player, "Lakan"); break;
-          			case: "lakan": $this->updateRank($player, "Datu"); break;
-          			case: "datu": $this->updateRank($player, "Rajah"); break;
-          			case: "rajah": $this->updateRank($player, "Apo"); break;
+          			case "gat": $this->updateRank($player, "Lakan"); break;
+          			case "lakan": $this->updateRank($player, "Datu"); break;
+          			case "datu": $this->updateRank($player, "Rajah"); break;
+          			case "rajah": $this->updateRank($player, "Apo"); break;
         		}
       		} else {
         		if($div >= 2) $this->updateDiv($player, --$div);
@@ -128,10 +128,10 @@ class Elo
       		{
         		switch(strtolower($this->getRank($player)))
         		{
-          			case: "lakan": $this->updateRank($player, "Gat"); break;
-          			case: "datu": $this->updateRank($player, "Lakan"); break;
-         			case: "rajah": $this->updateRank($player, "Datu"); break;
-          			case: "apo": $this->updateRank($player, "Rajah"); break;
+          			case "lakan": $this->updateRank($player, "Gat"); break;
+          			case "datu": $this->updateRank($player, "Lakan"); break;
+         			case "rajah": $this->updateRank($player, "Datu"); break;
+          			case "apo": $this->updateRank($player, "Rajah"); break;
         		}
       		} else {
         		if($div <= 2) $this->updateDiv($player, ++$div);
