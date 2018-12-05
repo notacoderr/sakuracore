@@ -87,7 +87,7 @@ class Elo
   	{
       		switch(strtolower($this->getRank($player)))
       		{
-        		case "gat": case "lakan": case "datu": return if( $this->getDiv($player) === 3); break;
+			case "gat": case "lakan": case "datu": return ( $this->getDiv($player) === 3 ? true : false); break;
         		default: return true;
       		}
   	}
@@ -96,7 +96,7 @@ class Elo
   	{
       		switch(strtolower($this->getRank($player)))
       		{
-        		case "gat": case "lakan": case "datu": return if( $this->getDiv($player) === 1); break;
+        		case "gat": case "lakan": case "datu": return ( $this->getDiv($player) === 1 ? true : false); break;
         		default: return true;
       		}
   	}
