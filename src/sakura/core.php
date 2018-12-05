@@ -232,7 +232,7 @@ class core extends PluginBase implements Listener {
 		
 		$stmt = $this->db->prepare("INSERT OR REPLACE INTO elo (name, rank, div, point) VALUES (:name, :rank, :div, :point);");
 		$stmt->bindValue(":name", $player->getName() );
-		$stmt->bindValue(":rank", "Initiate");
+		$stmt->bindValue(":rank", "Gat");
 		$stmt->bindValue(":div", 3);
 		$stmt->bindValue(":point", 0);
 		$result = $stmt->execute();
