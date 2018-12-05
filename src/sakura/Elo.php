@@ -39,16 +39,18 @@ class Elo
     	public function getPoints(Player $player) : int
 	{
       		$name = $player->getName();
-      		$result = $this->main->db->query("SELECT point FROM elo WHERE name = '$name';");
-      		return $result->fetchArray(SQLITE3_ASSOC)["point"];
+      		$result = $this->main->db->query("SELECT points FROM elo WHERE name = '$name';");
+      		return $result->fetchArray(SQLITE3_ASSOC)["points"];
 	}
   
  	public function updatePoints(Player $player, int $point, bool $magic = false) : void
 	{
       		$name = $player->getName();
-      		$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO elo (name, point) VALUES (:name, :point);");
+      		$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO elo (name, rank, div, points) VALUES (:name, :rank, :div, :points);");
       		$stmt->bindValue(":name", $name);
-      		$stmt->bindValue(":point", $point);
+		$stmt->bindValue(":rank", $this->getRank($player));
+		$stmt->bindValue(":div", $this->getDiv($player));
+      		$stmt->bindValue(":points", $point);
       		$result = $stmt->execute();
       
       		if($magic) { $this->doMagic($player); }
@@ -57,18 +59,22 @@ class Elo
    	public function updateDiv(Player $player, int $div) : void
 	{
     		$name = $player->getName();
-      		$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO elo (name, div) VALUES (:name, :div);");
+      		$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO elo (name, rank, div, points) VALUES (:name, :rank, :div, :points);");
       		$stmt->bindValue(":name", $name);
+		$stmt->bindValue(":rank", $this->getRank($player));
       		$stmt->bindValue(":div", $div);
+		$stmt->bindValue(":points", $this->getPoints($player));
       		$result = $stmt->execute();
  	}
   
    	public function updateRank(Player $player, string $rank) : void
 	{
     		$name = $player->getName();
-      		$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO elo (name, rank) VALUES (:name, :rank);");
+      		$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO elo (name, rank, div, points) VALUES (:name, :rank, :div, :points);");
       		$stmt->bindValue(":name", $name);
       		$stmt->bindValue(":rank", $rank);
+		$stmt->bindValue(":div", $this->getDiv($player));
+		$stmt->bindValue(":points", $this->getPoints($player));
       		$result = $stmt->execute();
  	}
 
