@@ -242,7 +242,7 @@ class core extends PluginBase implements Listener {
 		$stmt->bindValue(":level", 1);
 		$result = $stmt->execute();
 		
-		$stmt = $this->db->prepare("INSERT OR REPLACE INTO elo (name, rank, div, point) VALUES (:name, :rank, :div, :point);");
+		$stmt = $this->db->prepare("INSERT OR REPLACE INTO elo (name, rank, div, points) VALUES (:name, :rank, :div, :points);");
 		$stmt->bindValue(":name", $player->getName() );
 		$stmt->bindValue(":rank", "Gat");
 		$stmt->bindValue(":div", 3);
