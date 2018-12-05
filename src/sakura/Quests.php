@@ -74,9 +74,9 @@ class Quests
 		
 		$book = Item::get(Item::WRITTEN_BOOK, 0, 1);
 		$book->setTitle($this->getQuestTitle($quest));
-		$book->setPageText(0, "§0Title: §a". $this->getQuestTitle($quest). "\n§0Level: §c". $this->getQuestLevel($quest). "\n\n\n\n\n\n§7--[ §0IP §7]--\n§cPlaySakura.online\n§7--[ §0Port §7]--\n§c25627");
+		$book->setPageText(0, "§0Title: §a". $this->getQuestTitle($quest). "\n§0Level: §c". $this->getQuestLevel($quest). "\n\n\n\n\n\n§7--[ §0Server §7]--\n§bPocket §fPinas");
 		$book->setPageText(1, "§l§7[ §0Quest Info §7] §r\n§6". $this->getQuestInfo($quest) );
-		$book->setAuthor("Sakura Online");
+		$book->setAuthor("CoreX2");
 		
 		$player->getInventory()->addItem($book);
     	}
