@@ -44,7 +44,7 @@ class core extends PluginBase implements Listener {
 		$this->db->exec("CREATE TABLE IF NOT EXISTS exp (name TEXT PRIMARY KEY COLLATE NOCASE, exp INT);");
 		$this->db->exec("CREATE TABLE IF NOT EXISTS lvl (name TEXT PRIMARY KEY COLLATE NOCASE, level INT);");
 		
-		$this->db->exec("CREATE TABLE IF NOT EXISTS elo (name TEXT PRIMARY KEY COLLATE NOCASE, rank TEXT, div INT, point INT);");
+		$this->db->exec("CREATE TABLE IF NOT EXISTS elo (name TEXT PRIMARY KEY COLLATE NOCASE, rank TEXT, div INT, points INT);");
 		
 		$this->db->exec("CREATE TABLE IF NOT EXISTS guild (guild TEXT PRIMARY KEY COLLATE NOCASE, founder INT);");
 		$this->db->exec("CREATE TABLE IF NOT EXISTS member (name TEXT PRIMARY KEY COLLATE NOCASE, guild INT);");
@@ -82,7 +82,7 @@ class core extends PluginBase implements Listener {
 				}
 				if (count($args) > 3 or count($args) < 3)
 				{
-					$sender->sendMessage("Invalid usage, /system <playername> <+exp/+gems> <amount>");
+					$sender->sendMessage("Invalid usage, /grant <playername> <exp/gems/pts> <amount>");
 					return true;
 				}
 				if(isset($args[0])){  //realc
@@ -146,7 +146,15 @@ class core extends PluginBase implements Listener {
 			case "quest":
 				/*
 				*args[0] = player name
-				*/switch($args[0]){
+				*/
+				
+				if ($sender instanceof Player)
+				{
+					$this->quests->sendQuestApplyForm($sender);
+					return true;
+				}
+				
+				switch($args[0]){
 					case "complete":
 					if (Server::getInstance()->getPlayer($args[1]) instanceof Player)
 					{
