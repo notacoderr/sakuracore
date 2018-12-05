@@ -75,7 +75,7 @@ class Elo
     	public function isMaxPoints(Player $player) : bool
   	{
       		if($this->getRank($player) == "Apo") { return false; }
-      		else { return if( $this->getPoints($player) >= 100 ); }
+      		else { if( $this->getPoints($player) >= 100 ){ return true; } else { return false; } }
   	}
   
     	public function isMinPoints(Player $player) : bool
