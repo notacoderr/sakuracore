@@ -110,6 +110,10 @@ class core extends PluginBase implements Listener {
 					case "gems": case "gem": case "g":
 						$this->data->addVal($target, "gems", $args[2]);
 					break;
+					case "pts":
+						$i = (int) $this->elo->getPoints($target) + $args[2];
+						$this->elo->update($target, $i, true);
+					break;
 				}
 				$sender->sendMessage("added $args[2] of $args[1] to ".$target->getName());
 			break;
