@@ -100,6 +100,7 @@ class Elo
 			if($div >= 2)
 			{
 				$this->updateDiv($player, (int) $div - 1);
+				$this->updatePoints($player, 5);
 			} else {
 				switch(strtolower($rank))
 				{
@@ -136,20 +137,21 @@ class Elo
 			}
 			if($rank === "Rajah")
 			{
-				$this->updateElo($player, "Datu", 1, 60);
+				$this->updateElo($player, "Datu", 1, 50);
 			}
 			if($div <= 2)
 			{
 				$this->updateDiv($player, (int) $div + 1);
+				$this->updatePoints($player, 50);
 			} else {
 				switch(strtolower($rank))
 				{
 					case "lakan": 
-					$this->updateElo($player, "Gat", 1, 60);
+					$this->updateElo($player, "Gat", 1, 50);
 					break;
 						
 					case "Datu":
-					$this->updateElo($player, "Lakan", 1, 60);
+					$this->updateElo($player, "Lakan", 1, 50);
 					break;
 				}
 			}
