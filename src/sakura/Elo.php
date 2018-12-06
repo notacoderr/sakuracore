@@ -95,7 +95,7 @@ class Elo
 		$div = $this->getDiv($player);
 		$rank = $this->getRank($player);
 		$new =  $old + $i;
-		if($rank !== "Mythic" or $new >= 100)
+		if($rank !== "Mythic" and $new >= 100)
 		{
 			if($div >= 2)
 			{
