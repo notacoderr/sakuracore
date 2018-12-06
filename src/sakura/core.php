@@ -110,15 +110,19 @@ class core extends PluginBase implements Listener {
 					case "gems": case "gem": case "g":
 						$this->data->addVal($target, "gems", $args[2]);
 					break;
-					case "pts":
+					case "pts": case "elo": case "points":
 						$this->elo->increasePoints($target, (int) $args[2]);
-						$target->sendMessage("added $args[2] of $args[1] into your account");
 					break;
 				}
 				$sender->sendMessage("added $args[2] of $args[1] to ".$target->getName());
 			break;
 			
 			case "takegem":
+				if ($sender instanceof Player)
+				{
+					$sender->sendMessage("§cCan only be used it §f§lCONSOLE");
+					return true;
+				}
 				if(isset($args[0])){  //realc
 					$target = $this->getServer()->getPlayer($args[0]);
 					if(!$target instanceof Player)
