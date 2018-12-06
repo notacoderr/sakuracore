@@ -43,7 +43,7 @@ class Elo
       		return $result->fetchArray(SQLITE3_ASSOC)["points"];
 	}
   
- 	public function updatePoints(Player $player, int $point, bool $magic = false) : void
+ 	public function updatePoints(Player $player, int $point) : void
 	{
       		$name = $player->getName();
       		$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO elo (name, rank, div, points) VALUES (:name, :rank, :div, :points);");
@@ -52,8 +52,6 @@ class Elo
 		$stmt->bindValue(":div", $this->getDiv($player));
       		$stmt->bindValue(":points", $point);
       		$result = $stmt->execute();
-      
-      		if($magic !== false) { $this->doMagic($player); }
 	}
  
    	public function updateDiv(Player $player, int $div) : void
@@ -77,91 +75,87 @@ class Elo
 		$stmt->bindValue(":points", $this->getPoints($player));
       		$result = $stmt->execute();
  	}
-
-    	public function isMaxPoints(Player $player) : bool
-  	{
-      		if($this->getRank($player) == "Apo") { return false; }
-      		else { return ( $this->getPoints($player) >= 100 ? true : false ); }
-  	}
+	
+	public function updateElo(Player $player, string $rank, int $div, int $point) : void
+	{
+    		$name = $player->getName();
+      		$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO elo (name, rank, div, points) VALUES (:name, :rank, :div, :points);");
+      		$stmt->bindValue(":name", $name);
+      		$stmt->bindValue(":rank", $rank);
+		$stmt->bindValue(":div", $div);
+		$stmt->bindValue(":points", $point);
+      		$result = $stmt->execute();
+ 	}
   
-    	public function isMinPoints(Player $player) : bool
-  	{
-      		return ( $this->getPoints($player) <= 0 ? true : false );
-  	}
-
-    	public function isMinDiv(Player $player) : bool
-  	{
-      		switch(strtolower($this->getRank($player)))
-      		{
-			case "gat": case "lakan": case "datu": return ( $this->getDiv($player) === 3 ? true : false); break;
-        		default: return true;
-      		}
-  	}
-  
-    	public function isMaxDiv(Player $player) : bool
-  	{
-      		switch(strtolower($this->getRank($player)))
-      		{
-        		case "gat": case "lakan": case "datu": return ( $this->getDiv($player) === 1 ? true : false); break;
-        		default: return true;
-      		}
-  	}
-  
-    //DIVISION: Gat, Lakan, Datu, Rajah, Apo
-    
-    	public function promoteElo(Player $player) : void
-  	{
-     		$div = $this->getDiv($player);
-      		if($this->isMaxDiv($player))
-      		{
-        		switch(strtolower($this->getRank($player)))
-       			{
-          			case "gat": $this->updateRank($player, "Lakan"); break;
-          			case "lakan": $this->updateRank($player, "Datu"); break;
-          			case "datu": $this->updateRank($player, "Rajah"); break;
-          			case "rajah": $this->updateRank($player, "Apo"); break;
-        		}
-      		} else {
-        		if($div >= 2) $this->updateDiv($player, $div -= 1);
-			$this->updatePoints($player, 10);
-      		}
-  	}
-  
-    	public function demoteElo(Player $player) : void
-  	{
-     		$div = $this->getDiv($player);
-      		if($this->isMinDiv($player))
-      		{
-        		switch(strtolower($this->getRank($player)))
-        		{
-          			case "lakan": $this->updateRank($player, "Gat"); break;
-          			case "datu": $this->updateRank($player, "Lakan"); break;
-         			case "rajah": $this->updateRank($player, "Datu"); break;
-          			case "apo": $this->updateRank($player, "Rajah"); break;
-        		}
-      		} else {
-        		if($div <= 2) $this->updateDiv($player, $div += 1);
-			$this->updatePoints($player, 70);
-      		}
-  	}
+    	//DIVISION: Gat, Lakan, Datu, Rajah, Apo
   
 	public function increasePoints(Player $player, int $i) : void
 	{
 		$old = $this->getPoints($player);
+		$div = $this->getDiv($player);
+		$rank = $this->getRank($player);
 		$new =  $old + $i;
-		if() //todo
+		if($new >= 100) //todo
+		{
+			if($div >= 2)
+			{
+				$this->updateDiv($player, (int) $div - 1);
+			} else {
+				switch(strtolower($rank))
+				{
+					case "gat": 
+						$this->updateElo($player, "Lakan", 3, 5);
+						break;
+					case "lakan":
+						$this->updateElo($player, "Datu", 3, 5);
+						break;
+					case "datu": 
+						$this->updateElo($player, "Rajah", 3, 5);
+						break;
+					case "rajah":
+						$this->updateElo($player, "Apo", 3, 5);
+						break;
+				}
+			}
+		} else {
+			$this->updatePoints($player, $new);
+		}
 	}
-    	public function doMagic(Player $player) : void
-  	{
-    		if($this->isMaxPoints($player))
-    		{
-        		$this->promoteElo($player);
-    		}
-    
-    		if($this->isMinPoints($player))
-    		{
-        		$this->demoteElo($player);
-    		}
-  	}
+    	
+	public function decreasePoints(Player $player, int $i) : void
+	{
+		$old = $this->getPoints($player);
+		$div = $this->getDiv($player);
+		$rank = $this->getRank($player);
+		$new =  $old - $i;
+		if($new <= 0) //todo
+		{
+			if($rank === "Apo")
+			{
+				$this->updateElo($player, "Rajah", 1, 50);
+			}
+			if($rank === "Rajah")
+			{
+				$this->updateElo($player, "Datu", 1, 60);
+			}
+			if($div <= 2)
+			{
+				$this->updateDiv($player, (int) $div + 1);
+			} else {
+				switch(strtolower($rank))
+				{
+					case "lakan": 
+					$this->updateElo($player, "Gat", 1, 60);
+					break;
+						
+					case "Datu":
+					$this->updateElo($player, "Lakan", 1, 60);
+					break;
+				}
+			}
+		} else {
+			$this->updatePoints($player, $new);
+		}
+	}
   
 }
