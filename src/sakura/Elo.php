@@ -53,7 +53,7 @@ class Elo
       		$stmt->bindValue(":points", $point);
       		$result = $stmt->execute();
       
-      		if($magic) { $this->doMagic($player); }
+      		if($magic !== false) { $this->doMagic($player); }
 	}
  
    	public function updateDiv(Player $player, int $div) : void
@@ -122,8 +122,8 @@ class Elo
           			case "rajah": $this->updateRank($player, "Apo"); break;
         		}
       		} else {
-        		if($div >= 2) $this->updateDiv($player, --$div);
-			$this->updatePoints($player, 0);
+        		if($div >= 2) $this->updateDiv($player, $div -= 1);
+			$this->updatePoints($player, 10);
       		}
   	}
   
@@ -140,11 +140,17 @@ class Elo
           			case "apo": $this->updateRank($player, "Rajah"); break;
         		}
       		} else {
-        		if($div <= 2) $this->updateDiv($player, ++$div);
+        		if($div <= 2) $this->updateDiv($player, $div += 1);
 			$this->updatePoints($player, 70);
       		}
   	}
   
+	public function increasePoints(Player $player, int $i) : void
+	{
+		$old = $this->getPoints($player);
+		$new =  $old + $i;
+		if() //todo
+	}
     	public function doMagic(Player $player) : void
   	{
     		if($this->isMaxPoints($player))
