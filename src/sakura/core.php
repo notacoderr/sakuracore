@@ -12,8 +12,8 @@ use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 
 use pocketmine\event\Listener;
-use pocketmine\event\player\PlayerJoinEvent;
-
+#use pocketmine\event\player\PlayerJoinEvent;
+use pocketmine\event\player\PlayerLoginEvent;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
 
@@ -212,7 +212,7 @@ class core extends PluginBase implements Listener {
 		return true;
 	}
 	
-	public function onJoin(PlayerJoinEvent $event) : void
+	public function onLogIn(PlayerLoginEvent $event) : void
 	{
 		if (!$this->isRecorded( $event->getPlayer() ))
 		{
