@@ -18,7 +18,7 @@ class Elo
   
 	  /*
 	  * Player $player
-	  *DIVISION: Gat, Lakan, Datu, Rajah, Apo
+	  *DIVISION: Initiate - Heroic - Divine - Ascended - Mythic
 	  *
 	  */
   
@@ -87,7 +87,7 @@ class Elo
       		$result = $stmt->execute();
  	}
   
-    	//DIVISION: Gat, Lakan, Datu, Rajah, Apo
+    	//DIVISION: Initiate - Heroic - Divine - Ascended - Mythic
   
 	public function increasePoints(Player $player, int $i) : void
 	{
@@ -95,34 +95,35 @@ class Elo
 		$div = $this->getDiv($player);
 		$rank = $this->getRank($player);
 		$new =  $old + $i;
-		if($new >= 100) //todo
+		if($rank !== "Mythic" or $new >= 100)
 		{
 			if($div >= 2)
 			{
 				$this->updateDiv($player, (int) $div - 1);
 				$this->updatePoints($player, 5);
+				$this->notify($player, 5);
 			} else {
-				switch(strtolower($rank))
+				switch($rank)
 				{
-					case "gat": 
-						$this->updateElo($player, "Lakan", 3, 5);
+					case "Initiate": 
+						$this->updateElo($player, "Heroic", 3, 5); $this->notify($player, 1);
 						break;
-					case "lakan":
-						$this->updateElo($player, "Datu", 3, 5);
+					case "Heroic":
+						$this->updateElo($player, "Divine", 3, 5); $this->notify($player, 1);
 						break;
-					case "datu": 
-						$this->updateElo($player, "Rajah", 1, 5);
+					case "Divine": 
+						$this->updateElo($player, "Ascended", 1, 5); $this->notify($player, 1);
 						break;
-					case "rajah":
-						$this->updateElo($player, "Apo", 1, 5);
+					case "Ascended":
+						$this->updateElo($player, "Mythic", 1, 5); $this->notify($player, 1);
 						break;
 				}
 			}
 		} else {
-			$this->updatePoints($player, $new);
+			$this->updatePoints($player, $new); $this->notify($player, 3);
 		}
 	}
-    	
+    	//DIVISION: Initiate - Heroic - Divine - Ascended - Mythic
 	public function decreasePoints(Player $player, int $i) : void
 	{
 		$old = $this->getPoints($player);
@@ -131,32 +132,68 @@ class Elo
 		$new =  $old - $i;
 		if($new <= 0) //todo
 		{
-			if($rank === "Apo")
+			if($rank === "Mythic")
 			{
-				$this->updateElo($player, "Rajah", 1, 50);
+				$this->updateElo($player, "Ascended", 1, 50); $this->notify($player, 2);
 			}
-			if($rank === "Rajah")
+			if($rank === "Ascended")
 			{
-				$this->updateElo($player, "Datu", 1, 50);
+				$this->updateElo($player, "Divine", 1, 50); $this->notify($player, 2);
 			}
 			if($div <= 2)
 			{
 				$this->updateDiv($player, (int) $div + 1);
 				$this->updatePoints($player, 50);
+				$this->notify($player, 6);
 			} else {
-				switch(strtolower($rank))
+				switch($rank)
 				{
-					case "lakan": 
-					$this->updateElo($player, "Gat", 1, 50);
+					case "Divine": 
+					$this->updateElo($player, "Heroic", 1, 50);
+					$this->notify($player, 2);
 					break;
 						
-					case "Datu":
-					$this->updateElo($player, "Lakan", 1, 50);
+					case "Heroic":
+					$this->updateElo($player, "Initiate", 1, 50);
+					$this->notify($player, 2);
 					break;
 				}
 			}
 		} else {
-			$this->updatePoints($player, $new);
+			$this->updatePoints($player, $new); $this->notify($player, 4);
+		}
+	}
+	
+	private function notify(Player $player, int $type, int $value = 0) : void
+	{
+		switch($type)
+		{
+			case 1: 
+				$player->addTitle("§l§7[ §aPromoted §7]", "§fYou have climbed into a higher rank.");
+				$player->sendMessage("§l§7[§6!§7] §7Congratulations! You have proven yourself and moved into a higher rank.");
+			break;
+				
+			case 2: 
+				$player->addTitle("§l§7[ §cDemoted §7]", "§fYou have fallen into a lower rank.");
+				$player->sendMessage("§l§7[§6!§7] §7Disgrace! You've let your guard down.");
+			break;
+			
+			case 3: 
+				$player->sendPopup("§l§7+§a". $value. "§7rank points!");
+			break;
+				
+			case 4: 
+				$player->sendPopup("§l§7-§c". $value. "§7rank points!");
+			break;
+				
+			case 5: 
+				$player->sendMessage("§l§7[§6!§7] §7You have moved into a §ahigher division");
+			break;
+				
+			case 6: 
+				$player->sendMessage("§l§7[§6!§7] §7You have moved into a §clower division");
+			break;
+				
 		}
 	}
   
