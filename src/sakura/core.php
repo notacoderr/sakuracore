@@ -39,7 +39,7 @@ class core extends PluginBase implements Listener {
 		$this->itemData = new Config($this->getDataFolder() . "items.yml", CONFIG::YAML);
 		$this->recipeData = new Config($this->getDataFolder() . "recipe.yml", CONFIG::YAML);
 		
-		$this->db = new \SQLite3($this->getDataFolder() . "sakuradata.db"); //creating main database
+		$this->db = new \SQLite3($this->getDataFolder() . "coredrive-v1.db"); //creating main database
 		$this->db->exec("CREATE TABLE IF NOT EXISTS gem (name TEXT PRIMARY KEY COLLATE NOCASE, gems INT);");
 		$this->db->exec("CREATE TABLE IF NOT EXISTS exp (name TEXT PRIMARY KEY COLLATE NOCASE, exp INT);");
 		$this->db->exec("CREATE TABLE IF NOT EXISTS lvl (name TEXT PRIMARY KEY COLLATE NOCASE, level INT);");
@@ -55,10 +55,10 @@ class core extends PluginBase implements Listener {
 		$this->db->exec("CREATE TABLE IF NOT EXISTS classes (name TEXT PRIMARY KEY COLLATE NOCASE, class INT);");
 		//$this->db->exec("CREATE TABLE IF NOT EXISTS t (name TEXT PRIMARY KEY COLLATE NOCASE, type TEXT);");
 		
-		$this->data = new Datas($this); //Data Value Handler
 		$this->classes = new Classes($this); //Class Handler
 		$this->quests = new Quests($this); //Quests Handler
 		$this->items = new Items($this); //Item Handler
+		$this->data = new Datas($this); //Data Value Handler
 		$this->elo = new Elo($this); //Elo Handler
 		
 		if(Server::getInstance()->getPluginManager()->getPlugin("PiggyCustomEnchants") !== null ){
@@ -248,7 +248,7 @@ class core extends PluginBase implements Listener {
 		
 		$stmt = $this->db->prepare("INSERT OR REPLACE INTO elo (name, rank, div, points) VALUES (:name, :rank, :div, :points);");
 		$stmt->bindValue(":name", $player->getName() );
-		$stmt->bindValue(":rank", "Gat");
+		$stmt->bindValue(":rank", "Initiate");
 		$stmt->bindValue(":div", 3);
 		$stmt->bindValue(":points", 0);
 		$result = $stmt->execute();
