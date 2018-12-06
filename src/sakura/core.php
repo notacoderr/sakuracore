@@ -111,8 +111,8 @@ class core extends PluginBase implements Listener {
 						$this->data->addVal($target, "gems", $args[2]);
 					break;
 					case "pts":
-						$i = (int) $this->elo->getPoints($target) + $args[2];
-						$this->elo->updatePoints($target, $i, true);
+						$this->elo->increasePoints($target, (int) $args[2]);
+						$target->sendMessage("added $args[2] of $args[1] into your account");
 					break;
 				}
 				$sender->sendMessage("added $args[2] of $args[1] to ".$target->getName());
