@@ -110,10 +110,10 @@ class Elo
 						$this->updateElo($player, "Datu", 3, 5);
 						break;
 					case "datu": 
-						$this->updateElo($player, "Rajah", 3, 5);
+						$this->updateElo($player, "Rajah", 1, 5);
 						break;
 					case "rajah":
-						$this->updateElo($player, "Apo", 3, 5);
+						$this->updateElo($player, "Apo", 1, 5);
 						break;
 				}
 			}
