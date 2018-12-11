@@ -35,7 +35,7 @@ class Vault
 			  return $resultArr["items"];
 	}
   
-    	public function getItemsInArray(Player) : array
+    	public function getItemsInArray(Player $player) : array
   	{
         	return explode ( "," , $this->getItems($player) );
   	}
