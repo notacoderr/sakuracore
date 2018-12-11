@@ -1,1 +1,8 @@
 baseExp: 156
+
+vault:
+  price: 25000 #access price
+  slots: 10 #initial slot
+  upgrade:
+    increase: 5
+    price: 7000
