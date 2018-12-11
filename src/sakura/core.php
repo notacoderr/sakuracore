@@ -205,7 +205,7 @@ class core extends PluginBase implements Listener {
 						break;
 						
 						case "open": case "access": case "boot":
-							if($this->vault->canAccess($player))
+							if($this->vault->canAccess($sender))
 							{
 								if($this->vault->countItems($sender) > 0)
 								{
