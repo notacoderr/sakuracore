@@ -159,7 +159,7 @@ class core extends PluginBase implements Listener {
 				{
 					return true;
 				}
-				if(isset($args[0])
+				if(isset($args[0]))
 				{
 					switch($args[0])
 					{
