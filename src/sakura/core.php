@@ -46,23 +46,28 @@ class core extends PluginBase implements Listener {
 		
 		$this->db->exec("CREATE TABLE IF NOT EXISTS elo (name TEXT PRIMARY KEY COLLATE NOCASE, rank TEXT, div INT, points INT);");
 		
-		$this->db->exec("CREATE TABLE IF NOT EXISTS guild (guild TEXT PRIMARY KEY COLLATE NOCASE, founder INT);");
-		$this->db->exec("CREATE TABLE IF NOT EXISTS member (name TEXT PRIMARY KEY COLLATE NOCASE, guild INT);");
+		//$this->db->exec("CREATE TABLE IF NOT EXISTS guild (guild TEXT PRIMARY KEY COLLATE NOCASE, founder INT);");
+		//$this->db->exec("CREATE TABLE IF NOT EXISTS member (name TEXT PRIMARY KEY COLLATE NOCASE, guild INT);");
 		
 		$this->db->exec("CREATE TABLE IF NOT EXISTS pquests (name TEXT PRIMARY KEY COLLATE NOCASE, quest TEXT);");
 		$this->db->exec("CREATE TABLE IF NOT EXISTS pcompleted (name TEXT PRIMARY KEY COLLATE NOCASE, quests TEXT);");
 		
 		$this->db->exec("CREATE TABLE IF NOT EXISTS classes (name TEXT PRIMARY KEY COLLATE NOCASE, class INT);");
+		$this->db->exec("CREATE TABLE IF NOT EXISTS vault (name TEXT PRIMARY KEY COLLATE NOCASE, items TEXT, max INT);");
 		//$this->db->exec("CREATE TABLE IF NOT EXISTS t (name TEXT PRIMARY KEY COLLATE NOCASE, type TEXT);");
 		
 		$this->classes = new Classes($this); //Class Handler
 		$this->quests = new Quests($this); //Quests Handler
+		$this->vault = new Vault($this); //Vault Handler
 		$this->items = new Items($this); //Item Handler
 		$this->data = new Datas($this); //Data Value Handler
 		$this->elo = new Elo($this); //Elo Handler
 		
 		if(Server::getInstance()->getPluginManager()->getPlugin("PiggyCustomEnchants") !== null ){
 			$this->pce = Server::getInstance()->getPluginManager()->getPlugin("PiggyCustomEnchants");
+		}
+		if(Server::getInstance()->getPluginManager()->getPlugin("EconomyAPI") !== null ){
+			$this->eco = Server::getInstance()->getPluginManager()->getPlugin("EconomyAPI");
 		}
 		$this->formapi = Server::getInstance()->getPluginManager()->getPlugin("FormAPI");
 		
@@ -110,9 +115,11 @@ class core extends PluginBase implements Listener {
 					case "gems": case "gem": case "g":
 						$this->data->addVal($target, "gems", $args[2]);
 					break;
-					case "pts": case "elo": case "points":
+					case "pts": case "elo": case "p":
 						$this->elo->increasePoints($target, (int) $args[2]);
 					break;
+						
+					default: $sender->sendMessage("invalid command"); return true;
 				}
 				$sender->sendMessage("added $args[2] of $args[1] to ".$target->getName());
 			break;
@@ -145,6 +152,60 @@ class core extends PluginBase implements Listener {
 				
 			case "test":
 				$sender->sendMessage($this->getTop(5));
+			break;
+				
+			case "cloud":
+				if(!$sender instanceof Player or !$this->vault->canAccess($sender))
+				{
+					$sender->sendMessage("§l§7[§6!§7] §fIt seems that you haven't unlocked your cloud storage yet.. use /cloud access");
+					return false;
+				}
+				if(isset($args[0])
+				{
+					switch($args[0])
+					{
+						case "save": case "keep": case "store":
+							$hand = $player->getInventory()->getItemInHand();
+							if($hand->getId() != 0)
+							{
+								if($this->vault->countItems($player) < $this->vault->getMax($player))
+								{
+									$this->vault->addItem($player, $hand->getId(), $hand->getDamage(), $hand->getCount());
+								}
+								$sender->sendTip("§6§lInsufficient storage slot");
+							}
+							$sender->sendTip("§6§lPlease hold an item..");
+						break;
+						
+						case "upgrade":
+							if($this->eco->myMoney($player) >= $this->settings->getNested('vault.upgrade-price'))
+							{
+								if($this->vault->canAccess($player))
+								{
+									$this->vault->upgradeSlot($player);
+									$sender->sendTip("§a§l..Processing your request..");
+									$this->eco->reduceMoney($player, $this->settings->getNested('vault.upgrade.price'));
+								} 
+								$sender->sendTip("§c§lYou don't have cloud storage access..");
+							}
+							$sender->sendTip("§c§Insufficient money..");
+						break;
+							
+						case "access":
+							if($this->eco->myMoney($player) >= $this->settings->getNested('vault.price'))
+							{
+								if(!$this->vault->canAccess($player))
+								{
+									$this->vault->create($player);
+									$sender->sendTip("§a§l..Processing your request..");
+									$this->eco->reduceMoney($player, $this->settings->getNested('vault.price'));
+								} 
+								$sender->sendTip("§c§lYou already have access..");
+							}
+							$sender->sendTip("§c§Insufficient money..");
+						break;
+					}
+				}
 			break;
 			
 			case "quest":
