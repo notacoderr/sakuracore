@@ -155,22 +155,21 @@ class core extends PluginBase implements Listener {
 			break;
 				
 			case "cloud":
-				if(!$sender instanceof Player or !$this->vault->canAccess($sender))
+				if(!$sender instanceof Player)
 				{
-					$sender->sendMessage("§l§7[§6!§7] §fIt seems that you haven't unlocked your cloud storage yet.. use /cloud unlock");
-					return false;
+					return true;
 				}
 				if(isset($args[0])
 				{
 					switch($args[0])
 					{
 						case "save": case "keep": case "store":
-							$hand = $player->getInventory()->getItemInHand();
+							$hand = $sender->getInventory()->getItemInHand();
 							if($hand->getId() != 0)
 							{
-								if($this->vault->countItems($player) < $this->vault->getMax($player))
+								if($this->vault->countItems($sender) < $this->vault->getMax($sender))
 								{
-									$this->vault->addItem($player, $hand->getId(), $hand->getDamage(), $hand->getCount());
+									$this->vault->addItem($sender, $hand->getId(), $hand->getDamage(), $hand->getCount());
 								}
 								$sender->sendTip("§6§lInsufficient storage slot");
 							}
@@ -178,13 +177,13 @@ class core extends PluginBase implements Listener {
 						break;
 						
 						case "upgrade":
-							if($this->eco->myMoney($player) >= $this->settings->getNested('vault.upgrade-price'))
+							if($this->eco->myMoney($sender) >= $this->settings->getNested('vault.upgrade-price'))
 							{
-								if($this->vault->canAccess($player))
+								if($this->vault->canAccess($sender))
 								{
-									$this->vault->upgradeSlot($player);
+									$this->vault->upgradeSlot($sender);
 									$sender->sendTip("§a§l..Processing your request..");
-									$this->eco->reduceMoney($player, $this->settings->getNested('vault.upgrade.price'));
+									$this->eco->reduceMoney($sender, $this->settings->getNested('vault.upgrade.price'));
 								} 
 								$sender->sendTip("§c§lYou don't have cloud storage access..");
 							}
@@ -192,13 +191,13 @@ class core extends PluginBase implements Listener {
 						break;
 							
 						case "unlock":
-							if($this->eco->myMoney($player) >= $this->settings->getNested('vault.price'))
+							if($this->eco->myMoney($sender) >= $this->settings->getNested('vault.price'))
 							{
 								if(!$this->vault->canAccess($player))
 								{
-									$this->vault->create($player);
+									$this->vault->create($sender);
 									$sender->sendTip("§a§l..Processing your request..");
-									$this->eco->reduceMoney($player, $this->settings->getNested('vault.price'));
+									$this->eco->reduceMoney($sender, $this->settings->getNested('vault.price'));
 								} 
 								$sender->sendTip("§c§lYou already have access..");
 							}
@@ -206,11 +205,15 @@ class core extends PluginBase implements Listener {
 						break;
 						
 						case "open": case "access": case "boot":
-							if($this->vault->countItems($sender) > 0)
+							if($this->vault->canAccess($player))
 							{
-								$this->vault->openCloud($sender);
+								if($this->vault->countItems($sender) > 0)
+								{
+									$this->vault->openCloud($sender);
+								}
+								$player->sendMessage("§l§7[§e!§7]§f Your storage is empty..");
 							}
-							$player->sendMessage("§l§7[§e!§7]§f Your storage is empty..");
+							$sender->sendMessage("§l§7[§6!§7] §fIt seems that you haven't unlocked your cloud storage yet.. use /cloud unlock");
 						break;
 					}
 				}
