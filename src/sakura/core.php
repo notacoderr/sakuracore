@@ -187,13 +187,13 @@ class core extends PluginBase implements Listener {
 								} 
 								$sender->sendTip("§c§lYou don't have cloud storage access..");
 							}
-							$sender->sendTip("§c§Insufficient money..");
+							$sender->sendTip("§c§lInsufficient money..");
 						break;
 							
 						case "unlock":
 							if($this->eco->myMoney($sender) >= $this->settings->getNested('vault.price'))
 							{
-								if(!$this->vault->canAccess($player))
+								if(!$this->vault->canAccess($sender))
 								{
 									$this->vault->create($sender);
 									$sender->sendTip("§a§l..Processing your request..");
@@ -201,7 +201,7 @@ class core extends PluginBase implements Listener {
 								} 
 								$sender->sendTip("§c§lYou already have access..");
 							}
-							$sender->sendTip("§c§Insufficient money..");
+							$sender->sendTip("§c§lInsufficient money..");
 						break;
 						
 						case "open": case "access": case "boot":
