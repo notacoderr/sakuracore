@@ -157,7 +157,7 @@ class core extends PluginBase implements Listener {
 			case "cloud":
 				if(!$sender instanceof Player or !$this->vault->canAccess($sender))
 				{
-					$sender->sendMessage("§l§7[§6!§7] §fIt seems that you haven't unlocked your cloud storage yet.. use /cloud access");
+					$sender->sendMessage("§l§7[§6!§7] §fIt seems that you haven't unlocked your cloud storage yet.. use /cloud unlock");
 					return false;
 				}
 				if(isset($args[0])
@@ -191,7 +191,7 @@ class core extends PluginBase implements Listener {
 							$sender->sendTip("§c§Insufficient money..");
 						break;
 							
-						case "access":
+						case "unlock":
 							if($this->eco->myMoney($player) >= $this->settings->getNested('vault.price'))
 							{
 								if(!$this->vault->canAccess($player))
@@ -203,6 +203,14 @@ class core extends PluginBase implements Listener {
 								$sender->sendTip("§c§lYou already have access..");
 							}
 							$sender->sendTip("§c§Insufficient money..");
+						break;
+						
+						case "open": case "access": case "boot":
+							if($this->vault->countItems($sender) > 0)
+							{
+								$this->vault->openCloud($sender);
+							}
+							$player->sendMessage("§l§7[§e!§7]§f Your storage is empty..");
 						break;
 					}
 				}
