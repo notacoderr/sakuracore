@@ -151,7 +151,7 @@ class core extends PluginBase implements Listener {
 			break;
 				
 			case "test":
-				$sender->sendMessage($this->getTop(5));
+				//$sender->sendMessage($this->getTop(5));
 			break;
 				
 			case "cloud":
@@ -182,27 +182,29 @@ class core extends PluginBase implements Listener {
 						break;
 						
 						case "upgrade":
-							if($this->eco->myMoney($sender) >= $this->settings->getNested("vault.upgrade-price"))
+							if($this->vault->canAccess($sender))
 							{
-								if($this->vault->canAccess($sender))
+								$pmoney = (int) $this->eco->myMoney($sender);
+								$price = (int) $this->settings->getNested("vault.upgrade-price");
+								if($pmoney >= $price)
 								{
 									$this->vault->upgradeSlot($sender);
 									$sender->sendTip("§a§l..Processing your request..");
 									$this->eco->reduceMoney($sender, $this->settings->getNested("vault.upgrade.price"));
 								} else {
-									$sender->sendTip("§c§lYou don't have cloud storage access..");
+									$sender->sendMessage("§f§lCloud storage update costs: §7". $price. "§f, You have: §c". $pmoney);
 								}
 							} else {
-								$sender->sendTip("§c§lInsufficient money..");
+								$sender->sendTip("§c§lYou don't have Cloud Storage access..");
 							}
 						break;
 							
 						case "unlock":
-							$pmoney = (int) $this->eco->myMoney($sender);
-							$price = (int) $this->settings->getNested("vault.price");
-							if($pmoney >= $price)
+							if(!$this->vault->canAccess($sender))
 							{
-								if(!$this->vault->canAccess($sender))
+								$pmoney = (int) $this->eco->myMoney($sender);
+								$price = (int) $this->settings->getNested("vault.price");
+								if($pmoney >= $price)
 								{
 									$sender->sendTip("§a§l..Processing your request..");
 									
@@ -214,10 +216,10 @@ class core extends PluginBase implements Listener {
 									$sender->sendMessage("§l§7[§a!§7]§f Your cloud storage is ready!");
 									$this->eco->reduceMoney($sender, $this->settings->getNested("vault.price"));
 								} else {
-									$sender->sendTip("§c§lYou already have access..");
+									$sender->sendMessage("§f§lCloud storage costs: §7". $price. "§f, You have: §c". $pmoney);
 								}
 							} else {
-								$sender->sendMessage("§f§lCloud storage costs: §7". $price. "§f, You have: §c". $pmoney);
+								$sender->sendTip("§c§lYou already have access..");
 							}
 						break;
 						
@@ -234,8 +236,11 @@ class core extends PluginBase implements Listener {
 								$sender->sendMessage("§l§7[§6!§7] §fIt seems that you haven't unlocked your cloud storage yet.. use /cloud unlock");
 							}
 						break;
+							
+						default: $sender->sendMessage("§l§7[§6!§7] §fCloud commands are: unlock , keep , open , upgrade");
 					}
 				}
+				return true;
 			break;
 			
 			case "quest":
