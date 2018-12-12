@@ -217,7 +217,7 @@ class core extends PluginBase implements Listener {
 									$sender->sendTip("§c§lYou already have access..");
 								}
 							} else {
-								$sender->sendTip("§c§lYou need $". $price - $pmoney);
+								$sender->sendMessage("§f§lCloud storage costs: §7". $price. "§f, You have: §c". $pmoney);
 							}
 						break;
 						
