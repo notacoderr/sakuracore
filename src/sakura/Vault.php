@@ -24,15 +24,15 @@ class Vault
 		$name = $player->getName();
 		$result = $this->main->db->query("SELECT * FROM vault WHERE name = '$name';");
 		$array = $result->fetchArray(SQLITE3_ASSOC);
-		 return empty($array) == false;
+		return empty($array) == false;
 	}
   
   	public function getItems(Player $player) : string
 	{
         	$name = $player->getName();
-			  $result = $this->main->db->query("SELECT items FROM vault WHERE name = '$name';");
-			  $resultArr = $result->fetchArray(SQLITE3_ASSOC);
-			  return $resultArr["items"];
+		$result = $this->main->db->query("SELECT items FROM vault WHERE name = '$name';");
+		$resultArr = $result->fetchArray(SQLITE3_ASSOC);
+		return $resultArr["items"];
 	}
   
     	public function getItemsInArray(Player $player) : array
@@ -55,9 +55,12 @@ class Vault
 	
  	public function addItem(Player $player, int $id, int $meta, int $count) : void
 	{
-		$items = $this->getItems($player);
-		$items .= ",". $id. ":". $meta. ":". $count;
-
+		if( strlen($this->getItems($player)) > 5 )
+		{
+			$items = (string) $this->getItems($player). ",". $id. ":". $meta. ":". $count;
+		} else {
+			$items = (string) $this->getItems($player). $id. ":". $meta. ":". $count;
+		}
 		$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO vault (name, items, max) VALUES (:name, :items, :max);");
 		$stmt->bindValue(":name", $player->getName());
 		$stmt->bindValue(":items", $items);
@@ -94,10 +97,16 @@ class Vault
 				if($this->main->hasSpace($player))
 				{
 					$button = $data[0];
-					$ar = $this->getItemsInArray($button);
-					$item = Item::get($ar[0], $ar[1], $ar[2]);
-					$player->getInventory()->addItem($item);
-					$this->delItem($player, $button);
+					if($this->main->hasSpace($player))
+					{
+						$rawitem = $this->getItemsInArray($player)[$button];
+						$i = explode(":", $rawitem);
+						$item = Item::get($i[0], $i[1], $i[2]);
+						$player->getInventory()->addItem($item);
+						$this->delItem($player, $button);
+					} else {
+						$player->sendTip("§l§cPlease free a slot in your inventory");
+					}
 				}
 			}
 		});
@@ -105,7 +114,7 @@ class Vault
 		foreach( $this->getItemsInArray($player) as $items)
 		{
 			$i = explode(":", $items);
-			$form->addButton( Item::get($i[0], $i[1], $i[2])->getName() );
+			$form->addButton("§f." Item::get($i[0], $i[1], $i[2])->getName(). " §7- §fx". $i[2]);
 		}
 		$form->sendToPlayer($player);
 	}
