@@ -159,6 +159,10 @@ class core extends PluginBase implements Listener {
 				{
 					return true;
 				}
+				if(!$sender->getGamemode() === 1)
+				{
+					$sender->sendMessage("Creative mode restricted"); return true;
+				}
 				if(isset($args[0]))
 				{
 					switch($args[0])
@@ -185,8 +189,8 @@ class core extends PluginBase implements Listener {
 							if($this->vault->canAccess($sender))
 							{
 								$pmoney = (int) $this->eco->myMoney($sender);
-								$price = (int) $this->settings->getNested("vault.upgrade-price");
-								if($pmoney >= $price)
+								$price = (int) $this->settings->getNested("vault.upgrade.price");
+								if( $pmoney >= $price )
 								{
 									$this->vault->upgradeSlot($sender);
 									$sender->sendTip("§a§l..Processing your request..");
