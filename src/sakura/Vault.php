@@ -97,24 +97,21 @@ class Vault
 				if($this->main->hasSpace($player))
 				{
 					$button = $data[0];
-					if($this->main->hasSpace($player))
-					{
-						$rawitem = $this->getItemsInArray($player)[$button];
-						$i = explode(":", $rawitem);
-						$item = Item::get($i[0], $i[1], $i[2]);
-						$player->getInventory()->addItem($item);
-						$this->delItem($player, $button);
-					} else {
-						$player->sendTip("§l§cPlease free a slot in your inventory");
-					}
+					$rawitem = $this->getItemsInArray($player)[$button];
+					$i = explode(":", $rawitem);
+					$item = Item::get($i[0], $i[1], $i[2]);
+					$player->getInventory()->addItem($item);
+					$this->delItem($player, $button);
+				}  else {
+					$player->sendMessage("§l§cPlease free a slot in your inventory");
 				}
 			}
 		});
-        	$form->setTitle('§l§fApply for Quest');
+        	$form->setTitle("§l§fSecured Cloud Storage");
 		foreach( $this->getItemsInArray($player) as $items)
 		{
 			$i = explode(":", $items);
-			$form->addButton("§f.". Item::get($i[0], $i[1], $i[2])->getName(). " §7- §fx". $i[2]);
+			$form->addButton("§f". Item::get($i[0], $i[1])->getName(). " §7- §fx". $i[2]);
 		}
 		$form->sendToPlayer($player);
 	}
