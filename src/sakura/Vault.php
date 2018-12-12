@@ -52,15 +52,6 @@ class Vault
 		$resultArr = $result->fetchArray(SQLITE3_ASSOC);
 		return $resultArr["max"];
 	}
-
-	public function create(Player $player) : void
-	{
-		$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO vault (name, items, max) VALUES (:name, :items, :max);");
-		$stmt->bindValue(":name", $player->getName());
-		$stmt->bindValue(":items", "");
-		$stmt->bindValue(":max", $this->main->settings->getNested('vault.slots'));
-		$result = $stmt->execute();
-   	}
 	
  	public function addItem(Player $player, int $id, int $meta, int $count) : void
 	{
@@ -111,8 +102,9 @@ class Vault
 			}
 		});
         	$form->setTitle('§l§fApply for Quest');
-		foreach( $this->getItemsInArray($player) as $i)
+		foreach( $this->getItemsInArray($player) as $items)
 		{
+			$i = explode(":", $items);
 			$form->addButton( Item::get($i[0], $i[1], $i[2])->getName() );
 		}
 		$form->sendToPlayer($player);
