@@ -165,55 +165,74 @@ class core extends PluginBase implements Listener {
 					{
 						case "save": case "keep": case "store":
 							$hand = $sender->getInventory()->getItemInHand();
-							if($hand->getId() != 0)
+							if($hand->getId() !== Item::AIR)
 							{
 								if($this->vault->countItems($sender) < $this->vault->getMax($sender))
 								{
 									$this->vault->addItem($sender, $hand->getId(), $hand->getDamage(), $hand->getCount());
+									$sender->sendMessage("§l§7[§a!§7]§f Your item was uploaded in the storage!");
+									$sender->getInventory()->setItemInHand( Item::get(0) );
+									$sender->sendMessage("§l§fStorage §7[§f". $this->vault->countItems($sender). "/". $this->vault->getMax($sender). "§7]");
+								} else {
+									$sender->sendTip("§6§lInsufficient storage slot");
 								}
-								$sender->sendTip("§6§lInsufficient storage slot");
+							} else {
+								$sender->sendTip("§6§lPlease hold an item..");
 							}
-							$sender->sendTip("§6§lPlease hold an item..");
 						break;
 						
 						case "upgrade":
-							if($this->eco->myMoney($sender) >= $this->settings->getNested('vault.upgrade-price'))
+							if($this->eco->myMoney($sender) >= $this->settings->getNested("vault.upgrade-price"))
 							{
 								if($this->vault->canAccess($sender))
 								{
 									$this->vault->upgradeSlot($sender);
 									$sender->sendTip("§a§l..Processing your request..");
-									$this->eco->reduceMoney($sender, $this->settings->getNested('vault.upgrade.price'));
-								} 
-								$sender->sendTip("§c§lYou don't have cloud storage access..");
+									$this->eco->reduceMoney($sender, $this->settings->getNested("vault.upgrade.price"));
+								} else {
+									$sender->sendTip("§c§lYou don't have cloud storage access..");
+								}
+							} else {
+								$sender->sendTip("§c§lInsufficient money..");
 							}
-							$sender->sendTip("§c§lInsufficient money..");
 						break;
 							
 						case "unlock":
-							if($this->eco->myMoney($sender) >= $this->settings->getNested('vault.price'))
+							$pmoney = $this->eco->myMoney($sender);
+							$price = $this->settings->getNested("vault.price");
+							if($pmoney >= $price)
 							{
 								if(!$this->vault->canAccess($sender))
 								{
-									$this->vault->create($sender);
 									$sender->sendTip("§a§l..Processing your request..");
+									
+									$stmt = $this->db->prepare("INSERT OR REPLACE INTO vault (name, items, max) VALUES (:name, :items, :max);");
+									$stmt->bindValue(":name", $sender->getName());
+									$stmt->bindValue(":items", "");
+									$stmt->bindValue(":max", $this->settings->getNested('vault.slots'));
+									$result = $stmt->execute();
+									$sender->sendMessage("§l§7[§a!§7]§f Your cloud storage is ready!");
 									$this->eco->reduceMoney($sender, $this->settings->getNested('vault.price'));
-								} 
-								$sender->sendTip("§c§lYou already have access..");
+								} else {
+									$sender->sendTip("§c§lYou already have access..");
+								}
+							} else {
+								$sender->sendTip("§c§lYou need $". $price - $pmoney);
 							}
-							$sender->sendTip("§c§lInsufficient money..");
 						break;
 						
 						case "open": case "access": case "boot":
 							if($this->vault->canAccess($sender))
 							{
-								if($this->vault->countItems($sender) > 0)
+								if(strlen($this->vault->getItems($sender)) >= 5) //to be sure, x:x:x (5 chars)
 								{
 									$this->vault->openCloud($sender);
+								} else {
+									$sender->sendMessage("§l§7[§e!§7]§f Your storage is empty..");
 								}
-								$player->sendMessage("§l§7[§e!§7]§f Your storage is empty..");
+							} else {
+								$sender->sendMessage("§l§7[§6!§7] §fIt seems that you haven't unlocked your cloud storage yet.. use /cloud unlock");
 							}
-							$sender->sendMessage("§l§7[§6!§7] §fIt seems that you haven't unlocked your cloud storage yet.. use /cloud unlock");
 						break;
 					}
 				}
