@@ -198,8 +198,8 @@ class core extends PluginBase implements Listener {
 						break;
 							
 						case "unlock":
-							$pmoney = $this->eco->myMoney($sender);
-							$price = $this->settings->getNested("vault.price");
+							$pmoney = (int) $this->eco->myMoney($sender);
+							$price = (int) $this->settings->getNested("vault.price");
 							if($pmoney >= $price)
 							{
 								if(!$this->vault->canAccess($sender))
@@ -209,10 +209,10 @@ class core extends PluginBase implements Listener {
 									$stmt = $this->db->prepare("INSERT OR REPLACE INTO vault (name, items, max) VALUES (:name, :items, :max);");
 									$stmt->bindValue(":name", $sender->getName());
 									$stmt->bindValue(":items", "");
-									$stmt->bindValue(":max", $this->settings->getNested('vault.slots'));
+									$stmt->bindValue(":max", $this->settings->getNested("vault.slots"));
 									$result = $stmt->execute();
 									$sender->sendMessage("§l§7[§a!§7]§f Your cloud storage is ready!");
-									$this->eco->reduceMoney($sender, $this->settings->getNested('vault.price'));
+									$this->eco->reduceMoney($sender, $this->settings->getNested("vault.price"));
 								} else {
 									$sender->sendTip("§c§lYou already have access..");
 								}
