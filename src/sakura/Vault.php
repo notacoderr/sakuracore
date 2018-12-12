@@ -114,7 +114,7 @@ class Vault
 		foreach( $this->getItemsInArray($player) as $items)
 		{
 			$i = explode(":", $items);
-			$form->addButton("§f." Item::get($i[0], $i[1], $i[2])->getName(). " §7- §fx". $i[2]);
+			$form->addButton("§f.". Item::get($i[0], $i[1], $i[2])->getName(). " §7- §fx". $i[2]);
 		}
 		$form->sendToPlayer($player);
 	}
