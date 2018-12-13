@@ -21,7 +21,6 @@ use pocketmine\level\level;
 
 use pocketmine\item\Item;
 use pocketmine\inventory\Inventory;
-//use pocketmine\scheduler\Task;
 
 class core extends PluginBase implements Listener {
 
@@ -260,14 +259,19 @@ class core extends PluginBase implements Listener {
 									$price = (int) $this->settings->getNested("vault.price");
 									if($pmoney >= $price)
 									{
+										$code = $this->vault->genCode();
 										$stmt = $this->db->prepare("INSERT OR REPLACE INTO vault (name, items, max, code, owner) VALUES (:name, :items, :max, :code, :owner);");
 										$stmt->bindValue(":name", $args[1]);
 										$stmt->bindValue(":items", "");
 										$stmt->bindValue(":max", $this->settings->getNested("vault.slots"));
-										$stmt->bindValue(":code", $this->vault->genCode());
+										$stmt->bindValue(":code", $code);
 										$stmt->bindValue(":owner", $sender->getName());
 										$result = $stmt->execute();
+										
 										$sender->sendMessage("§l§7[§a!§7]§f Your cloud storage is ready!");
+										$sender->sendMessage("§a>§f VaultID: " $args[1]);
+										$sender->sendMessage("§a>§f Random Share-Code: " $code);
+										
 										$this->eco->reduceMoney($sender, $this->settings->getNested("vault.price"));
 									} else {
 										$sender->sendMessage("§l§7[§6!§7] §fCloud storage costs: §7". $price. "§f, You have: §c". $pmoney);
