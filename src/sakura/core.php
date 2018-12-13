@@ -181,7 +181,7 @@ class core extends PluginBase implements Listener {
 								{
 									if($sender->getName() === $this->vault->getOwner($args[1]))
 									{
-										if(strlen($this->vault->getItems($args[1])) >= 5) //to be sure, x:x:x (5 chars)
+										if($this->vault->countItems($args[1])) < $this->vault->getMax($args[1])) //to be sure, x:x:x (5 chars)
 										{
 											$this->vault->openCloud($sender, $args[1]);
 										} else {
@@ -195,12 +195,12 @@ class core extends PluginBase implements Listener {
 												$hand = $sender->getInventory()->getItemInHand();
 												if($hand->getId() !== Item::AIR)
 												{
-													if($this->vault->countItems($sender) < $this->vault->getMax($sender))
+													if($this->vault->countItems($args[1])) < $this->vault->getMax($args[1]))
 													{
 														$this->vault->addItem($args[1], $hand->getId(), $hand->getDamage(), $hand->getCount());
 														$sender->sendMessage("§l§7[§a!§7]§f Your item was uploaded in the storage!");
 														$sender->getInventory()->setItemInHand( Item::get(0) );
-														$sender->sendMessage("§l§fStorage §7[§f". $this->vault->countItems($sender). "/". $this->vault->getMax($sender). "§7]");
+														$sender->sendMessage("§l§fStorage §7[§f". $this->vault->countItems($args[1])). "/". $this->vault->getMax($args[1])). "§7]");
 													} else {
 														$sender->sendMessage("§l§7[§e!§7]§f". $args[1]. "'s storage is full..");
 													}
