@@ -19,4 +19,4 @@ commands:
   quest:
     description: Opens Quest menu
   cloud:
-    description: < unlock / keep / open / upgrade >
+    description: < help / ? >
