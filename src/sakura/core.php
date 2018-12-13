@@ -175,7 +175,7 @@ class core extends PluginBase implements Listener {
 				{
 					switch($args[0])
 					{
-						case "save": case "keep": case "store":
+						case "upload": case "up":
 							$hand = $sender->getInventory()->getItemInHand();
 							if($hand->getId() !== Item::AIR)
 							{
@@ -193,7 +193,7 @@ class core extends PluginBase implements Listener {
 							}
 						break;
 						
-						case "upgrade":
+						case "upgrade": case "+":
 							if($this->vault->canAccess($sender))
 							{
 								$pmoney = (int) $this->eco->myMoney($sender);
@@ -211,65 +211,82 @@ class core extends PluginBase implements Listener {
 							}
 						break;
 							
-						case "unlock":
-							if(!$this->vault->canAccess($sender))
+						case "reg": case "register":
+							if(isset($args[1]))
 							{
-								$pmoney = (int) $this->eco->myMoney($sender);
-								$price = (int) $this->settings->getNested("vault.price");
-								if($pmoney >= $price)
+								if(!$this->vault->storageExists($args[1]))
 								{
-									$sender->sendTip("§a§l..Processing your request..");
-									
-									$stmt = $this->db->prepare("INSERT OR REPLACE INTO vault (name, items, max) VALUES (:name, :items, :max);");
-									$stmt->bindValue(":name", $sender->getName());
-									$stmt->bindValue(":items", "");
-									$stmt->bindValue(":max", $this->settings->getNested("vault.slots"));
-									$result = $stmt->execute();
-									$sender->sendMessage("§l§7[§a!§7]§f Your cloud storage is ready!");
-									$this->eco->reduceMoney($sender, $this->settings->getNested("vault.price"));
+									$pmoney = (int) $this->eco->myMoney($sender);
+									$price = (int) $this->settings->getNested("vault.price");
+									if($pmoney >= $price)
+									{
+										$stmt = $this->db->prepare("INSERT OR REPLACE INTO vault (name, items, max, code, owner) VALUES (:name, :items, :max, :code, :owner);");
+										$stmt->bindValue(":name", $args[1]);
+										$stmt->bindValue(":items", "");
+										$stmt->bindValue(":max", $this->settings->getNested("vault.slots"));
+										$stmt->bindValue(":code", $this->vault->genCode());
+										$stmt->bindValue(":owner", $sender->getName());
+										$result = $stmt->execute();
+										$sender->sendMessage("§l§7[§a!§7]§f Your cloud storage is ready!");
+										$this->eco->reduceMoney($sender, $this->settings->getNested("vault.price"));
+									} else {
+										$sender->sendMessage("§l§7[§6!§7] §fCloud storage costs: §7". $price. "§f, You have: §c". $pmoney);
+									}
 								} else {
-									$sender->sendMessage("§f§lCloud storage costs: §7". $price. "§f, You have: §c". $pmoney);
+									$sender->sendMessage("§l§7[§6!§7] §f". $args[1]. " appears to be registered");
 								}
 							} else {
-								$sender->sendTip("§c§lYou already have access..");
+								$sender->sendMessage("§l§7[§6!§7] §fUsage /cloud [register/reg] [vaultId]");
 							}
 						break;
 						
-						case "open": case "access": case "boot":
-							if(isset($args[0])
+						case "dl": case "download":
+							if(isset($args[1]))
 							{
-								if(($target = $this->getServer()->getPlayer($args[0])) instanceof Player)
+								if($this->vault->storageExists($args[1]))
 								{
-									
-									if($this->vault->canAccess($target))
+									if($sender->getName() === $this->vault->getOwner($args[1]))
 									{
-										if(strlen($this->vault->getItems($target)) >= 5) //to be sure, x:x:x (5 chars)
+										if(strlen($this->vault->getItems($args[1])) >= 5) //to be sure, x:x:x (5 chars)
 										{
-											$this->vault->sendLogin($sender); //$this->vault->openCloud($target);
+											$this->vault->openCloud($sender, $args[1]);
 										} else {
-											$sender->sendMessage("§l§7[§e!§7]§f". $target->getName(). "'s storage is empty..");
+											$sender->sendMessage("§l§7[§e!§7]§f". strtoupper($args[1]). "'s storage is empty..");
 										}
 									} else {
-										$sender->sendMessage("§l§7[§6!§7] §fIt seems that ". $target->getName(). " haven't unlocked the cloud storage yet..");
+										if(isset($args[2]))
+										{
+											if($this->vault->verifyCode($args[1], $args[2]))
+											{
+												if(strlen($this->vault->getItems($args[1])) >= 5) //to be sure, x:x:x (5 chars)
+												{
+													$this->vault->openCloud($sender, $args[1]);
+												} else {
+													$sender->sendMessage("§l§7[§e!§7]§f". strtoupper($args[1]). "'s storage is empty..");
+												}
+											} else {
+												$sender->sendMessage("§l§7[§c!§7] §fYour code [". $args[2]. "] seems invalid, contact a staff if you forgot your code");
+											}
+										} else {
+											$sender->sendMessage("§l§7[§c!§7] §fUsage /cloud [open/access] [vaultId] [shareCode]");
+										}
 									}
 								} else {
-									//for offline players
-								}
-							}
-							if($this->vault->canAccess($sender))
-							{
-								if(strlen($this->vault->getItems($sender)) >= 5) //to be sure, x:x:x (5 chars)
-								{
-									$this->vault->openCloud($sender);
-								} else {
-									$sender->sendMessage("§l§7[§e!§7]§f Your storage is empty..");
+									$sender->sendMessage("§l§7[§6!§7] §f". $args[1]. " doesn't exist, did you typed it precisely? tip: VaultID and ShareCode are both case senstive.");
 								}
 							} else {
-								$sender->sendMessage("§l§7[§6!§7] §fIt seems that you haven't unlocked your cloud storage yet.. use /cloud unlock");
+								$sender->sendMessage("§l§7[§6!§7] §fUsage /cloud [open/access] [vaultId] [shareCode]");
 							}
 						break;
 							
-						default: $sender->sendMessage("§l§7[§6!§7] §fCloud commands are: unlock , keep , open , upgrade");
+						default:
+							$sender->sendMessage("§l§7[§6!§7] §fCloud storage cmds: register[reg], upload[up], download[dl], upgrade[+], newcode[new], delete[del]");
+							$sender->sendMessage("§fRegister - §7new cloud storage");
+							$sender->sendMessage("§fUpload - §7an item to the storage");
+							$sender->sendMessage("§fDownload - §7a specific cloud storage");
+							$sender->sendMessage("§fUpgrade - §7a cloud storage max slot");
+							$sender->sendMessage("§fNewcode - §7gives you a new share-code");
+							$sender->sendMessage("§fDelete - §7delete the entire storage");
 					}
 				}
 				return true;
