@@ -200,7 +200,7 @@ class core extends PluginBase implements Listener {
 														$this->vault->addItem($args[1], $hand->getId(), $hand->getDamage(), $hand->getCount());
 														$sender->sendMessage("§l§7[§a!§7]§f Your item was uploaded in the storage!");
 														$sender->getInventory()->setItemInHand( Item::get(0) );
-														$sender->sendMessage("§l§fStorage §7[§f". $this->vault->countItems($args[1])). "/". $this->vault->getMax($args[1])). "§7]");
+														$sender->sendMessage("§l§fStorage §7[§f". $this->vault->countItems($args[1]). "/". $this->vault->getMax($args[1]). "§7]");
 													} else {
 														$sender->sendMessage("§l§7[§e!§7]§f". $args[1]. "'s storage is full..");
 													}
