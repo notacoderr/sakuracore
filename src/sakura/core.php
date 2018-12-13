@@ -269,8 +269,8 @@ class core extends PluginBase implements Listener {
 										$result = $stmt->execute();
 										
 										$sender->sendMessage("§l§7[§a!§7]§f Your cloud storage is ready!");
-										$sender->sendMessage("§a>§f VaultID: " $args[1]);
-										$sender->sendMessage("§a>§f Random Share-Code: " $code);
+										$sender->sendMessage("§a>§f VaultID: ". $args[1]);
+										$sender->sendMessage("§a>§f Random Share-Code: ". $code);
 										
 										$this->eco->reduceMoney($sender, $this->settings->getNested("vault.price"));
 									} else {
