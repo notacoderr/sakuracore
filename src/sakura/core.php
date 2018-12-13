@@ -39,7 +39,7 @@ class core extends PluginBase implements Listener {
 		$this->itemData = new Config($this->getDataFolder() . "items.yml", CONFIG::YAML);
 		$this->recipeData = new Config($this->getDataFolder() . "recipe.yml", CONFIG::YAML);
 		
-		$this->db = new \SQLite3($this->getDataFolder() . "coredrive-v1.db"); //creating main database
+		$this->db = new \SQLite3($this->getDataFolder() . "coredrive-v2.db"); //creating main database
 		$this->db->exec("CREATE TABLE IF NOT EXISTS gem (name TEXT PRIMARY KEY COLLATE NOCASE, gems INT);");
 		$this->db->exec("CREATE TABLE IF NOT EXISTS exp (name TEXT PRIMARY KEY COLLATE NOCASE, exp INT);");
 		$this->db->exec("CREATE TABLE IF NOT EXISTS lvl (name TEXT PRIMARY KEY COLLATE NOCASE, level INT);");
@@ -53,7 +53,7 @@ class core extends PluginBase implements Listener {
 		$this->db->exec("CREATE TABLE IF NOT EXISTS pcompleted (name TEXT PRIMARY KEY COLLATE NOCASE, quests TEXT);");
 		
 		$this->db->exec("CREATE TABLE IF NOT EXISTS classes (name TEXT PRIMARY KEY COLLATE NOCASE, class INT);");
-		$this->db->exec("CREATE TABLE IF NOT EXISTS vault (name TEXT PRIMARY KEY COLLATE NOCASE, items TEXT, max INT);");
+		$this->db->exec("CREATE TABLE IF NOT EXISTS vault (name TEXT PRIMARY KEY COLLATE NOCASE, items TEXT, max INT, code TEXT, owner TEXT);");
 		//$this->db->exec("CREATE TABLE IF NOT EXISTS t (name TEXT PRIMARY KEY COLLATE NOCASE, type TEXT);");
 		
 		$this->classes = new Classes($this); //Class Handler
@@ -176,38 +176,78 @@ class core extends PluginBase implements Listener {
 					switch($args[0])
 					{
 						case "upload": case "up":
-							$hand = $sender->getInventory()->getItemInHand();
-							if($hand->getId() !== Item::AIR)
+							if(isset($args[1]))
 							{
-								if($this->vault->countItems($sender) < $this->vault->getMax($sender))
+								if($this->vault->storageExists($args[1]))
 								{
-									$this->vault->addItem($sender, $hand->getId(), $hand->getDamage(), $hand->getCount());
-									$sender->sendMessage("§l§7[§a!§7]§f Your item was uploaded in the storage!");
-									$sender->getInventory()->setItemInHand( Item::get(0) );
-									$sender->sendMessage("§l§fStorage §7[§f". $this->vault->countItems($sender). "/". $this->vault->getMax($sender). "§7]");
+									if($sender->getName() === $this->vault->getOwner($args[1]))
+									{
+										if(strlen($this->vault->getItems($args[1])) >= 5) //to be sure, x:x:x (5 chars)
+										{
+											$this->vault->openCloud($sender, $args[1]);
+										} else {
+											$sender->sendMessage("§l§7[§e!§7]§f". $args[1]. "'s storage is full..");
+										}
+									} else {
+										if(isset($args[2]))
+										{
+											if($this->vault->verifyCode($args[1], $args[2]))
+											{
+												$hand = $sender->getInventory()->getItemInHand();
+												if($hand->getId() !== Item::AIR)
+												{
+													if($this->vault->countItems($sender) < $this->vault->getMax($sender))
+													{
+														$this->vault->addItem($args[1], $hand->getId(), $hand->getDamage(), $hand->getCount());
+														$sender->sendMessage("§l§7[§a!§7]§f Your item was uploaded in the storage!");
+														$sender->getInventory()->setItemInHand( Item::get(0) );
+														$sender->sendMessage("§l§fStorage §7[§f". $this->vault->countItems($sender). "/". $this->vault->getMax($sender). "§7]");
+													} else {
+														$sender->sendMessage("§l§7[§e!§7]§f". $args[1]. "'s storage is full..");
+													}
+												} else {
+													$sender->sendTip("§6§lPlease hold an item..");
+												}
+											} else {
+												$sender->sendMessage("§l§7[§c!§7] §fYour code [". $args[2]. "] seems invalid, contact a staff/the owner if you forgot your code");
+											}
+										} else {
+											$sender->sendMessage("§l§7[§c!§7] §fUsage /cloud upload [vaultId] [shareCode]");
+										}
+									}
 								} else {
-									$sender->sendTip("§6§lInsufficient storage slot");
+									$sender->sendMessage("§l§7[§6!§7] §f". $args[1]. " doesn't exist, did you typed it precisely? tip: VaultID is case senstive.");
 								}
 							} else {
-								$sender->sendTip("§6§lPlease hold an item..");
+								$sender->sendMessage("§l§7[§6!§7] §fUsage: /cloud upload [vaultID] [shareCode]");
 							}
 						break;
 						
 						case "upgrade": case "+":
-							if($this->vault->canAccess($sender))
+							if(isset($args[1]))
 							{
-								$pmoney = (int) $this->eco->myMoney($sender);
-								$price = (int) $this->settings->getNested("vault.upgrade.price");
-								if( $pmoney >= $price )
+								if($this->vault->storageExists($args[1]))
 								{
-									$this->vault->upgradeSlot($sender);
-									$sender->sendTip("§a§l..Processing your request..");
-									$this->eco->reduceMoney($sender, $this->settings->getNested("vault.upgrade.price"));
+									if($sender->getName() === $this->vault->getOwner($args[1]))
+									{
+										$pmoney = (int) $this->eco->myMoney($sender);
+										$price = (int) $this->settings->getNested("vault.upgrade.price");
+										if( $pmoney >= $price )
+										{
+											$this->vault->upgradeSlot($sender);
+											$sender->sendTip("§a§l..Processing your request..");
+											$this->eco->reduceMoney($sender, $this->settings->getNested("vault.upgrade.price"));
+										} else {
+											$sender->sendMessage("§f§lCloud storage update costs: §7". $price. "§f, You have: §c". $pmoney);
+										}
+									} else {
+										$sender->sendMessage("§l§7[§6!§7] §fSorry! But only the owner may upgrade the vault.");
+									}
 								} else {
-									$sender->sendMessage("§f§lCloud storage update costs: §7". $price. "§f, You have: §c". $pmoney);
+									$sender->sendMessage("§l§7[§6!§7] §f". $args[1]. " doesn't exist, did you typed it precisely? tip: VaultID is case senstive.");
 								}
 							} else {
-								$sender->sendTip("§c§lYou don't have Cloud Storage access..");
+								$sender->sendMessage("§l§7[§6!§7] §fUsage: /cloud upgrade [vaultID]");
 							}
 						break;
 							
@@ -265,17 +305,17 @@ class core extends PluginBase implements Listener {
 													$sender->sendMessage("§l§7[§e!§7]§f". strtoupper($args[1]). "'s storage is empty..");
 												}
 											} else {
-												$sender->sendMessage("§l§7[§c!§7] §fYour code [". $args[2]. "] seems invalid, contact a staff if you forgot your code");
+												$sender->sendMessage("§l§7[§c!§7] §fYour code [". $args[2]. "] seems invalid, contact a staff/the owner if you forgot your code");
 											}
 										} else {
-											$sender->sendMessage("§l§7[§c!§7] §fUsage /cloud [open/access] [vaultId] [shareCode]");
+											$sender->sendMessage("§l§7[§c!§7] §fUsage /cloud download [vaultId] [shareCode]");
 										}
 									}
 								} else {
 									$sender->sendMessage("§l§7[§6!§7] §f". $args[1]. " doesn't exist, did you typed it precisely? tip: VaultID and ShareCode are both case senstive.");
 								}
 							} else {
-								$sender->sendMessage("§l§7[§6!§7] §fUsage /cloud [open/access] [vaultId] [shareCode]");
+								$sender->sendMessage("§l§7[§6!§7] §fUsage /cloud download [vaultId] [shareCode]");
 							}
 						break;
 							
@@ -285,8 +325,8 @@ class core extends PluginBase implements Listener {
 							$sender->sendMessage("§fUpload - §7an item to the storage");
 							$sender->sendMessage("§fDownload - §7a specific cloud storage");
 							$sender->sendMessage("§fUpgrade - §7a cloud storage max slot");
-							$sender->sendMessage("§fNewcode - §7gives you a new share-code");
-							$sender->sendMessage("§fDelete - §7delete the entire storage");
+							$sender->sendMessage("§fNewcode - §7gives you a new share-code [soon]");
+							$sender->sendMessage("§fDelete - §7delete the entire storage [soon]");
 					}
 				}
 				return true;
