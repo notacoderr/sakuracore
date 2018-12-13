@@ -149,9 +149,17 @@ class core extends PluginBase implements Listener {
 				}
 				$this->data->takeGem($target, $args[1]);
 			break;
-				
-			case "test":
-				//$sender->sendMessage($this->getTop(5));
+				 
+			case "toplvl": //by @PTKDrake
+				if(!isset($args[0])){
+					$sender->sendMessage("Invalid usage, /toplvl (page)");
+					return true;
+				}
+				if(!is_numeric($args[0])){
+					$sender->sendMessage("must be an integer");
+					return true;
+				}
+				$sender->sendMessage($this->getTop($args[0]));
 			break;
 				
 			case "cloud":
@@ -228,6 +236,26 @@ class core extends PluginBase implements Listener {
 						break;
 						
 						case "open": case "access": case "boot":
+							if(isset($args[0])
+							{
+								if(($target = $this->getServer()->getPlayer($args[0])) instanceof Player)
+								{
+									
+									if($this->vault->canAccess($target))
+									{
+										if(strlen($this->vault->getItems($target)) >= 5) //to be sure, x:x:x (5 chars)
+										{
+											$this->vault->sendLogin($sender); //$this->vault->openCloud($target);
+										} else {
+											$sender->sendMessage("§l§7[§e!§7]§f". $target->getName(). "'s storage is empty..");
+										}
+									} else {
+										$sender->sendMessage("§l§7[§6!§7] §fIt seems that ". $target->getName(). " haven't unlocked the cloud storage yet..");
+									}
+								} else {
+									//for offline players
+								}
+							}
 							if($this->vault->canAccess($sender))
 							{
 								if(strlen($this->vault->getItems($sender)) >= 5) //to be sure, x:x:x (5 chars)
@@ -411,21 +439,29 @@ class core extends PluginBase implements Listener {
 		return empty($array) == false;
 	}
 
-	public function getTop($amount) : string
+	public function getTop($amount) : string //by @PTKDrake
 	{
-		$string = "";
-		$result = $this->db->query("SELECT * FROM lvl ORDER BY level DESC LIMIT $amount;");
-		$i = 0;
-		
-        	while ($resultArr = $result->fetchArray(SQLITE3_ASSOC))
-		{
-			$j = $i + 1;
-			$name = $resultArr['name'];
-			$lvl = $resultArr['level'];
-			$string .= ("§l$j > §6$name §fLv. $lvl \n");
+		$result = $this->db->query("SELECT * FROM lvl ORDER BY level DESC;");
+		$resultArr = $result->fetchArray(SQLITE3_ASSOC);
+		arsort($resultArr);
+		$all = [];
+		$i = 1;
+		$max = count($all) / 5;
+		$page = (int)min($this->max, max(1, $amount));
+		foreach($resultArr as $name => $level){
+			$current = (int) ceil($n / 5);
+			if($current === $page){
+				$all[$i] = [$name, $point];
+			}elseif($current > $page){
+				break;
+			}
 			$i += 1;
 		}
-		
+		$string = "§l§bTop Point §e[".$page."/".$max."]\n";
+		foreach($all as $i => $data){
+			$string .= "§l".$i." > §6".$data[0]." §fLv. ".$data[1]." \n";
+		}
+		$string .= "§6Type: /toplvl ".$page + 1." to see next page";
 		return $string;
 	}
 }
