@@ -522,7 +522,7 @@ class core extends PluginBase implements Listener {
 		foreach($all as $i => $data){
 			$string .= "§l".$i." > §6".$data[0]." §fLv. ".$data[1]." \n";
 		}
-		$string .= "§6Type: /toplvl ".$page + 1." to see next page";
+		$string .= "§6Type: /toplvl ". ($page + 1). " to see next page";
 		return $string;
 	}
 }
