@@ -73,7 +73,7 @@ class Vault
 	
  	public function addItem(string $id, int $iid, int $meta, int $count) : void
 	{
-		if( strlen($this->getItems($player)) > 5 )
+		if( strlen($this->getItems($id)) > 5 )
 		{
 			$items = (string) $this->getItems($id). ",". $iid. ":". $meta. ":". $count;
 		} else {
