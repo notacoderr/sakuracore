@@ -21,7 +21,6 @@ use pocketmine\level\level;
 
 use pocketmine\item\Item;
 use pocketmine\inventory\Inventory;
-//use pocketmine\scheduler\Task;
 
 class core extends PluginBase implements Listener {
 
@@ -39,7 +38,7 @@ class core extends PluginBase implements Listener {
 		$this->itemData = new Config($this->getDataFolder() . "items.yml", CONFIG::YAML);
 		$this->recipeData = new Config($this->getDataFolder() . "recipe.yml", CONFIG::YAML);
 		
-		$this->db = new \SQLite3($this->getDataFolder() . "coredrive-v1.db"); //creating main database
+		$this->db = new \SQLite3($this->getDataFolder() . "coredrive-v2.db"); //creating main database
 		$this->db->exec("CREATE TABLE IF NOT EXISTS gem (name TEXT PRIMARY KEY COLLATE NOCASE, gems INT);");
 		$this->db->exec("CREATE TABLE IF NOT EXISTS exp (name TEXT PRIMARY KEY COLLATE NOCASE, exp INT);");
 		$this->db->exec("CREATE TABLE IF NOT EXISTS lvl (name TEXT PRIMARY KEY COLLATE NOCASE, level INT);");
@@ -53,7 +52,7 @@ class core extends PluginBase implements Listener {
 		$this->db->exec("CREATE TABLE IF NOT EXISTS pcompleted (name TEXT PRIMARY KEY COLLATE NOCASE, quests TEXT);");
 		
 		$this->db->exec("CREATE TABLE IF NOT EXISTS classes (name TEXT PRIMARY KEY COLLATE NOCASE, class INT);");
-		$this->db->exec("CREATE TABLE IF NOT EXISTS vault (name TEXT PRIMARY KEY COLLATE NOCASE, items TEXT, max INT);");
+		$this->db->exec("CREATE TABLE IF NOT EXISTS vault (name TEXT PRIMARY KEY COLLATE NOCASE, items TEXT, max INT, code TEXT, owner TEXT);");
 		//$this->db->exec("CREATE TABLE IF NOT EXISTS t (name TEXT PRIMARY KEY COLLATE NOCASE, type TEXT);");
 		
 		$this->classes = new Classes($this); //Class Handler
@@ -167,7 +166,7 @@ class core extends PluginBase implements Listener {
 				{
 					return true;
 				}
-				if(!$sender->getGamemode() === 1)
+				if($sender->getGamemode() == 1)
 				{
 					$sender->sendMessage("Creative mode restricted"); return true;
 				}
@@ -175,102 +174,73 @@ class core extends PluginBase implements Listener {
 				{
 					switch($args[0])
 					{
-						case "save": case "keep": case "store":
-							$hand = $sender->getInventory()->getItemInHand();
-							if($hand->getId() !== Item::AIR)
+						case "upload": case "up":
+							if(isset($args[1]))
 							{
-								if($this->vault->countItems($sender) < $this->vault->getMax($sender))
+								if($this->vault->storageExists($args[1]))
 								{
-									$this->vault->addItem($sender, $hand->getId(), $hand->getDamage(), $hand->getCount());
-									$sender->sendMessage("§l§7[§a!§7]§f Your item was uploaded in the storage!");
-									$sender->getInventory()->setItemInHand( Item::get(0) );
-									$sender->sendMessage("§l§fStorage §7[§f". $this->vault->countItems($sender). "/". $this->vault->getMax($sender). "§7]");
-								} else {
-									$sender->sendTip("§6§lInsufficient storage slot");
-								}
-							} else {
-								$sender->sendTip("§6§lPlease hold an item..");
-							}
-						break;
-						
-						case "upgrade":
-							if($this->vault->canAccess($sender))
-							{
-								$pmoney = (int) $this->eco->myMoney($sender);
-								$price = (int) $this->settings->getNested("vault.upgrade.price");
-								if( $pmoney >= $price )
-								{
-									$this->vault->upgradeSlot($sender);
-									$sender->sendTip("§a§l..Processing your request..");
-									$this->eco->reduceMoney($sender, $this->settings->getNested("vault.upgrade.price"));
-								} else {
-									$sender->sendMessage("§f§lCloud storage update costs: §7". $price. "§f, You have: §c". $pmoney);
-								}
-							} else {
-								$sender->sendTip("§c§lYou don't have Cloud Storage access..");
-							}
-						break;
-							
-						case "unlock":
-							if(!$this->vault->canAccess($sender))
-							{
-								$pmoney = (int) $this->eco->myMoney($sender);
-								$price = (int) $this->settings->getNested("vault.price");
-								if($pmoney >= $price)
-								{
-									$sender->sendTip("§a§l..Processing your request..");
-									
-									$stmt = $this->db->prepare("INSERT OR REPLACE INTO vault (name, items, max) VALUES (:name, :items, :max);");
-									$stmt->bindValue(":name", $sender->getName());
-									$stmt->bindValue(":items", "");
-									$stmt->bindValue(":max", $this->settings->getNested("vault.slots"));
-									$result = $stmt->execute();
-									$sender->sendMessage("§l§7[§a!§7]§f Your cloud storage is ready!");
-									$this->eco->reduceMoney($sender, $this->settings->getNested("vault.price"));
-								} else {
-									$sender->sendMessage("§f§lCloud storage costs: §7". $price. "§f, You have: §c". $pmoney);
-								}
-							} else {
-								$sender->sendTip("§c§lYou already have access..");
-							}
-						break;
-						
-						case "open": case "access": case "boot":
-							if(isset($args[0])
-							{
-								if(($target = $this->getServer()->getPlayer($args[0])) instanceof Player)
-								{
-									
-									if($this->vault->canAccess($target))
+									if($sender->getName() === $this->vault->getOwner($args[1]))
 									{
-										if(strlen($this->vault->getItems($target)) >= 5) //to be sure, x:x:x (5 chars)
+										if( $this->vault->countItems($args[1]) < $this->vault->getMax($args[1]) ) //to be sure, x:x:x (5 chars)
 										{
-											$this->vault->sendLogin($sender); //$this->vault->openCloud($target);
+											$hand = $sender->getInventory()->getItemInHand();
+											if($hand->getId() !== Item::AIR)
+											{
+												$this->vault->addItem($args[1], $hand->getId(), $hand->getDamage(), $hand->getCount());
+												$sender->sendMessage("§l§7[§a!§7]§f Your item was uploaded in the storage!");
+												$sender->getInventory()->setItemInHand( Item::get(0) );
+												$sl = $this->vault->countItems( $args[1] );
+												$mx = $this->vault->getMax( $args[1] );
+												$sender->sendMessage("§l§f". $args[1]. "'s slot: §7[§f $sl / $mx §7]");
+											} else {
+												$sender->sendTip("§6§lPlease hold an item..");
+											}
 										} else {
-											$sender->sendMessage("§l§7[§e!§7]§f". $target->getName(). "'s storage is empty..");
+											$sender->sendMessage("§l§7[§e!§7]§f". $args[1]. "'s storage is full..");
 										}
 									} else {
-										$sender->sendMessage("§l§7[§6!§7] §fIt seems that ". $target->getName(). " haven't unlocked the cloud storage yet..");
+										if(isset($args[2]))
+										{
+											if($this->vault->verifyCode($args[1], $args[2]))
+											{
+												$hand = $sender->getInventory()->getItemInHand();
+												if($hand->getId() !== Item::AIR)
+												{
+													if($this->vault->countItems($args[1]) < $this->vault->getMax($args[1]))
+													{
+														$this->vault->addItem($args[1], $hand->getId(), $hand->getDamage(), $hand->getCount());
+														$sender->sendMessage("§l§7[§a!§7]§f Your item was uploaded in the storage!");
+														$sender->getInventory()->setItemInHand( Item::get(0) );
+														$sl = $this->vault->countItems( $args[1] );
+														$mx = $this->vault->getMax( $args[1] );
+														$sender->sendMessage("§l§f". $args[1]. "'s slot: §7[§f $sl / $mx §7]");
+													} else {
+														$sender->sendMessage("§l§7[§e!§7]§f". $args[1]. "'s storage is full..");
+													}
+												} else {
+													$sender->sendTip("§6§lPlease hold an item..");
+												}
+											} else {
+												$sender->sendMessage("§l§7[§c!§7] §fYour code [". $args[2]. "] seems invalid, contact a staff/the owner if you forgot your code");
+											}
+										} else {
+											$sender->sendMessage("§l§7[§c!§7] §fUsage /cloud upload [vaultId] [shareCode]");
+										}
 									}
 								} else {
-									//for offline players
-								}
-							}
-							if($this->vault->canAccess($sender))
-							{
-								if(strlen($this->vault->getItems($sender)) >= 5) //to be sure, x:x:x (5 chars)
-								{
-									$this->vault->openCloud($sender);
-								} else {
-									$sender->sendMessage("§l§7[§e!§7]§f Your storage is empty..");
+									$sender->sendMessage("§l§7[§6!§7] §f". $args[1]. " doesn't exist, did you typed it precisely? tip: VaultID is case senstive.");
 								}
 							} else {
-								$sender->sendMessage("§l§7[§6!§7] §fIt seems that you haven't unlocked your cloud storage yet.. use /cloud unlock");
+								$sender->sendMessage("§l§7[§6!§7] §fUsage: /cloud upload [vaultID] [shareCode]");
 							}
 						break;
-							
-						default: $sender->sendMessage("§l§7[§6!§7] §fCloud commands are: unlock , keep , open , upgrade");
+						default:
+						$sender->sendMessage("§l§7[§6!§7] §fCloud storage cmds:");
+						$sender->sendMessage("§f/cloud - §7boot up cloud portal");
+						$sender->sendMessage("§f/cloud upload[up] - §7send an item into a vault");
 					}
+				} else {
+					$this->vault->homepage($sender);
 				}
 				return true;
 			break;
@@ -447,7 +417,7 @@ class core extends PluginBase implements Listener {
 		$all = [];
 		$i = 1;
 		$max = count($all) / 5;
-		$page = (int)min($this->max, max(1, $amount));
+		$page = (int) min ($max, max(1, $amount));
 		foreach($resultArr as $name => $level){
 			$current = (int) ceil($n / 5);
 			if($current === $page){
@@ -461,7 +431,7 @@ class core extends PluginBase implements Listener {
 		foreach($all as $i => $data){
 			$string .= "§l".$i." > §6".$data[0]." §fLv. ".$data[1]." \n";
 		}
-		$string .= "§6Type: /toplvl ".$page + 1." to see next page";
+		$string .= "§6Type: /toplvl ". ($page + 1). " to see next page";
 		return $string;
 	}
 }
