@@ -164,20 +164,22 @@ class Vault
 					case 0: $this->register($player); break;
 					case 1: $this->access($player); break;
 					case 2: $this->accessOther($player); break;
-					case 3: $this->expand($player); break;
-					case 4: $this->recode($player); break;
-					case 5: $this->trash1($player); break;
+					case 3: $player->sendMessage("§l§7[§b!§7]§f At the moment, please use §a/cloud upload [VaultID] §fwhile holding an item."); break;
+					case 4: $this->expand($player); break;
+					case 5: $this->recode($player); break;
+					case 6: $this->trash1($player); break;
 				}
 			}
 		});
 		$form->setTitle("§l§fSecured Cloud Storage");
 		$form->setContent("§l§fVersion: §70.2-beta§r\n§l§fVault(s): §7". $this->countVaults($player->getName()). "§r\n§7[!] This is still in beta and doesn't support items with Custom Name & Enchantment");//
-		$form->addButton("§fRegister new Vault");
-		$form->addButton("§fAccess a Vault");
-		$form->addButton("§fAccess other's Vault");
-		$form->addButton("§fExpand Capacity");
-		$form->addButton("§fReset ShareCode");
-		$form->addButton("§fDelete a Vault");
+		$form->addButton("§fRegister new Vault"); //0
+		$form->addButton("§fAccess a Vault"); //1
+		$form->addButton("§fAccess other's Vault"); //2
+		$form->addButton("§fUpload Item"); //3
+		$form->addButton("§fExpand Capacity"); //4
+		$form->addButton("§fReset ShareCode"); //5
+		$form->addButton("§fDelete a Vault"); //6
 		$form->sendToPlayer($player);
 	}
 	
