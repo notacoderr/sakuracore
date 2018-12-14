@@ -53,7 +53,12 @@ class core extends PluginBase implements Listener {
 		
 		$this->db->exec("CREATE TABLE IF NOT EXISTS classes (name TEXT PRIMARY KEY COLLATE NOCASE, class INT);");
 		$this->db->exec("CREATE TABLE IF NOT EXISTS vault (name TEXT PRIMARY KEY COLLATE NOCASE, items TEXT, max INT, code TEXT, owner TEXT);");
-		//$this->db->exec("CREATE TABLE IF NOT EXISTS t (name TEXT PRIMARY KEY COLLATE NOCASE, type TEXT);");
+		try{
+			$this->db->exec("ALTER TABLE vault ADD COLUMN code TEXT default null");
+			$this->db->exec("ALTER TABLE vault ADD COLUMN owner TEXT default null");
+		    	$this->getLogger()->info("Vault > database updated, added code & owner column..");
+		}catch(\ErrorException $ex){
+		}
 		
 		$this->classes = new Classes($this); //Class Handler
 		$this->quests = new Quests($this); //Quests Handler
