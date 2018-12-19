@@ -39,9 +39,12 @@ class core extends PluginBase implements Listener {
 		$this->recipeData = new Config($this->getDataFolder() . "recipe.yml", CONFIG::YAML);
 		
 		$this->db = new \SQLite3($this->getDataFolder() . "coredrive-v2.db"); //creating main database
+		
 		$this->db->exec("CREATE TABLE IF NOT EXISTS gem (name TEXT PRIMARY KEY COLLATE NOCASE, gems INT);");
-		$this->db->exec("CREATE TABLE IF NOT EXISTS exp (name TEXT PRIMARY KEY COLLATE NOCASE, exp INT);");
+		$this->db->exec("CREATE TABLE IF NOT EXISTS exp (name TEXT PRIMARY KEY COLLATE NOCASE, exp INT, multiplier INT);");
 		$this->db->exec("CREATE TABLE IF NOT EXISTS lvl (name TEXT PRIMARY KEY COLLATE NOCASE, level INT);");
+		
+		$this->db->exec("CREATE TABLE IF NOT EXISTS titles (name TEXT PRIMARY KEY COLLATE NOCASE, titles TEXT, inuse TEXT);");
 		
 		$this->db->exec("CREATE TABLE IF NOT EXISTS elo (name TEXT PRIMARY KEY COLLATE NOCASE, rank TEXT, div INT, points INT);");
 		
@@ -56,12 +59,14 @@ class core extends PluginBase implements Listener {
 		try{
 			$this->db->exec("ALTER TABLE vault ADD COLUMN code TEXT default null");
 			$this->db->exec("ALTER TABLE vault ADD COLUMN owner TEXT default null");
-		    	$this->getLogger()->info("Vault > database updated, added code & owner column..");
+			$this->db->exec("ALTER TABLE exp ADD COLUMN multiplier INT default 0");
+		    	$this->getLogger()->info("Vault > table updated to <ver>.<release>..");
 		}catch(\ErrorException $ex){
 		}
 		
 		$this->classes = new Classes($this); //Class Handler
 		$this->quests = new Quests($this); //Quests Handler
+		$this->titles = new Titles($this); //Titles Handler
 		$this->vault = new Vault($this); //Vault Handler
 		$this->items = new Items($this); //Item Handler
 		$this->data = new Datas($this); //Data Value Handler
