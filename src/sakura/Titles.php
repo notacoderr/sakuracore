@@ -52,38 +52,42 @@ class Titles
 		return $titles;
 	}
   
- public function addTitle(Player $player, string $x) : string
+	public function addTitle(Player $player, string $x) : string
 	{
-    $name = $player->getName();
+		$name = $player->getName();
 		$titles = (string) $this->getAllTitles($player). "@". $x;
-    
-   	$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO titles (name, titles, inuse) VALUES (:name, :titles, :inuse);");
+
+		$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO titles (name, titles, inuse) VALUES (:name, :titles, :inuse);");
 		$stmt->bindValue(":name", $name);
-    $stmt->bindValue(":titles", $titles);
+	   	$stmt->bindValue(":titles", $titles);
 		$stmt->bindValue(":inuse", $this->getTitle($player));
 		$result = $stmt->execute();
 	}
-  
+
 	public function sendForm(Player $player)
-  {
+	{
 		$form = $this->main->formapi->createSimpleForm(function (Player $player, array $data)
 		{
 			if (isset($data[0])){
 			$button = $data[0];
 
-				switch ($button)
-				{
-					case 0: break;
-					case 1:	break;
-					case 2:	break;
-					case 3:	break;
-				}
-
-				return true;
+			switch ($button)
+			{
+				case 0: break;
+				case 1:	break;
+				case 2:	break;
+				case 3:	break;
 			}
+
+			return true;
+		}
 		});
-    $form->setTitle('§l§fTitle Picker');
-		//buttons here | TO DO
-    $form->sendToPlayer($player);
-    }
+	    	$form->setTitle('§l§fTitle Picker');
+		$titles = explode("@", $this->getAllTitles($player));
+		foreach($titles as $title)
+		{
+			//add button, im lazy so ima stop here
+		}
+	    	$form->sendToPlayer($player);
+	}
 }
