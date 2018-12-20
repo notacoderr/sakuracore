@@ -330,6 +330,14 @@ class core extends PluginBase implements Listener {
 		{
 			$this->register( $event->getPlayer() );
 		}
+		if(!$this->titles->hasTitles( $event->getPlayer() ))
+		{
+			$stmt = $this->db->prepare("INSERT OR REPLACE INTO titles (name, titles, inuse) VALUES (:name, :titles, :inuse);");
+			$stmt->bindValue(":name", $event->getPlayer()->getName() );
+			$stmt->bindValue(":titles", "§7> §fRookie §7<");
+			$stmt->bindValue(":inuse", "§7{rookie}");
+			$result = $stmt->execute();
+		}
 	}
 	
 	public function hasSpace(Player $player) : bool
