@@ -94,7 +94,7 @@ class core extends PluginBase implements Listener {
 					$sender->sendMessage("§cCan only be used it §f§lCONSOLE");
 					return true;
 				}
-				if (count($args) > 3 or count($args) < 3)
+				if (count($args) <> 3)
 				{
 					$sender->sendMessage("Invalid usage, /grant <playername> <exp/gems/pts> <amount>");
 					return true;
@@ -176,7 +176,7 @@ class core extends PluginBase implements Listener {
 				{
 					return true;
 				}
-				if($sender->getGamemode() == 1)
+				if($sender->isCreative())
 				{
 					$sender->sendMessage("Creative mode restricted"); return true;
 				}
