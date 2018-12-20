@@ -16,6 +16,14 @@ class Titles
 	{
         	$this->main = $core;
 	}
+	
+	public function hasTitles(Player $player) : bool
+	{
+		$name = $player->getName();
+		$result = $this->main->db->query("SELECT * FROM titles WHERE name = '$name';");
+		$array = $result->fetchArray(SQLITE3_ASSOC);
+		return empty($array) == false;
+	}
 
 	public function getTitle(Player $player) : string
 	{
@@ -36,19 +44,21 @@ class Titles
  	public function useTitle(Player $player, string $title) : void
 	{
 		$name = $player->getName();
-    $titles = $this->trimTitles($player, $title);
+		$old = $this->getTitle($player);
+   		$titles = $this->trimTitles($player, $title);
+		$titles .= "@". $old;
 		$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO titles (name, titles, inuse) VALUES (:name, :titles, :inuse);");
 		$stmt->bindValue(":name", $name);
-    $stmt->bindValue(":titles", $titles);
+    		$stmt->bindValue(":titles", $titles);
 		$stmt->bindValue(":inuse", $title);
 		$result = $stmt->execute();
-  }
+  	}
 
 	public function trimTitles(Player $player, string $x) : string
 	{
 		$titles = explode("@", $this->getAllTitles($player) );
-    unset( $titles[$x] );
-    $titles = implode("@", $titles);
+		unset( $titles[$x] );
+		$titles = implode("@", $titles);
 		return $titles;
 	}
   
@@ -68,17 +78,13 @@ class Titles
 	{
 		$form = $this->main->formapi->createSimpleForm(function (Player $player, array $data)
 		{
-			if (isset($data[0])){
-			$button = $data[0];
-
-			switch ($button)
+			if (isset($data[0]))
 			{
-				case 0: break;
-				case 1:	break;
-				case 2:	break;
-				case 3:	break;
+				$button = $data[0];
+				$arr = $this->getAllTitles($player);
+				$this->useTitle( $arr[ $button ] );
+				$player->sendMessage("§f§Title selected: ".  $arr[ $button ]);
 			}
-
 			return true;
 		}
 		});
@@ -86,7 +92,7 @@ class Titles
 		$titles = explode("@", $this->getAllTitles($player));
 		foreach($titles as $title)
 		{
-			//add button, im lazy so ima stop here
+			$form->addButton($title);
 		}
 	    	$form->sendToPlayer($player);
 	}
