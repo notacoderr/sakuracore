@@ -158,6 +158,46 @@ class core extends PluginBase implements Listener {
 				}
 				$this->data->takeGem($target, $args[1]);
 			break;
+			
+			case "mytitles":
+				if ($sender instanceof Player)
+				{
+					$this->titles->sendForm($sender);
+				}
+			break;
+			
+			case "givetitle":
+				if ($sender instanceof Player)
+				{
+					
+					if($sender->isOp())
+					{
+						if(($this->getServer()->getPlayer($args[0]) instanceof Player) = $target)
+						{
+							unset($args[0]);
+							$title = implode(" ", $args);
+							$this->titles->addTitle($target, $title);
+							return true;
+						} else {
+							$sender->sendMessage("Player must be online");
+							return true;
+						}
+					} else {
+						return true;
+					}
+				} else {
+					if(($this->getServer()->getPlayer($args[0]) instanceof Player) = $target)
+					{
+						unset($args[0]);
+						$title = implode(" ", $args);
+						$this->titles->addTitle($target, $title);
+						return true;
+					} else {
+						$sender->sendMessage("Player must be online");
+						return true;
+					}
+				}
+			break;
 				 
 			case "toplvl": //by @PTKDrake
 				if(!isset($args[0])){
@@ -334,8 +374,8 @@ class core extends PluginBase implements Listener {
 		{
 			$stmt = $this->db->prepare("INSERT OR REPLACE INTO titles (name, titles, inuse) VALUES (:name, :titles, :inuse);");
 			$stmt->bindValue(":name", $event->getPlayer()->getName() );
-			$stmt->bindValue(":titles", "§7> §fRookie §7<");
-			$stmt->bindValue(":inuse", "§7{rookie}");
+			$stmt->bindValue(":titles", "§7{ rookie }");
+			$stmt->bindValue(":inuse", "§7> §fPCP Newbie §7<");
 			$result = $stmt->execute();
 		}
 	}
@@ -381,7 +421,7 @@ class core extends PluginBase implements Listener {
 		Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), $command);
 	}
 
-	function testLevel(Player $player, $xp) : bool
+	/*function testLevel(Player $player, $xp) : bool
 	{
 		$base = $this->settings->get("baseExp"); //base EXP			132
 		$plevel = $this->data->getVal($player, "level");//Player LEVEL							1
@@ -417,7 +457,7 @@ class core extends PluginBase implements Listener {
 		}
 		
 		return false;
-	}
+	}*/
 	
 	public function isRecorded(Player $player) : bool
 	{

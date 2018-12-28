@@ -3,6 +3,7 @@
 namespace sakura;
 
 use sakura\core;
+use sakura\calculateExp;
 use pocketmine\Player;
 use pocketmine\Server;
 
@@ -52,26 +53,27 @@ class Datas
     		$name = $player->getName();
 		switch ($val)
 		{
-		      case 'level':
+		    case 'level':
 			$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO lvl (name, level) VALUES (:name, :level);");
 			$stmt->bindValue(":name", $name);
 			$stmt->bindValue(":level", $add);
 			$result = $stmt->execute();
 		      break;
 				
-		      case 'exp':
+		    case 'exp':
 			$f = $this->getVal($player, "exp") + $add;
 			$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO exp (name, exp) VALUES (:name, :exp);");
 			$stmt->bindValue(":name", $name);
 			$stmt->bindValue(":exp", $f);
 			$result = $stmt->execute();
 				
-			$this->main->testLevel($player, $f);
+			$res = calculateExp::doMagic($player, $f);//$this->main->testLevel($player, $f);
 				
-			$player->sendPopup("§l§a +" . $add . " experience");
-		      break;
+			//$player->sendPopup("§l§a +" . $add . " experience");
+			$player->sendMessage($res);
+		    break;
 				
-		      case 'gems':
+		     case 'gems':
 			$f = $this->getVal($player, "gems") + $add;
 			$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO gem (name, gems) VALUES (:name, :gems);");
 			$stmt->bindValue(":name", $name);

@@ -13,17 +13,17 @@ class calculateExp
   
 	public function __construct(core $core)
 	{
-        	$this->main = $core;
+		$this->main = $core;
 	}
 
-	function doMagic(Player $player, $experience) : void
+	function doMagic(Player $player, $expe) : string
 	{
   
-		$base = (int) $this->main->settings->get("baseExp");
-		$plevel = (int) $this->main->data->getVal($player, "level");
+	$base = (int) $this->main->settings->get("baseExp");
+	$plevel = (int) $this->main->data->getVal($player, "level");
     $multi = (float) ($this->main->data->getVal($player, "multiplier") / 100);
     $bonus = (int) ($experience * $multi)
-    $experience = (int) ($experience + $bonus);
+    $experience = (int) ($expe + $bonus);
     
 		$goal = $base * $plevel;
 		if ($experience >= $goal)
@@ -51,8 +51,9 @@ class calculateExp
 			$stmt->bindValue(":name", $player->getName() );
 			$stmt->bindValue(":exp", $extra);
 			$result = $stmt->execute();
-      
 		}
+		$message = "§fYou received §7". $expe. " §f+§7 ". $experience. " (". $multi. "% bonus)";
+		return $message;
 	}
 
 }
