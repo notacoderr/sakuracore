@@ -20,3 +20,7 @@ commands:
     description: Opens Quest menu
   cloud:
     description: < help / ? >
+  givetitle:
+    description: 
+  mytitles:
+    description: open title picker

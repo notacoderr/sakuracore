@@ -172,7 +172,7 @@ class core extends PluginBase implements Listener {
 					
 					if($sender->isOp())
 					{
-						if($target = ($this->getServer()->getPlayer($args[0]) instanceof Player))
+						if(($target = $this->getServer()->getPlayer($args[0])) instanceof Player)
 						{
 							unset($args[0]);
 							$title = implode(" ", $args);
@@ -186,7 +186,7 @@ class core extends PluginBase implements Listener {
 						return true;
 					}
 				} else {
-					if(($this->getServer()->getPlayer($args[0]) instanceof Player) = $target)
+					if(($target = $this->getServer()->getPlayer($args[0])) instanceof Player)
 					{
 						unset($args[0]);
 						$title = implode(" ", $args);

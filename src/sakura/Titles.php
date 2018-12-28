@@ -82,7 +82,7 @@ class Titles
 			{
 				$button = $data[0];
 				$arr = $this->getAllTitles($player);
-				$this->useTitle( $arr[ $button ] );
+				$this->useTitle($player, $arr[ $button ]);
 				$player->sendMessage("§f§Title selected: ".  $arr[ $button ]);
 			}
 			return true;
