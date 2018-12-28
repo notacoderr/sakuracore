@@ -76,7 +76,7 @@ class Titles
 
 	public function sendForm(Player $player)
 	{
-		$form = $this->main->formapi->createSimpleForm(function (Player $player, array $data)
+		$form = $this->main->formapi->createSimpleForm(function(Player $player, array $data)
 		{
 			if (isset($data[0]))
 			{
@@ -85,14 +85,13 @@ class Titles
 				$this->useTitle($player, $arr[ $button ]);
 				$player->sendMessage("§f§Title selected: ".  $arr[ $button ]);
 			}
-			return true;
 		});
 	    $form->setTitle('§l§fTitle Picker');
 		$form->setContent("Active title: ". $this->getTitle($player));
 		$titles = explode("@", $this->getAllTitles($player));
 		foreach($titles as $title)
 		{
-			$form->addButton($title);
+			$form->addButton((string) $title);
 		}
 	    $form->sendToPlayer($player);
 	}

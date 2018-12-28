@@ -3,7 +3,6 @@
 namespace sakura;
 
 use sakura\core;
-use sakura\calculateExp;
 use pocketmine\Player;
 use pocketmine\Server;
 
@@ -54,33 +53,24 @@ class Datas
 		switch ($val)
 		{
 		    case 'level':
-			$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO lvl (name, level) VALUES (:name, :level);");
-			$stmt->bindValue(":name", $name);
-			$stmt->bindValue(":level", $add);
-			$result = $stmt->execute();
-		      break;
+				$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO lvl (name, level) VALUES (:name, :level);");
+				$stmt->bindValue(":name", $name);
+				$stmt->bindValue(":level", $add);
+				$result = $stmt->execute();
+		    break;
 				
 		    case 'exp':
-			$f = $this->getVal($player, "exp") + $add;
-			$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO exp (name, exp) VALUES (:name, :exp);");
-			$stmt->bindValue(":name", $name);
-			$stmt->bindValue(":exp", $f);
-			$result = $stmt->execute();
-				
-			$res = calculateExp::doMagic($player, $f);//$this->main->testLevel($player, $f);
-				
-			//$player->sendPopup("§l§a +" . $add . " experience");
-			$player->sendMessage($res);
+				$this->main->calculate->doMagic($player, $add); //for old api
 		    break;
 				
 		     case 'gems':
-			$f = $this->getVal($player, "gems") + $add;
-			$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO gem (name, gems) VALUES (:name, :gems);");
-			$stmt->bindValue(":name", $name);
-			$stmt->bindValue(":gems", $f );
-			$result = $stmt->execute();
-			$player->sendMessage("§l§7>§a $add Gems was added to your account.");
-		      break;
+				$f = $this->getVal($player, "gems") + $add;
+				$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO gem (name, gems) VALUES (:name, :gems);");
+				$stmt->bindValue(":name", $name);
+				$stmt->bindValue(":gems", $f );
+				$result = $stmt->execute();
+				$player->sendMessage("§l§7>§a $add Gems was added to your account.");
+		    break;
 		}
     	}
 	

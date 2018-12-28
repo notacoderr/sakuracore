@@ -2,9 +2,7 @@
 namespace sakura;
 
 use sakura\core;
-
 use pocketmine\Player;
-use pocketmine\Server;
 
 class calculateExp
 {
@@ -16,16 +14,16 @@ class calculateExp
 		$this->main = $core;
 	}
 
-	function doMagic(Player $player, $expe) : string
+	function doMagic(Player $player, int $expe) : string
 	{
   
 	$base = (int) $this->main->settings->get("baseExp");
 	$plevel = (int) $this->main->data->getVal($player, "level");
-    $multi = (float) ($this->main->data->getVal($player, "multiplier") / 100);
-    $bonus = (int) ($experience * $multi)
+    $multi = (double) ($this->main->data->getVal($player, "multiplier") / 100);
+    $bonus = (int) ($expe * $multi);
     $experience = (int) ($expe + $bonus);
-    
-		$goal = $base * $plevel;
+	$goal = $base * $plevel;
+	
 		if ($experience >= $goal)
 		{
 			$extra = $experience - $goal;
@@ -51,9 +49,14 @@ class calculateExp
 			$stmt->bindValue(":name", $player->getName() );
 			$stmt->bindValue(":exp", $extra);
 			$result = $stmt->execute();
+		} else {
+			$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO exp (name, exp) VALUES (:name, :exp);");
+			$stmt->bindValue(":name", $player->getName() );
+			$stmt->bindValue(":exp", $experience);
+			$result = $stmt->execute();
 		}
-		$message = "§fYou received §7". $expe. " §f+§7 ". $experience. " (". $multi. "% bonus)";
-		return $message;
+		
+		$player->sendMessage("§fYou received §7". $expe. " §f+§7 ". $bonus. " (". $multi. "% bonus)");
 	}
 
 }

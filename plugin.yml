@@ -1,8 +1,8 @@
 name: CoreX2
 main: sakura\core
-version: 1.3.3-beta
+version: 1.4-beta
 author: Codeeeh
-api: [3.3.0, 3.2.0, 4.0.0]
+api: [3.3.0, 3.2.0, 3.5.2]
 load: POSTWORLD
 
 commands:

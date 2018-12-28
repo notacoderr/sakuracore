@@ -64,6 +64,7 @@ class core extends PluginBase implements Listener {
 		}catch(\ErrorException $ex){
 		}
 		
+		$this->calculate = new calculateExp($this); //Calcu handler
 		$this->classes = new Classes($this); //Class Handler
 		$this->quests = new Quests($this); //Quests Handler
 		$this->titles = new Titles($this); //Titles Handler
@@ -119,7 +120,7 @@ class core extends PluginBase implements Listener {
 				switch ( strtolower($args[1]) )
 				{
 					case "exp": case "xp": case "e":
-						$this->data->addVal($target, "exp", $args[2]);
+						$this->calculate->doMagic($target, $args[2]);
 					break;
 					case "gems": case "gem": case "g":
 						$this->data->addVal($target, "gems", $args[2]);
@@ -420,44 +421,6 @@ class core extends PluginBase implements Listener {
 		$command = str_replace("{player}", $player->getName(), $string);
 		Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), $command);
 	}
-
-	/*function testLevel(Player $player, $xp) : bool
-	{
-		$base = $this->settings->get("baseExp"); //base EXP			132
-		$plevel = $this->data->getVal($player, "level");//Player LEVEL							1
-		$goal = $base * $plevel; //Base EXP multiply by player's level = goal		132
-		//print($base." - ". $plevel." | ".$xp." - ".$goal);
-		if ($xp >= $goal)															//given exp 397
-		{
-			$extra = $xp - $goal; //Excess xp on level up							397 - 132 = 265
-			$Ngoal = $goal + $base; //												132 + 132 = 264
-			$i = 0; //
-			do
-			{
-				$i += 1;//															( $i = $i + 1 ) = 2
-				if ($extra >= $Ngoal)
-				{
-					$extra = $extra - $Ngoal; //									265 - 264 = 1
-				}
-				//print("\n extra is $extra \n");
-				//print("new level is $i \n");
-			} 
-			while ($extra >= $Ngoal);//												1 >= 265 0
-			$f = $plevel + $i;
-			//print($plevel." -> ". $f." - ".$goal." -> ".$Ngoal." extra: $extra");
-			$this->data->addVal($player, "level", $plevel + $i);
-			$player->addTitle("§l§fLevel UP §7[§6 $f §7]", "§fNext Level on §7[§f $extra §7/§d $Ngoal §7");
-
-			$stmt = $this->db->prepare("INSERT OR REPLACE INTO exp (name, exp) VALUES (:name, :exp);");
-			$stmt->bindValue(":name", $player->getName() );
-			$stmt->bindValue(":exp", $extra);
-			$result = $stmt->execute();
-
-			return true;
-		}
-		
-		return false;
-	}*/
 	
 	public function isRecorded(Player $player) : bool
 	{
