@@ -62,7 +62,7 @@ class Titles
 		return $titles;
 	}
   
-	public function addTitle(Player $player, string $x) : string
+	public function addTitle(Player $player, string $x) : void
 	{
 		$name = $player->getName();
 		$titles = (string) $this->getAllTitles($player). "@". $x;
