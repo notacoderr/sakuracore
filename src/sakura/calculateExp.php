@@ -16,14 +16,14 @@ class calculateExp
 
 	function doMagic(Player $player, int $expe) : string
 	{
-  
-	$base = (int) $this->main->settings->get("baseExp");
-	$plevel = (int) $this->main->data->getVal($player, "level");
-    $multi = (double) ($this->main->data->getVal($player, "multiplier") / 100);
-    $bonus = (int) ($expe * $multi);
-    $experience = (int) ($expe + $bonus);
-	$goal = $base * $plevel;
-	
+		$base = (int) $this->main->settings->get("baseExp");
+		$oldExp = (int) $this->main->data->getVal($player, "exp");
+		$plevel = (int) $this->main->data->getVal($player, "level");
+		$multi = (double) ($this->main->data->getVal($player, "multiplier") / 100);
+		$bonus = (int) ($expe * $multi);
+		$newExp = (int) ($oldExp + $expe);
+		$experience = (int) ($newExp + $bonus);
+		$goal = $base * $plevel;
 		if ($experience >= $goal)
 		{
 			$extra = $experience - $goal;
@@ -55,7 +55,6 @@ class calculateExp
 			$stmt->bindValue(":exp", $experience);
 			$result = $stmt->execute();
 		}
-		
 		$player->sendMessage("§fYou received §7". $expe. " §f+§7 ". $bonus. " (". $multi. "% bonus)");
 	}
 
