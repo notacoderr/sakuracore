@@ -14,7 +14,7 @@ class calculateExp
 		$this->main = $core;
 	}
 
-	function doMagic(Player $player, int $expe) : string
+	function doMagic(Player $player, int $expe) : void
 	{
 		$base = (int) $this->main->settings->get("baseExp");
 		$oldExp = (int) $this->main->data->getVal($player, "exp");
