@@ -21,8 +21,8 @@ class calculateExp
 		$plevel = (int) $this->main->data->getVal($player, "level");
 		$multi = (double) ($this->main->data->getVal($player, "multiplier") / 100);
 		$bonus = (int) ($expe * $multi);
-		$newExp = (int) ($oldExp + $expe);
-		$experience = (int) ($newExp + $bonus);
+		$newExp = (int) ($bonus + $expe);
+		$experience = (int) ($newExp + $oldExp);
 		$goal = $base * $plevel;
 		if ($experience >= $goal)
 		{
@@ -55,7 +55,9 @@ class calculateExp
 			$stmt->bindValue(":exp", $experience);
 			$result = $stmt->execute();
 		}
-		$player->sendMessage("§fYou received §7". $expe. " §f+§7 ". $bonus. " (". $multi. "% bonus)");
+		$player->sendTip("§a+ ". $newExp. " §7exp");
+		$player->sendPopup("§f". $expe. " §7+§f ". $bonus. " §7(". $multi. "% bonus)");
+		//$player->sendMessage("§fYou received §7". $expe. " §f+§7 ". $bonus. " (". $multi. "% bonus)");
 	}
 
 }
