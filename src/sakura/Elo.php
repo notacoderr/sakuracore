@@ -4,7 +4,6 @@ namespace sakura;
 
 use sakura\core;
 use pocketmine\Player;
-use pocketmine\Server;
 
 class Elo
 {
@@ -24,16 +23,16 @@ class Elo
   
   	public function getRank(Player $player) : string
 	{
-      	$name = $player->getName();
-		    $result = $this->main->db->query("SELECT rank FROM elo WHERE name = '$name';");
-			  return $result->fetchArray(SQLITE3_ASSOC)["rank"];
+      		$name = $player->getName();
+      		$result = $this->main->db->query("SELECT rank FROM elo WHERE name = '$name';");
+      		return $result->fetchArray(SQLITE3_ASSOC)["rank"];
 	}
   
     	public function getDiv(Player $player) : int
 	{
-      	$name = $player->getName();
-		    $result = $this->main->db->query("SELECT div FROM elo WHERE name = '$name';");
-			  return $result->fetchArray(SQLITE3_ASSOC)["div"];
+      		$name = $player->getName();
+      		$result = $this->main->db->query("SELECT div FROM elo WHERE name = '$name';");
+      		return $result->fetchArray(SQLITE3_ASSOC)["div"];
 	}
 
     	public function getPoints(Player $player) : int
@@ -130,7 +129,7 @@ class Elo
 		$div = $this->getDiv($player);
 		$rank = $this->getRank($player);
 		$new =  $old - $i;
-		if($new <= 0) //todo
+		if($new <= 0)
 		{
 			if($rank === "Mythic")
 			{
