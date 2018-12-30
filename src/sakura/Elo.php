@@ -17,8 +17,12 @@ class Elo
   
 	  /*
 	  * Player $player
-	  *DIVISION: Initiate - Heroic - Divine - Ascended - Mythic
-	  *
+	  *	RANK:
+	  *	Slayer
+	  *	Master
+	  *	Destroyer
+	  *	Invader
+	  *	Conqueror
 	  */
   
   	public function getRank(Player $player) : string
@@ -26,6 +30,30 @@ class Elo
       		$name = $player->getName();
       		$result = $this->main->db->query("SELECT rank FROM elo WHERE name = '$name';");
       		return $result->fetchArray(SQLITE3_ASSOC)["rank"];
+	}
+	
+	public function getRankPrefix(Player $player) : string
+	{
+		switch ($this->getRank($player))
+		{
+			case "Slayer": return "Slyr"; break;
+			case "Master": return "Mstr"; break;
+			case "Destroyer": return "Dtyr"; break;
+			case "Invader": return "Invr"; break;
+			case "Conqueror": return "Conqr"; break;
+		}
+	}
+	
+	public function getRankIcon(Player $player) : string
+	{
+		switch ($this->getRank($player))
+		{
+			case "Slayer": return "☗"; break;
+			case "Master": return "♞"; break;
+			case "Destroyer": return "♜"; break;
+			case "Invader": return "♚"; break;
+			case "Conqueror": return "♛"; break;
+		}
 	}
   
     	public function getDiv(Player $player) : int
@@ -85,16 +113,14 @@ class Elo
 		$stmt->bindValue(":points", $point);
       		$result = $stmt->execute();
  	}
-  
-    	//DIVISION: Initiate - Heroic - Divine - Ascended - Mythic
-  
+
 	public function increasePoints(Player $player, int $i) : void
 	{
 		$old = $this->getPoints($player);
 		$div = $this->getDiv($player);
 		$rank = $this->getRank($player);
 		$new =  $old + $i;
-		if($rank !== "Mythic" and $new >= 100)
+		if($rank !== "Conqueror" and $new >= 100)
 		{
 			if($div >= 2)
 			{
@@ -104,17 +130,17 @@ class Elo
 			} else {
 				switch($rank)
 				{
-					case "Initiate": 
-						$this->updateElo($player, "Heroic", 3, 5); $this->notify($player, 1);
+					case "Slayer": 
+						$this->updateElo($player, "Master", 3, 5); $this->notify($player, 1);
 						break;
-					case "Heroic":
-						$this->updateElo($player, "Divine", 3, 5); $this->notify($player, 1);
+					case "Master":
+						$this->updateElo($player, "Destroyer", 3, 5); $this->notify($player, 1);
 						break;
-					case "Divine": 
-						$this->updateElo($player, "Ascended", 1, 5); $this->notify($player, 1);
+					case "Destroyer": 
+						$this->updateElo($player, "Invader", 1, 5); $this->notify($player, 1);
 						break;
-					case "Ascended":
-						$this->updateElo($player, "Mythic", 1, 5); $this->notify($player, 1);
+					case "Invader":
+						$this->updateElo($player, "Conqueror", 1, 5); $this->notify($player, 1);
 						break;
 				}
 			}
@@ -122,7 +148,7 @@ class Elo
 			$this->updatePoints($player, $new); $this->notify($player, 3);
 		}
 	}
-    	//DIVISION: Initiate - Heroic - Divine - Ascended - Mythic
+
 	public function decreasePoints(Player $player, int $i) : void
 	{
 		$old = $this->getPoints($player);
@@ -131,13 +157,13 @@ class Elo
 		$new =  $old - $i;
 		if($new <= 0)
 		{
-			if($rank === "Mythic")
+			if($rank === "Conqueror")
 			{
-				$this->updateElo($player, "Ascended", 1, 50); $this->notify($player, 2);
+				$this->updateElo($player, "Invader", 1, 50); $this->notify($player, 2);
 			}
-			if($rank === "Ascended")
+			if($rank === "Invader")
 			{
-				$this->updateElo($player, "Divine", 1, 50); $this->notify($player, 2);
+				$this->updateElo($player, "Destroyer", 1, 50); $this->notify($player, 2);
 			}
 			if($div <= 2)
 			{
@@ -147,13 +173,13 @@ class Elo
 			} else {
 				switch($rank)
 				{
-					case "Divine": 
-					$this->updateElo($player, "Heroic", 1, 50);
+					case "Destroyer": 
+					$this->updateElo($player, "Master", 1, 50);
 					$this->notify($player, 2);
 					break;
 						
-					case "Heroic":
-					$this->updateElo($player, "Initiate", 1, 50);
+					case "Master":
+					$this->updateElo($player, "Slayer", 1, 50);
 					$this->notify($player, 2);
 					break;
 				}
