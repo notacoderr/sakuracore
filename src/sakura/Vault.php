@@ -89,13 +89,13 @@ class Vault
 		return count($arr);
 	}
 	
- 	public function addItem(string $id, int $iid, int $meta, int $count) : void
+ 	public function addItem(string $id, int $iid, int $meta, int $count, string $name, $enchantment) : void
 	{
 		if( strlen($this->getItems($id)) > 5 )
 		{
-			$items = (string) $this->getItems($id). ",". $iid. ":". $meta. ":". $count;
+			$items = (string) $this->getItems($id). ",". $iid. ":". $meta. ":". $count. ":". $name. ":". $enchantment;
 		} else {
-			$items = (string) $this->getItems($id). $iid. ":". $meta. ":". $count;
+			$items = (string) $this->getItems($id). $iid. ":". $meta. ":". $count. ":". $name. ":". $enchantment;
 		}
 		$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO vault (name, items, max, code, owner) VALUES (:name, :items, :max,:code, :owner);");
 		$stmt->bindValue(":name", $id);
@@ -454,7 +454,10 @@ class Vault
 					$id = $this->cache[ $player->getName() ];
 					$rawitem = $this->getItemsInArray($id)[$button];
 					$i = explode(":", $rawitem);
-					$item = Item::get($i[0], $i[1], $i[2]);
+					$item = Item::get($i[0], $i[1], $i[2])->setCustomName($i[3]);
+					if(null) //soon, will check if the $i[4] (enchantment exists)
+					{
+					}
 					$player->getInventory()->addItem($item);
 					$this->delItem($id, $button);
 					$this->homepage($player);
