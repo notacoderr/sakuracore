@@ -499,9 +499,9 @@ class Vault
 	{
 		if($enchId >= 100 or is_string($enchId))
 		{
-			if(($pce = Server::getInstance()->getPluginManager()->getPlugin("PiggyCustomEnchant")) != null)
+			if($this->main->pce != null)
 			{
-				$pce->addEnchantment($item, $id, $lvl);
+				$this->main->pce->addEnchantment($item, $id, $lvl);
 			}
 		}
 		if($enchId <= 32 && $enchId >= 0)
