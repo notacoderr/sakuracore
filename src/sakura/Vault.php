@@ -5,9 +5,9 @@ namespace sakura;
 use sakura\core;
 use pocketmine\Player;
 use pocketmine\Server;
-
-use pocketmine\inventory\Inventory;
 use pocketmine\item\Item;
+use pocketmine\inventory\Inventory;
+use pocketmine\item\enchantment\{Enchantment, EnchantmentInstance};
 
 class Vault
 {
@@ -455,8 +455,15 @@ class Vault
 					$rawitem = $this->getItemsInArray($id)[$button];
 					$i = explode(":", $rawitem);
 					$item = Item::get($i[0], $i[1], $i[2])->setCustomName($i[3]);
-					if(null) //soon, will check if the $i[4] (enchantment exists)
+					//example item string: 1:0:2:Precious Stone:1x3_1x4_5x7
+					if($i[4] != "no_enchantment")
 					{
+						$e = explode("_", $i[4]);
+						foreach($e as $en)
+						{
+							$ench = explode("x", $en);
+							$item = $this->enchantItem($item, $ench[0], $ench[1]);
+						}
 					}
 					$player->getInventory()->addItem($item);
 					$this->delItem($id, $button);
@@ -486,6 +493,26 @@ class Vault
 	public function genCode() : string
 	{
 	    return substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyz"), 0, 6);
+	}
+	
+	private function enchantItem(Item $item, $enchId, int $lvl) : Item
+	{
+		if($enchId >= 100 or is_string($enchId))
+		{
+			if(($pce = Server::getInstance()->getPluginManager()->getPlugin("PiggyCustomEnchant")) != null)
+			{
+				$pce->addEnchantment($item, $id, $lvl);
+			}
+		}
+		if($enchId <= 32 && $enchId >= 0)
+		{
+			$enchantment = Enchantment::getEnchantment((int) $enchId);
+			if($enchantment instanceof Enchantment)
+			{
+				$item->addEnchantment( new EnchantmentInstance($enchantment, $lvl) );
+			}
+		}
+		return $item;
 	}
    
 }
