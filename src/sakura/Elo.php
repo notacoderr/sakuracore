@@ -142,6 +142,8 @@ class Elo
 					case "Invader":
 						$this->updateElo($player, "Conqueror", 1, 5); $this->notify($player, 1);
 						break;
+					default: //This is to keep old ranks in track
+						$this->updateElo($player, "Master", 3, 5); $this->notify($player, 1);
 				}
 			}
 		} else {
@@ -182,6 +184,9 @@ class Elo
 					$this->updateElo($player, "Slayer", 1, 50);
 					$this->notify($player, 2);
 					break;
+					
+					default: //This is to keep old ranks in track
+						$this->updateElo($player, "Master", 1, 50); $this->notify($player, 2);
 				}
 			}
 		} else {
