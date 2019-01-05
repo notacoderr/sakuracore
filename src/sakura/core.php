@@ -242,12 +242,12 @@ class core extends PluginBase implements Listener {
 												{
 													foreach($hand->getEnchantments() as $enchantment)
 													{
-														$arr[] = $enchantment->getId(); //W I P
+														var_dump($enchantment);//$arr[] = $enchantment->getId(); //W I P
 													}
 												}
-												$this->vault->addItem($args[1], $hand->getId(), $hand->getDamage(), $hand->getCount());
-												$sender->sendMessage("§l§7[§a!§7]§f Your item was uploaded in the storage!");
-												$sender->getInventory()->setItemInHand( Item::get(0) );
+												//$this->vault->addItem($args[1], $hand->getId(), $hand->getDamage(), $hand->getCount());
+												//$sender->sendMessage("§l§7[§a!§7]§f Your item was uploaded in the storage!");
+												//$sender->getInventory()->setItemInHand( Item::get(0) );
 												$sl = $this->vault->countItems( $args[1] );
 												$mx = $this->vault->getMax( $args[1] );
 												$sender->sendMessage("§l§f". $args[1]. "'s slot: §7[§f $sl / $mx §7]");
