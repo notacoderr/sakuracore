@@ -45,7 +45,7 @@ class core extends PluginBase implements Listener {
 		$this->db->exec("CREATE TABLE IF NOT EXISTS exp (name TEXT PRIMARY KEY COLLATE NOCASE, exp INT, multiplier INT);");
 		$this->db->exec("CREATE TABLE IF NOT EXISTS lvl (name TEXT PRIMARY KEY COLLATE NOCASE, level INT);");
 		
-		$this->db->exec("CREATE TABLE IF NOT EXISTS titles (name TEXT PRIMARY KEY COLLATE NOCASE, titles TEXT, inuse TEXT);");
+		$this->db->exec("CREATE TABLE IF NOT EXISTS titles (name TEXT PRIMARY KEY COLLATE NOCASE, titles BLOB, inuse TEXT);");
 		
 		$this->db->exec("CREATE TABLE IF NOT EXISTS elo (name TEXT PRIMARY KEY COLLATE NOCASE, rank TEXT, div INT, points INT);");
 		
@@ -56,7 +56,7 @@ class core extends PluginBase implements Listener {
 		$this->db->exec("CREATE TABLE IF NOT EXISTS pcompleted (name TEXT PRIMARY KEY COLLATE NOCASE, quests TEXT);");
 		
 		$this->db->exec("CREATE TABLE IF NOT EXISTS classes (name TEXT PRIMARY KEY COLLATE NOCASE, class INT);");
-		$this->db->exec("CREATE TABLE IF NOT EXISTS vault (name TEXT PRIMARY KEY COLLATE NOCASE, items TEXT, max INT, code TEXT, owner TEXT);");
+		$this->db->exec("CREATE TABLE IF NOT EXISTS vault (name TEXT PRIMARY KEY COLLATE NOCASE, items BLOB, max INT, code TEXT, owner TEXT);");
 		try{
 			$this->db->exec("ALTER TABLE vault ADD COLUMN code TEXT default null");
 			$this->db->exec("ALTER TABLE vault ADD COLUMN owner TEXT default null");
