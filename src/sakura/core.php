@@ -21,6 +21,7 @@ use pocketmine\level\level;
 
 use pocketmine\item\Item;
 use pocketmine\inventory\Inventory;
+use pocketmine\item\enchantment\{Enchantment, EnchantmentInstance};
 
 class core extends PluginBase implements Listener {
 
@@ -60,7 +61,7 @@ class core extends PluginBase implements Listener {
 			$this->db->exec("ALTER TABLE vault ADD COLUMN code TEXT default null");
 			$this->db->exec("ALTER TABLE vault ADD COLUMN owner TEXT default null");
 			$this->db->exec("ALTER TABLE exp ADD COLUMN multiplier INT default 0");
-		    	$this->getLogger()->info("Vault > table updated to <ver>.<release>..");
+		    	$this->getLogger()->info("Wudafak");
 		}catch(\ErrorException $ex){
 		}
 		
@@ -237,6 +238,13 @@ class core extends PluginBase implements Listener {
 											$hand = $sender->getInventory()->getItemInHand();
 											if($hand->getId() !== Item::AIR)
 											{
+												if($hand->hasEnchantments())
+												{
+													foreach($hand->getEnchantments() as $enchantment)
+													{
+														$arr[] = $enchantment->getId(); //W I P
+													}
+												}
 												$this->vault->addItem($args[1], $hand->getId(), $hand->getDamage(), $hand->getCount());
 												$sender->sendMessage("§l§7[§a!§7]§f Your item was uploaded in the storage!");
 												$sender->getInventory()->setItemInHand( Item::get(0) );
