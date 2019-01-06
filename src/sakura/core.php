@@ -45,7 +45,7 @@ class core extends PluginBase implements Listener {
 		$this->db->exec("CREATE TABLE IF NOT EXISTS exp (name TEXT PRIMARY KEY COLLATE NOCASE, exp INT, multiplier INT);");
 		$this->db->exec("CREATE TABLE IF NOT EXISTS lvl (name TEXT PRIMARY KEY COLLATE NOCASE, level INT);");
 		
-		$this->db->exec("CREATE TABLE IF NOT EXISTS titles (name TEXT PRIMARY KEY COLLATE NOCASE, titles BLOB, inuse TEXT);");
+		$this->db->exec("CREATE TABLE IF NOT EXISTS titles (name TEXT PRIMARY KEY COLLATE NOCASE, titles BLOB, inuse BLOB);");
 		
 		$this->db->exec("CREATE TABLE IF NOT EXISTS elo (name TEXT PRIMARY KEY COLLATE NOCASE, rank TEXT, div INT, points INT);");
 		
