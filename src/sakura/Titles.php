@@ -49,7 +49,7 @@ class Titles
 		$titles .= "@". $old;
 		$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO titles (name, titles, inuse) VALUES (:name, :titles, :inuse);");
 		$stmt->bindValue(":name", $name);
-    	$stmt->bindValue(":titles", $titles);
+		$stmt->bindValue(":titles", $titles);
 		$stmt->bindValue(":inuse", $title);
 		$result = $stmt->execute();
   	}
@@ -82,8 +82,10 @@ class Titles
 			{
 				$button = $data[0];
 				$arr = $this->getAllTitles($player);
-				$this->useTitle($player, $arr[ $button ]);
-				$player->sendMessage("§f§Title selected: ".  $arr[ $button ]);
+				$title = $arr[ $button ];
+				var_dump($title);
+				$this->useTitle($player, $title);
+				$player->sendMessage("§f§lTitle selected: ".  $title);
 			}
 		});
 	    $form->setTitle('§l§fTitle Picker');
