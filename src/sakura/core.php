@@ -179,6 +179,9 @@ class core extends PluginBase implements Listener {
 							unset($args[0]);
 							$title = implode(" ", $args);
 							$this->titles->addTitle($target, $title);
+							$t = TextFormat::BOLD. $title;
+							$s = TextFormat::AQUA. "You have earned a new [Title]";
+							$target->addTitle($t, $s);
 							return true;
 						} else {
 							$sender->sendMessage("Player must be online");
