@@ -81,9 +81,8 @@ class Titles
 			if (isset($data[0]))
 			{
 				$button = $data[0];
-				$arr = $this->getAllTitles($player);
+				$arr = explode("@", $this->getAllTitles($player));
 				$title = $arr[ $button ];
-				var_dump($title);
 				$this->useTitle($player, $title);
 				$player->sendMessage("§f§lTitle selected: ".  $title);
 			}
