@@ -172,7 +172,7 @@ class Vault
 			}
 		});
 		$form->setTitle("§l§fSecured Cloud Storage");
-		$form->setContent("§l§fVersion: §70.5-beta§r\n§l§fVault(s): §7". $this->countVaults($player->getName()). "§r\n§7[!] Now SUPPORTS Vanilla Enchantments!! Custom Enchantments are is till beta");//
+		$form->setContent("§l§fVersion: §70.5-beta§r\n§l§fVault(s): §7". $this->countVaults($player->getName()). "§r\nf[!] Now SUPPORTS Vanilla Enchantments!! Custom Enchantments are still in beta");//
 		$form->addButton("§fRegister new Vault"); //0
 		$form->addButton("§fAccess a Vault"); //1
 		$form->addButton("§fAccess other's Vault"); //2
@@ -503,17 +503,21 @@ class Vault
 			if($this->main->pce != null)
 			{
 				$this->main->pce->addEnchantment($item, $enchId, $lvl);
+				return $item;
 			}
 		}
+		
 		if($enchId <= 32 && $enchId >= 0)
 		{
 			$enchantment = Enchantment::getEnchantment((int) $enchId);
 			if($enchantment instanceof Enchantment)
 			{
-				$item->addEnchantment( new EnchantmentInstance($enchantment, $lvl) );
+				return $item->addEnchantment( new EnchantmentInstance($enchantment, $lvl) );
 			}
+			
+		} else {
+			return $item;
 		}
-		return $item;
 	}
    
 }
