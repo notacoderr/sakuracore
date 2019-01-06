@@ -501,7 +501,7 @@ class Vault
 		{
 			if($this->main->pce != null)
 			{
-				$this->main->pce->addEnchantment($item, $id, $lvl);
+				$this->main->pce->addEnchantment($item, $enchId, $lvl);
 			}
 		}
 		if($enchId <= 32 && $enchId >= 0)
