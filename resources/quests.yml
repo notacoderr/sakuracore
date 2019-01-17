@@ -1,4 +1,4 @@
-collectLogs1:
+x1:
   level: 1
   title: "Collecting Wood I"
   desc: "Gather 5 Oak woods: 73 Exp, 53 golds"
@@ -9,7 +9,7 @@ collectLogs1:
     - give "{player}" stick 1
     - give "{player}" 5 2
 
-woodSword:
+x2:
   level: 1
   title: "Sword Crafter"
   desc: "Craft a wooden sword: 83 exp, 75 gold"
@@ -18,7 +18,7 @@ woodSword:
     - sys "{player}" exp 83
     - givemoney "{player}" 75
 
-bunnyHunt1:
+x3:
   level: 2
   title: "Bunny Hunter I"
   desc: "Collect 3 Rabbit Hide: 23 exp, 50 gold"
@@ -27,7 +27,7 @@ bunnyHunt1:
     - sys "{player}" exp 23
     - givemoney "{player}" 50
 
-bunnyHunt2:
+x4:
   level: 2
   title: "Bunny Hunter II"
   desc: "Collect 5 Rabbit Foot: 50 exp, 50 gold"
