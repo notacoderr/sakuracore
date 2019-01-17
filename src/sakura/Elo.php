@@ -18,11 +18,12 @@ class Elo
 	  /*
 	  * Player $player
 	  *	RANK:
-	  *	Slayer
-	  *	Master
-	  *	Destroyer
-	  *	Invader
-	  *	Conqueror
+	  * Iron
+	  *	Silver
+	  *	Gold
+	  *	Platinum
+	  *	Titanium
+	  *	Plutonium
 	  */
   
   	public function getRank(Player $player) : string
@@ -36,25 +37,39 @@ class Elo
 	{
 		switch ($this->getRank($player))
 		{
-			case "Slayer": return "Slyr"; break;
-			case "Master": return "Mstr"; break;
-			case "Destroyer": return "Dtyr"; break;
-			case "Invader": return "Invr"; break;
-			case "Conqueror": return "Conqr"; break;
+			case "Iron": return "Irn"; break;
+			case "Silver": return "Slv"; break;
+			case "Gold": return "Gld"; break;
+			case "Platinum": return "Pla"; break;
+			case "Titanium": return "Ttn"; break;
+			case "Plutonium": return "Plu"; break;
 		}
 	}
 	
-	public function getRankIcon(Player $player) : string
+	public function getDivRoman(Player $player) : string
+	{
+		switch ($this->getDiv($player))
+		{
+			case 1: return "I"; break;
+			case 2: return "II"; break;
+			case 3: return "III"; break;
+			case 4: return "IV"; break;
+			case 5: return "V"; break;
+		}
+	}
+	
+	/*public function getRankIcon(Player $player) : string
 	{
 		switch ($this->getRank($player))
 		{
-			case "Slayer": return "☗"; break;
-			case "Master": return "♞"; break;
-			case "Destroyer": return "♜"; break;
-			case "Invader": return "♚"; break;
-			case "Conqueror": return "♛"; break;
+			case "Iron": return "◬"; break;
+			case "Silver": return "⟁"; break;
+			case "Gold": return "⧋"; break;
+			case "Platinum": return "Pla"; break;
+			case "Titanium": return "Ttn"; break;
+			case "Plutonium": return "Plu"; break;
 		}
-	}
+	}*/
   
     	public function getDiv(Player $player) : int
 	{
@@ -75,8 +90,8 @@ class Elo
       		$name = $player->getName();
       		$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO elo (name, rank, div, points) VALUES (:name, :rank, :div, :points);");
       		$stmt->bindValue(":name", $name);
-		$stmt->bindValue(":rank", $this->getRank($player));
-		$stmt->bindValue(":div", $this->getDiv($player));
+			$stmt->bindValue(":rank", $this->getRank($player));
+			$stmt->bindValue(":div", $this->getDiv($player));
       		$stmt->bindValue(":points", $point);
       		$result = $stmt->execute();
 	}
@@ -120,9 +135,9 @@ class Elo
 		$div = $this->getDiv($player);
 		$rank = $this->getRank($player);
 		$new =  $old + $i;
-		if($rank !== "Conqueror" and $new >= 100)
+		if($rank != "Plutonium" and $new >= 100)
 		{
-			if($div >= 2)
+			if($div > 1)
 			{
 				$this->updateDiv($player, (int) $div - 1);
 				$this->updatePoints($player, 5);
@@ -130,20 +145,23 @@ class Elo
 			} else {
 				switch($rank)
 				{
-					case "Slayer": 
-						$this->updateElo($player, "Master", 3, 5); $this->notify($player, 1);
+					case "Iron": 
+						$this->updateElo($player, "Silver", 5, 7); $this->notify($player, 1);
 						break;
-					case "Master":
-						$this->updateElo($player, "Destroyer", 3, 5); $this->notify($player, 1);
+					case "Silver":
+						$this->updateElo($player, "Gold", 5, 7); $this->notify($player, 1);
 						break;
-					case "Destroyer": 
-						$this->updateElo($player, "Invader", 1, 5); $this->notify($player, 1);
+					case "Gold": 
+						$this->updateElo($player, "Platinum", 5, 7); $this->notify($player, 1);
 						break;
-					case "Invader":
-						$this->updateElo($player, "Conqueror", 1, 5); $this->notify($player, 1);
+					case "Platinum":
+						$this->updateElo($player, "Titanium", 3, 7); $this->notify($player, 1);
+						break;
+					case "Titanium":
+						$this->updateElo($player, "Plutonium", 1, 3); $this->notify($player, 1);
 						break;
 					default: //This is to keep old ranks in track
-						$this->updateElo($player, "Master", 3, 5); $this->notify($player, 1);
+						$this->updateElo($player, "Iron", 5, 5); $this->notify($player, 1);
 				}
 			}
 		} else {
@@ -159,15 +177,22 @@ class Elo
 		$new =  $old - $i;
 		if($new <= 0)
 		{
-			if($rank === "Conqueror")
+			if($rank === "Plutonium")
 			{
-				$this->updateElo($player, "Invader", 1, 50); $this->notify($player, 2);
+				$this->updateElo($player, "Titanium", 1, 25); $this->notify($player, 2);
 			}
-			if($rank === "Invader")
+			if($rank === "Titanium")
 			{
-				$this->updateElo($player, "Destroyer", 1, 50); $this->notify($player, 2);
+				if($div < 3)
+				{
+					$this->updateDiv($player, (int) $div + 1);
+					$this->updatePoints($player, 50);
+					$this->notify($player, 6);
+				} else {
+					$this->updateElo($player, "Platinum", 1, 30); $this->notify($player, 2);
+				}
 			}
-			if($div <= 2)
+			if($div < 5)
 			{
 				$this->updateDiv($player, (int) $div + 1);
 				$this->updatePoints($player, 50);
@@ -175,18 +200,23 @@ class Elo
 			} else {
 				switch($rank)
 				{
-					case "Destroyer": 
-					$this->updateElo($player, "Master", 1, 50);
+					case "Platinum": 
+					$this->updateElo($player, "Gold", 1, 30);
 					$this->notify($player, 2);
 					break;
 						
-					case "Master":
-					$this->updateElo($player, "Slayer", 1, 50);
+					case "Gold":
+					$this->updateElo($player, "Silver", 1, 30);
+					$this->notify($player, 2);
+					break;
+					
+					case "Silver":
+					$this->updateElo($player, "Iron", 1, 30);
 					$this->notify($player, 2);
 					break;
 					
 					default: //This is to keep old ranks in track
-						$this->updateElo($player, "Master", 1, 50); $this->notify($player, 2);
+						$this->updateElo($player, "Iron", 1, 50); $this->notify($player, 2);
 				}
 			}
 		} else {
