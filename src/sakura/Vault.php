@@ -92,11 +92,12 @@ class Vault
  	public function addItem(string $id, int $iid, int $meta, int $count, string $name, $enchantment) : void
 	{
 		$init = $this->getItems($id);
-		if(is_string($init) and $init != "") #if( strlen($this->getItems($id)) > 5 )
+		$package = explode("," , $init);
+		if($package != null or !empty($package))
 		{
-			$items = (string) $this->getItems($id). ",". $iid. ":". $meta. ":". $count. ":". $name. ":". $enchantment;
-		} else {
-			$items = (string) $this->getItems($id). $iid. ":". $meta. ":". $count. ":". $name. ":". $enchantment;
+			$new = $iid. ":". $meta. ":". $count. ":". $name. ":". $enchantment;
+			array_push($new, $package);
+			$items = implode("," , $package);
 		}
 		$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO vault (name, items, max, code, owner) VALUES (:name, :items, :max,:code, :owner);");
 		$stmt->bindValue(":name", $id);
@@ -106,7 +107,7 @@ class Vault
 		$stmt->bindValue(":owner", $this->getOwner($id));
 		$result = $stmt->execute();
    	}
-   
+
  	public function delItem(string $id, int $x) : void
 	{
 		$items = $this->getItemsInArray($id);
@@ -493,32 +494,33 @@ class Vault
 	
 	public function genCode() : string
 	{
-	    return substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyz"), 0, 6);
+	    return substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyz"), 0, 4);
 	}
 	
-	private function enchantItem(Item $item, $enchId, int $lvl) : Item
+	private function enchantItem(Item $item, int $enchId, int $lvl) : Item
 	{
-		$enchId = (int) $enchId;
-		if($enchId >= 100)
+		if(is_integer($enchId))
 		{
-			if($this->main->pce != null)
+			if($enchId >= 100)
 			{
-				$this->main->pce->addEnchantment($item, $enchId, $lvl);
+				if($this->main->pce != null)
+				{
+					$this->main->pce->addEnchantment($item, $enchId, $lvl);
+				}
+				return $item;
+			}
+			
+			if($enchId <= 32 && $enchId >= 0)
+			{
+				$enchantment = Enchantment::getEnchantment($enchId);
+				if($enchantment instanceof Enchantment)
+				{
+					$item->addEnchantment(new EnchantmentInstance($enchantment, $lvl));
+				}
 				return $item;
 			}
 		}
-		
-		if($enchId <= 32 && $enchId >= 0)
-		{
-			$enchantment = Enchantment::getEnchantment((int) $enchId);
-			if($enchantment instanceof Enchantment)
-			{
-				return $item->addEnchantment( new EnchantmentInstance($enchantment, $lvl) );
-			}
-			
-		} else {
-			return $item;
-		}
+		return $item;
 	}
    
 }
