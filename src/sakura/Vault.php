@@ -91,7 +91,8 @@ class Vault
 	
  	public function addItem(string $id, int $iid, int $meta, int $count, string $name, $enchantment) : void
 	{
-		if( strlen($this->getItems($id)) > 5 )
+		$init = $this->getItems($id);
+		if(is_string($init) and $init != "") #if( strlen($this->getItems($id)) > 5 )
 		{
 			$items = (string) $this->getItems($id). ",". $iid. ":". $meta. ":". $count. ":". $name. ":". $enchantment;
 		} else {

@@ -247,7 +247,7 @@ class core extends PluginBase implements Listener {
 													$ar = [];
 													foreach($hand->getEnchantments() as $enchantment)
 													{
-														$ar[] = (string) $enchantment->getId(). "x". $enchantment->getLevel();
+														$ar[] = (int) $enchantment->getId(). "x". $enchantment->getLevel();
 													}
 													$ench = implode("_", $ar);
 												}
@@ -387,14 +387,6 @@ class core extends PluginBase implements Listener {
 		{
 			$this->register( $event->getPlayer() );
 		}
-		if(!$this->titles->hasTitles( $event->getPlayer() ))
-		{
-			$stmt = $this->db->prepare("INSERT OR REPLACE INTO titles (name, titles, inuse) VALUES (:name, :titles, :inuse);");
-			$stmt->bindValue(":name", $event->getPlayer()->getName() );
-			$stmt->bindValue(":titles", "§7{ rookie }");
-			$stmt->bindValue(":inuse", "§7> §fPCP Newbie §7<");
-			$result = $stmt->execute();
-		}
 	}
 	
 	public function hasSpace(Player $player) : bool
@@ -429,6 +421,12 @@ class core extends PluginBase implements Listener {
 		$stmt = $this->db->prepare("INSERT OR REPLACE INTO classes (name, class) VALUES (:name, :class);");
 		$stmt->bindValue(":name", $player->getName() );
 		$stmt->bindValue(":class", "Recruit");
+		$result = $stmt->execute();
+		
+		$stmt = $this->db->prepare("INSERT OR REPLACE INTO titles (name, titles, inuse) VALUES (:name, :titles, :inuse);");
+		$stmt->bindValue(":name", $event->getPlayer()->getName() );
+		$stmt->bindValue(":titles", "§7§lI Love Sakura");
+		$stmt->bindValue(":inuse", "§7§l_Rookie_");
 		$result = $stmt->execute();
 	}
 		
