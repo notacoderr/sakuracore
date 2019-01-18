@@ -49,6 +49,11 @@ class Titles
 		$stmt->bindValue(":titles", implode("@", $titles));
 		$stmt->bindValue(":inuse", $title);
 		$result = $stmt->execute();
+		
+		if (($pc = Server::getInstance()->getPluginManager()->getPlugin("PureChat")) != null)
+		{
+			$player->setNameTag($pc->getNameTag($player));
+		}
   	}
   
 	public function addTitle(Player $player, string $x) : void
@@ -126,7 +131,7 @@ class Titles
 					$name = $player->getName();
 					$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO titles (name, titles, inuse) VALUES (:name, :titles, :inuse);");
 					$stmt->bindValue(":name", $name);
-					$stmt->bindValue(":titles", $titles);
+					$stmt->bindValue(":titles", implode("@", $titles));
 					$stmt->bindValue(":inuse", $this->getTitle($player));
 					$result = $stmt->execute();
 					$player->sendMessage("§f§lTitle has been deleted: ".  $title);
