@@ -41,12 +41,12 @@ class Titles
 		return $resultArr["titles"];
 	}
  
- 	public function useTitle(Player $player, string $title, string $titles) : void
+ 	public function useTitle(Player $player, string $title, array $titles) : void
 	{
 		$name = $player->getName();
 		$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO titles (name, titles, inuse) VALUES (:name, :titles, :inuse);");
 		$stmt->bindValue(":name", $name);
-		$stmt->bindValue(":titles", $titles);
+		$stmt->bindValue(":titles", implode("@", $titles));
 		$stmt->bindValue(":inuse", $title);
 		$result = $stmt->execute();
   	}
