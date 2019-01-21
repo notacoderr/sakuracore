@@ -17,7 +17,7 @@ metabreaker:
   class: "General"
   level: 1
   rare: "ultra"
-  enchantment: [Deathbringer:3:custom,Vampire:2:custom,Sharpness:10:nope]
+  enchantment: ['Deathbringer:3:custom','Vampire:2:custom','Sharpness:10:nope']
   
 ####################################################### Common #######################################################
 c1:
@@ -27,7 +27,7 @@ c1:
   class: "General"
   level: 1
   rare: "common"
-  enchantment: [Charge:1:custom, Sharpness:1:nope]
+  enchantment: ['Charge:1:custom', 'Sharpness:1:nope']
   
 c2:
   item: 267
@@ -36,7 +36,7 @@ c2:
   class: "General"
   level: 1
   rare: "common"
-  enchantment: [307:2:custom, Power:1:nope] #Piercing = 307
+  enchantment: ['307:2:custom', 'Power:1:nope'] #Piercing = 307
   
 ####################################################### Advance #######################################################
 a1:
@@ -46,7 +46,7 @@ a1:
   class: "Assassin"
   level: 3
   rare: "advance"
-  enchantment: [Deathbringer:1:custom, Backstab:3:custom, Sharpness:2:nope]
+  enchantment: ['Deathbringer:1:custom', 'Backstab:3:custom', 'Sharpness:2:nope']
   
 ####################################################### EPIC #######################################################
 e1:
@@ -56,7 +56,7 @@ e1:
   class: "Warrior"
   level: 1
   rare: "epic"
-  enchantment: [ Deathbringer:1:custom, Vampire:1:custom, Sharpness:2:nope ]
+  enchantment: ['Deathbringer:1:custom', 'Vampire:1:custom', 'Sharpness:2:nope']
 
 e2:
   item: 276
@@ -65,4 +65,4 @@ e2:
   class: "Warrior"
   level: 1
   rare: "epic"
-  enchantment: [Deathbringer:3:custom, Vampire:2:custom, Sharpness:3:nope]
+  enchantment: ['Deathbringer:3:custom', 'Vampire:2:custom', 'Sharpness:3:nope']
