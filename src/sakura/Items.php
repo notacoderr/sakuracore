@@ -20,7 +20,7 @@ class Items
     }
     public function isCompatible(Player $player, Item $item) : bool
     {
-	 if($player->hasPermission("corex.item.master")
+	 if($player->hasPermission("corex.item.master"))
 	 {
 		 return true;
 	 }
