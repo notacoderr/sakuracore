@@ -38,6 +38,12 @@ class Datas
 			  $resultArr = $result->fetchArray(SQLITE3_ASSOC);
 			  return $resultArr[ "exp" ];
 			break;
+			
+			case 'multiplier':
+			  $result = $this->main->db->query("SELECT * FROM exp WHERE name = '$name';");
+			  $resultArr = $result->fetchArray(SQLITE3_ASSOC);
+			  return $resultArr[ "multiplier" ];
+			break;
 
 			case 'gems':
 			  $result = $this->main->db->query("SELECT * FROM gem WHERE name = '$name';");
@@ -49,7 +55,7 @@ class Datas
   
  	public function addVal(Player $player, string $val, int $add) : void
 	{
-    		$name = $player->getName();
+        $name = $player->getName();
 		switch ($val)
 		{
 		    case 'level':
