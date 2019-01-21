@@ -275,271 +275,135 @@ class core extends PluginBase implements Listener {
 			case "takegem":
 
 				if ($sender instanceof Player)
-
 				{
-
 					$sender->sendMessage("§cCan only be used it §f§lCONSOLE");
-
 					return true;
-
 				}
-
 				if(isset($args[0])){  //realc
-
 					$target = $this->getServer()->getPlayer($args[0]);
-
 					if(!$target instanceof Player)
-
 					{
-
 						$sender->sendMessage("Player is not online");
-
 						return true;
-
 					}
-
 				}
-
 				if(!$this->isRecorded($target)){
-
 					  $sender->sendMessage("No Record found for $target");
-
 					  return true;
-
 				}
-
 				if (!is_numeric($args[1]) )
-
 				{
-
 					$sender->sendMessage("must be an integer");
-
 					return true;
-
 				}
-
 				$this->data->takeGem($target, $args[1]);
-
 			break;
-
-			
 
 			case "mytitles":
-
 				if ($sender instanceof Player)
-
 				{
-
 					$this->titles->sendForm($sender);
-
 				}
-
 			break;
-
-			
 
 			case "givetitle":
-
 				if ($sender instanceof Player)
-
 				{
-
-					
-
 					if($sender->isOp())
-
 					{
-
 						if(($target = $this->getServer()->getPlayer($args[0])) instanceof Player)
-
 						{
-
 							unset($args[0]);
-
 							$title = implode(" ", $args);
-
 							$this->titles->addTitle($target, $title);
-
 							$t = TextFormat::BOLD. $title;
-
 							$s = TextFormat::AQUA. "You have earned a new [Title]";
-
 							$target->addTitle($t, $s);
-
 							return true;
-
 						} else {
-
 							$sender->sendMessage("Player must be online");
-
 							return true;
-
 						}
-
 					} else {
-
 						return true;
-
 					}
-
 				} else {
-
 					if(($target = $this->getServer()->getPlayer($args[0])) instanceof Player)
-
 					{
-
 						unset($args[0]);
-
 						$title = implode(" ", $args);
-
 						$this->titles->addTitle($target, $title);
-
 						return true;
-
 					} else {
-
 						$sender->sendMessage("Player must be online");
-
 						return true;
-
 					}
-
 				}
-
 			break;
-
-				 
 
 			case "toplvl": //by @PTKDrake
-
 				if(!isset($args[0])){
-
 					$sender->sendMessage("Invalid usage, /toplvl (page)");
-
 					return true;
-
 				}
-
 				if(!is_numeric($args[0])){
-
 					$sender->sendMessage("must be an integer");
-
 					return true;
-
 				}
-
 				$sender->sendMessage($this->getTop($args[0]));
-
 			break;
 
-				
-
 			case "cloud":
-
 				if(!$sender instanceof Player)
-
 				{
-
 					return true;
-
 				}
-
 				if($sender->isCreative())
-
 				{
-
 					$sender->sendMessage("Creative mode restricted"); return true;
-
 				}
-
 				if(isset($args[0]))
-
 				{
-
 					switch($args[0])
-
 					{
-
 						case "upload": case "up":
-
 							if(isset($args[1]))
-
 							{
-
 								if($this->vault->storageExists($args[1]))
-
 								{
-
 									if($sender->getName() === $this->vault->getOwner($args[1]))
-
 									{
-
 										if( $this->vault->countItems($args[1]) < $this->vault->getMax($args[1]) ) //to be sure, x:x:x (5 chars)
-
 										{
-
 											$hand = $sender->getInventory()->getItemInHand();
-
 											if($hand->getId() !== Item::AIR)
-
 											{
-
 												$ench = "no_enchantment";
-
 												if($hand->hasEnchantments())
-
 												{
-
 													$ar = [];
-
 													foreach($hand->getEnchantments() as $enchantment)
-
 													{
-
 														$ar[] = ((int) $enchantment->getId()). "x". ((int) $enchantment->getLevel());
-
 													}
-
 													$ench = implode("_", $ar);
-
 												}
-
-												
-
 												$this->vault->addItem($args[1], $hand->getId(), $hand->getDamage(), $hand->getCount(), $hand->getName() , $ench);
-
-												
-
 												$sender->sendMessage("§l§7[§a!§7]§f Your item was uploaded in the storage!");
-
 												$sender->getInventory()->setItemInHand( Item::get(0) );
-
 												$sl = $this->vault->countItems( $args[1] );
-
 												$mx = $this->vault->getMax( $args[1] );
-
 												$sender->sendMessage("§l§f". $args[1]. "'s slot: §7[§f $sl / $mx §7]");
-
 											} else {
-
 												$sender->sendTip("§6§lPlease hold an item..");
-
 											}
-
 										} else {
-
 											$sender->sendMessage("§l§7[§e!§7]§f". $args[1]. "'s storage is full..");
-
 										}
-
 									} else {
-
 										if(isset($args[2]))
-
 										{
-
 											if($this->vault->verifyCode($args[1], $args[2]))
-
 											{
 
 												$hand = $sender->getInventory()->getItemInHand();
@@ -627,137 +491,65 @@ class core extends PluginBase implements Listener {
 			
 
 			case "quest":
-
 				/*
 
 				*args[0] = player name
 
 				*/
-
-				
-
 				if ($sender instanceof Player)
-
 				{
-
 					$this->quests->sendQuestApplyForm($sender);
-
 					return true;
-
 				}
-
-				
-
 				switch($args[0]){
-
 					case "complete":
-
 					if (Server::getInstance()->getPlayer($args[1]) instanceof Player)
-
 					{
-
 						$this->quests->isCompleted( Server::getInstance()->getPlayer($args[1]) );
-
 						break;
-
 					}
-
 					break;
-
-						
-
 					case "sendlist":
-
 						$this->quests->sendQuestApplyForm(Server::getInstance()->getPlayer($args[1]));
-
 					break;
-
-						
-
 					/*case "info":
 
 						$this->quests->sendQuestInfo(Server::getInstance()->getPlayer($args[1]), "collectLogs1");
 
 					break;*/
-
 				}
-
 			break;
-
-				
-
 			case "+":
-
 				/**
-
 				*Args 0 = player name
-
 				*Args 1 = item serial
-
-				*Args 2 = item serial
-
 				**/
-
 				if (count($args) <> 2)
-
 				{
-
 					$sender->sendMessage("Invalid usage, /+ <playername> <serial>");
-
 					return true;
-
 				}
-
-				if( !array_key_exists( $args[1], $this->itemData->getAll() ))
-
+				if(!array_key_exists($args[1], $this->itemData->getAll()))
 				{
-
 					$sender->sendMessage("Serial: " .$args[1]. " does not exist");
-
 					return true;
-
 				}
-
-				
-
-				$target = $this->getServer()->getPlayer($args[0]);
-
-					
-
-				if(!$target instanceof Player)
-
+				if(!($target = $this->getServer()->getPlayer($args[0])) instanceof Player)
 				{
-
-					$sender->sendMessage("Player is not online");
-
+					$sender->sendMessage("Failed to produce item: ". $args[1]. ", Player is not available");
 					return true;
-
 				}
-
-
-
-				if($this->hasSpace($target) == false)
-
+				$this->items->produceItem($args[1]);
+				/*if($this->hasSpace($target) == false)
 				{
-
 					$target->sendMessage("No slot available");
-
 					return true;
-
 				}
-
-				
-
 				$product = $this->items->createItem( $args[1] );
-
 				$target->getInventory()->addItem( $product );
-
-				
-
+				*/
 			break;
-
 		}
-
 		return true;
 
 	}
