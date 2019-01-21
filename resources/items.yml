@@ -1,49 +1,68 @@
-x00:
+#TYPE | STONE | IRON  | GOLD  | DIAMOND | CHAIN | LEATHER
+#Sword  272     267     283     276
+#Shovel 273     268     284     277
+#Pick   274     269     285     278
+#Axe    275     270     286     279
+#Helm           306     314     310       302     298
+#Chstpt         307     315     311       303     299
+#Leggngs        308     316     312       304     300
+#Boots          309     317     313       305     301
+#
+#Bow - 261
+#
+metabreaker:
   item: 280
   name: "Meta Breaker"
   info: "Freakin super op stick."
   class: "General"
   level: 1
   rare: "ultra"
-  enchantment:
-    - Deathbringer:3:custom
-    - Vampire:2:custom
-    - Sharpness:10:nope
-
-#Iron Sword
-broadsword:
+  enchantment: [Deathbringer:3:custom,Vampire:2:custom,Sharpness:10:nope]
+  
+####################################################### Common #######################################################
+c1:
   item: 267
   name: "Broadsword"
   info: "Standard Sword for all, extra damage when sprinting."
   class: "General"
   level: 1
   rare: "common"
-  enchantment:
-    - Charge:1:custom
-    - Sharpness:1:nope
-    
-lightningfury:
+  enchantment: [Charge:1:custom, Sharpness:1:nope]
+  
+c2:
+  item: 267
+  name: "Long Bow"
+  info: "Extra range and damage compare to normal bow."
+  class: "General"
+  level: 1
+  rare: "common"
+  enchantment: [307:2:custom, Power:1:nope] #Piercing = 307
+  
+####################################################### Advance #######################################################
+a1:
   item: 267
   name: "Pulverizer"
   info: "Increased damage + extra damage on backstab."
-  class: "Warrior"
+  class: "Assassin"
   level: 3
   rare: "advance"
-  enchantment:
-    - Deathbringer:1:custom
-    - Backstab:3:custom
-    - Sharpness:2:nope
-
-#Diamond Sword
-alphabreaker:
+  enchantment: [Deathbringer:1:custom, Backstab:3:custom, Sharpness:2:nope]
+  
+####################################################### EPIC #######################################################
+e1:
   item: 276
-  name: "Alpha Breaker"
+  name: "§cAlpha §fBreaker"
   info: "Prototype sword, Increased damage + partial healing."
-  class: "Brute"
+  class: "Warrior"
   level: 1
   rare: "epic"
-  enchantment:
-    - Deathbringer:2:custom
-    - Vampire:1:custom
-    - Sharpness:4:nope
+  enchantment: [ Deathbringer:1:custom, Vampire:1:custom, Sharpness:2:nope ]
 
+e2:
+  item: 276
+  name: "§cAlpha §fBreaker II"
+  info: "Enhanced edition, Greater damage and healing."
+  class: "Warrior"
+  level: 1
+  rare: "epic"
+  enchantment: [Deathbringer:3:custom, Vampire:2:custom, Sharpness:3:nope]
