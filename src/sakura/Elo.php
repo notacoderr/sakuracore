@@ -127,6 +127,10 @@ class Elo
 		$stmt->bindValue(":div", $div);
 		$stmt->bindValue(":points", $point);
       		$result = $stmt->execute();
+		if (($pc = $this->main->getServer()->getPluginManager()->getPlugin("PureChat")) != null)
+		{
+			$player->setNameTag($pc->getNameTag($player));
+		}
  	}
 
 	public function increasePoints(Player $player, int $i) : void
