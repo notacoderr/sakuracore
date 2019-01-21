@@ -19,8 +19,9 @@ class calculateExp
 		$base = (int) $this->main->settings->get("baseExp");
 		$oldExp = (int) $this->main->data->getVal($player, "exp");
 		$plevel = (int) $this->main->data->getVal($player, "level");
-		$multi = (double) ($this->main->data->getVal($player, "multiplier") / 100);
-		$bonus = (int) ($expe * $multi);
+		$multi = (int) $this->main->data->getVal($player, "multiplier");
+		$multi2 = (double) ($multi / 100);
+		$bonus = (int) ($expe * $multi2);
 		$newExp = (int) ($bonus + $expe);
 		$experience = (int) ($newExp + $oldExp);
 		$goal = $base * $plevel;
@@ -29,7 +30,6 @@ class calculateExp
 			$extra = $experience - $goal;
 			$Ngoal = $goal + $base;
 			$i = 0;
-      
 			do
 			{
 				$i += 1;
@@ -45,19 +45,25 @@ class calculateExp
       
 			$player->addTitle("§l§fLevel UP §7[§6 $f §7]", "§fNext Level on §7[§f $extra §7/§d $Ngoal §7");
       
-			$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO exp (name, exp) VALUES (:name, :exp);");
+			$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO exp (name, exp, multiplier) VALUES (:name, :exp, :multiplier);");
 			$stmt->bindValue(":name", $player->getName() );
 			$stmt->bindValue(":exp", $extra);
+			$stmt->bindValue(":multiplier", $multi);
 			$result = $stmt->execute();
+			if (($pc = $this->main->getServer()->getPluginManager()->getPlugin("PureChat")) != null)
+			{
+				$player->setNameTag($pc->getNameTag($player));
+			}
+
 		} else {
-			$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO exp (name, exp) VALUES (:name, :exp);");
+			$stmt = $this->main->db->prepare("INSERT OR REPLACE INTO exp (name, exp, multiplier) VALUES (:name, :exp, :multiplier);");
 			$stmt->bindValue(":name", $player->getName() );
 			$stmt->bindValue(":exp", $experience);
+			$stmt->bindValue(":multiplier", $multi);
 			$result = $stmt->execute();
 		}
 		$player->sendTip("§a+ ". $newExp. " §7exp");
-		$player->sendPopup("§f". $expe. " §7+§f ". $bonus. " §7(". $multi. "% bonus)");
-		//$player->sendMessage("§fYou received §7". $expe. " §f+§7 ". $bonus. " (". $multi. "% bonus)");
+		$player->sendPopup("§f". $expe. " §7+§f ". $bonus. " §7(§f". $multi. "% bonus§7)");
 	}
 
 }
