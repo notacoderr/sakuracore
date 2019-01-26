@@ -57,7 +57,6 @@ class core extends PluginBase implements Listener {
 		$this->items = new Items($this); //Item Handler
 		$this->data = new Datas($this); //Data Value Handler
 		$this->elo = new Elo($this); //Elo Handler
-
 		if(Server::getInstance()->getPluginManager()->getPlugin("PiggyCustomEnchants") !== null ){
 			$this->pce = Server::getInstance()->getPluginManager()->getPlugin("PiggyCustomEnchants");
 		}
@@ -468,34 +467,38 @@ class core extends PluginBase implements Listener {
 		return empty($array) == false;
 	}
 
-	public function getTop($amount) : string //by @PTKDrake
+	public function getTopBy(string $type) : string
 	{
-		$result = $this->db->query("SELECT * FROM lvl ORDER BY level DESC;");
-		$resultArr = $result->fetchArray(SQLITE3_ASSOC);
-		arsort($resultArr);
-		$all = [];
-		$i = 1;
-		$max = count($all) / 5;
-		$page = (int) min ($max, max(1, $amount));
-		foreach($resultArr as $name => $level){
-			$current = (int) ceil($n / 5);
-			if($current === $page){
-
-				$all[$i] = [$name, $point];
-			}elseif($current > $page){
-
-				break;
-
-			}
-			$i += 1;
+		$i = 0;
+		$string = "";
+		switch($type)
+		{
+			case "level":
+				$result = $this->db->query("SELECT * FROM lvl ORDER BY level DESC LIMIT 10;");
+				while ($resultArr = $result->fetchArray(SQLITE3_ASSOC))
+				{
+					$name = $resultArr['name'];
+					$level = $resultArr['level'];
+					$num = $i + 1;
+					$string .= "§6§l{$num} > §r§c{$name} §fLv:§7{$level} \n";
+					$i = $i + 1;
+				}
+			break;
+			case "elo":
+				$result = $this->db->query("SELECT * FROM elo ORDER BY points DESC LIMIT 10;");
+				while ($resultArr = $result->fetchArray(SQLITE3_ASSOC))
+				{
+					if($resultArr['rank'] == "Plutonium")
+					{
+						$name = $resultArr['name'];
+						$points = $resultArr['points'];
+						$num = $i + 1;
+						$string .= "§6§l{$num} > §r§c{$name} §f- §7{$points} \n";
+						$i = $i + 1;
+					}
+				}
+			break;
 		}
-		$string = "§l§bTop Point §e[".$page."/".$max."]\n";
-		foreach($all as $i => $data){
-
-			$string .= "§l".$i." > §6".$data[0]." §fLv. ".$data[1]." \n";
-
-		}
-		$string .= "§6Type: /toplvl ". ($page + 1). " to see next page";
 		return $string;
 	}
 }
