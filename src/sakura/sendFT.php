@@ -21,7 +21,7 @@ class sendFT extends Task
   
 	public function onRun(int $currentTick)
   	{
-		foreach($this->worlds as $world => $coords)
+		foreach($this->worlds as list($world, $coords))
     		{
 		      $xyzv = explode(":", $coords);
 		      $v3 = new Vector3((float) $xyzv[0],(float) $xyzv[1],(float) $xyzv[2]);
@@ -45,7 +45,7 @@ class sendFT extends Task
 		}
   	}
   	
-	private getType(string $type) : string
+	private function getType(string $type) : string
   	{
     		switch($type)
     		{
