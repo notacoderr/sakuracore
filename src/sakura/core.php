@@ -19,7 +19,8 @@ use pocketmine\inventory\Inventory;use pocketmine\item\enchantment\{Enchantment,
 
 class core extends PluginBase implements Listener {
 	
-	public $db;
+	public $db, $ftworlds = [];
+	
 	public function onEnable() : void
 	{	
 		$this->saveResource('settings.yml');
@@ -67,7 +68,8 @@ class core extends PluginBase implements Listener {
 		Server::getInstance()->getPluginManager()->registerEvents($this, $this);
 		
 		if($this->settings->get('floaters?')){
-			$this->getScheduler()->scheduleRepeatingTask(new sendFT($this, $this->settings->getNested("floaters")), 12000); //10 mins : 1200 - 1min
+			$this->ftworlds = $this->settings->getNested("floaters");
+			$this->getScheduler()->scheduleRepeatingTask(new sendFT($this), 12000); //10 mins : 1200 - 1min
 		}
 	}
 	
