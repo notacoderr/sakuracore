@@ -4,6 +4,7 @@ namespace sakura;
 
 use sakura\core;
 use pocketmine\Server;
+use pocketmine\utils\TextFormat as color;
 use pocketmine\math\Vector3;
 use pocketmine\scheduler\Task;
 use pocketmine\level\particle\FloatingTextParticle;
@@ -36,11 +37,11 @@ class sendFT extends Task
 		{
 			case 'PocketMine-MP':
 				$particle = new FloatingTextParticle($location, color::GOLD . "<<<<<>>>>>", $this->getType($type));
-				$this->getServer()->getLevelByName($world)->addParticle($particle, $player);
+				Server::getInstance()->getLevelByName($world)->addParticle($particle);
 				break;
 			case 'Altay':
 				$particle = new FloatingTextParticle(color::GOLD . "<<<<<>>>>>", $this->getType($type), $location);
-				$this->getServer()->getLevelByName($world)->addParticle($location, $particle);
+				Server::getInstance()->getLevelByName($world)->addParticle($location, $particle);
 				break;
 		}
   	}
