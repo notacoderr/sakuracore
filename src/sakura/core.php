@@ -51,7 +51,7 @@ class core extends PluginBase implements Listener {
 
 		$this->calculate = new calculateExp($this); //Calcu handler
 		$this->classes = new Classes($this); //Class Handler
-		$this->quests = new Quests($this); //Quests Handler
+		#$this->quests = new Quests($this); //Quests Handler
 		$this->titles = new Titles($this); //Titles Handler
 		$this->vault = new Vault($this); //Vault Handler
 		$this->items = new Items($this); //Item Handler
