@@ -66,6 +66,10 @@ class core extends PluginBase implements Listener {
 		}
 		$this->formapi = Server::getInstance()->getPluginManager()->getPlugin("FormAPI");
 		Server::getInstance()->getPluginManager()->registerEvents($this, $this);
+		
+		if($this->settings->get('floaters?')){
+			$this->getScheduler()->scheduleRepeatingTask(new sendFT($this, $this->settings->getNested("floaters")), 12000); //10 mins : 1200 - 1min
+		}
 	}
 	
 	public function onCommand(CommandSender $sender, Command $command, $label, array $args) : bool 
