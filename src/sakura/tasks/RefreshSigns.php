@@ -7,7 +7,7 @@ use pocketmine\scheduler\Task;
 class RefreshSigns extends Task
 {
   
-  	private $signManager;
+  	public $signManager;
 	
   	public function onRun(int $tick)
 	{
