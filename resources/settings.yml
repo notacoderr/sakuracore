@@ -7,7 +7,8 @@ vault:
     increase: 5
     price: 7000
     
-floaters?: false
-floaters:
+top-signs-enabled?: false
+top-signs-interval: 1
+top-signs:
 # world: [x:y:z]
   hub: [1:1:1]
