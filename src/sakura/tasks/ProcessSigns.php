@@ -7,7 +7,7 @@ use pocketmine\Server;
 use pocketmine\level\Location;
 use pocketmine\level\Position;
 use pocketmine\tile\Sign;
-
+use sakura\tasks\RefreshSigns;
 use pocketmine\utils\TextFormat;
 
 class ProcessSigns
