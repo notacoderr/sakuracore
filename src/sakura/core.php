@@ -15,11 +15,12 @@ use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
 use pocketmine\level\level;
 use pocketmine\item\Item;
+use sakura\tasks\ProcessSigns;
 use pocketmine\inventory\Inventory;use pocketmine\item\enchantment\{Enchantment, EnchantmentInstance};
 
 class core extends PluginBase implements Listener {
 	
-	public $db, $ftworlds = [];
+	public $db, $topsigns = [], $signinterval;
 	
 	public function onEnable() : void
 	{	
@@ -67,9 +68,13 @@ class core extends PluginBase implements Listener {
 		$this->formapi = Server::getInstance()->getPluginManager()->getPlugin("FormAPI");
 		Server::getInstance()->getPluginManager()->registerEvents($this, $this);
 		
-		if($this->settings->get('floaters?')){
-			$this->ftworlds = $this->settings->getNested("floaters");
-			$this->getScheduler()->scheduleRepeatingTask(new sendFT($this), 12000); //10 mins : 1200 - 1min
+		if($this->settings->get('top-signs-enabled?'))
+		{
+			$signs = $this->settings->getNested("top-signs");
+			$this->refresher = new ProcessSigns($this);
+			$this->refresher->registerSigns($signs);
+			$$this->signinterval = (int) $this->settings->getNested("top-signs-interval") * 1200;
+			#$this->getScheduler()->scheduleRepeatingTask(new RefreshSigns($this), $time);
 		}
 	}
 	
