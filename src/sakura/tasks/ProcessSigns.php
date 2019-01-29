@@ -13,11 +13,19 @@ use pocketmine\utils\TextFormat;
 class ProcessSigns
 {
   
-  	private $core, $topLevelSigns = [], $topEloSigns = [];
+  	private $core, $topLevelSigns = [], $topEloSigns = [], $engine;
   
 	public function __construct(core $core)
 	{
 		$this->core = $core;
+		$this->startEngine();
+	}
+	
+	private function startEngine()
+	{
+		$task = new RefreshSigns( $this->core );
+		$task->signManager = $this;
+		$this->engine = $this->getServer()->getScheduler()->scheduleRepeatingTask($task, $this->core->signinterval);
 	}
 	
 	public function registerSigns(array $initSigns)
