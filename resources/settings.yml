@@ -10,5 +10,4 @@ vault:
 top-signs-enabled?: false
 top-signs-interval: 1
 top-signs:
-# world: [x:y:z]
-  hub: [-29:81:-57:"level"]
+  - ["hub", "-27.000:85.111:-80:elo"]
