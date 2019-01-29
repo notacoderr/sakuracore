@@ -11,4 +11,4 @@ top-signs-enabled?: false
 top-signs-interval: 1
 top-signs:
 # world: [x:y:z]
-  hub: [1:1:1]
+  hub: [-29:81:-57:"level"]
