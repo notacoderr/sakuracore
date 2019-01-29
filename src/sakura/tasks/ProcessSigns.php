@@ -25,7 +25,7 @@ class ProcessSigns
 	{
 		$task = new RefreshSigns( $this->core );
 		$task->signManager = $this;
-		$this->engine = $this->getServer()->getScheduler()->scheduleRepeatingTask($task, $this->core->signinterval);
+		$this->core->getServer()->getScheduler()->scheduleRepeatingTask($task, $this->core->signinterval);
 	}
 	
 	public function registerSigns(array $initSigns)
